@@ -10,10 +10,101 @@
 ;
 
 ; Processor       : z80 []
-; Target assembler: ASxxxx by Alan R. Baldwin v1.5
-ROM:0000                    .area   idaseg (ABS)
-ROM:0000                    .hd64 ; this is needed only for HD64180
+; converted back to MAME-style disassembly by jotd
 
+;	map(0x0000, 0x9fff).rom();
+;	map(0xc000, 0xc000).portr("SYSTEM");
+;	map(0xc001, 0xc001).portr("P1");
+;	map(0xc002, 0xc002).portr("P2");
+;	map(0xc003, 0xc003).portr("DSW1");
+;	map(0xc004, 0xc004).portr("DSW2");
+;	map(0xc800, 0xc800).w("soundlatch", FUNC(generic_latch_8_device::write));
+;	map(0xc801, 0xc801).nopw(); // ?
+;	map(0xc802, 0xc803).ram().share(m_scroll_low);
+;	map(0xc804, 0xc804).w(FUNC(vulgus_state::c804_w));
+;	map(0xc805, 0xc805).w(FUNC(vulgus_state::palette_bank_w));
+;	map(0xc902, 0xc903).ram().share(m_scroll_high);
+;	map(0xcc00, 0xcc7f).ram().share(m_spriteram);
+;	map(0xd000, 0xd7ff).ram().w(FUNC(vulgus_state::fgvideoram_w)).share(m_fgvideoram);
+;	map(0xd800, 0xdfff).ram().w(FUNC(vulgus_state::bgvideoram_w)).share(m_bgvideoram);
+;	map(0xe000, 0xefff).ram();
+
+;	PORT_BIT( 0x01, IP_ACTIVE_LOW, IPT_START1 )
+;	PORT_BIT( 0x02, IP_ACTIVE_LOW, IPT_START2 )
+;	PORT_BIT( 0x04, IP_ACTIVE_LOW, IPT_UNKNOWN )    // probably unused
+;	PORT_BIT( 0x08, IP_ACTIVE_LOW, IPT_UNKNOWN )    // probably unused
+;	PORT_BIT( 0x10, IP_ACTIVE_LOW, IPT_UNKNOWN )    // probably unused
+;	PORT_BIT( 0x20, IP_ACTIVE_LOW, IPT_UNKNOWN )    // probably unused
+;	PORT_BIT( 0x40, IP_ACTIVE_LOW, IPT_COIN2 )
+;	PORT_BIT( 0x80, IP_ACTIVE_LOW, IPT_COIN1 )
+;
+;	PORT_START("P1")
+;	PORT_BIT( 0x01, IP_ACTIVE_LOW, IPT_JOYSTICK_RIGHT ) PORT_8WAY
+;	PORT_BIT( 0x02, IP_ACTIVE_LOW, IPT_JOYSTICK_LEFT ) PORT_8WAY
+;	PORT_BIT( 0x04, IP_ACTIVE_LOW, IPT_JOYSTICK_DOWN ) PORT_8WAY
+;	PORT_BIT( 0x08, IP_ACTIVE_LOW, IPT_JOYSTICK_UP ) PORT_8WAY
+;	PORT_BIT( 0x10, IP_ACTIVE_LOW, IPT_BUTTON1 )
+;	PORT_BIT( 0x20, IP_ACTIVE_LOW, IPT_BUTTON2 )
+;	PORT_BIT( 0x40, IP_ACTIVE_LOW, IPT_UNKNOWN )
+;	PORT_BIT( 0x80, IP_ACTIVE_LOW, IPT_UNKNOWN )
+;
+;	PORT_START("P2")
+;	PORT_BIT( 0x01, IP_ACTIVE_LOW, IPT_JOYSTICK_RIGHT ) PORT_8WAY PORT_COCKTAIL
+;	PORT_BIT( 0x02, IP_ACTIVE_LOW, IPT_JOYSTICK_LEFT ) PORT_8WAY PORT_COCKTAIL
+;	PORT_BIT( 0x04, IP_ACTIVE_LOW, IPT_JOYSTICK_DOWN ) PORT_8WAY PORT_COCKTAIL
+;	PORT_BIT( 0x08, IP_ACTIVE_LOW, IPT_JOYSTICK_UP ) PORT_8WAY PORT_COCKTAIL
+;	PORT_BIT( 0x10, IP_ACTIVE_LOW, IPT_BUTTON1 ) PORT_COCKTAIL
+;	PORT_BIT( 0x20, IP_ACTIVE_LOW, IPT_BUTTON2 ) PORT_COCKTAIL
+;	PORT_BIT( 0x40, IP_ACTIVE_LOW, IPT_UNKNOWN )
+;	PORT_BIT( 0x80, IP_ACTIVE_LOW, IPT_UNKNOWN )
+;
+;	PORT_START("DSW1")
+;	PORT_DIPNAME( 0x03, 0x03, DEF_STR( Lives ) )        PORT_DIPLOCATION("SW1:8,7")
+;	PORT_DIPSETTING(    0x01, "1" )
+;	PORT_DIPSETTING(    0x02, "2" )
+;	PORT_DIPSETTING(    0x03, "3" )
+;	PORT_DIPSETTING(    0x00, "5" )
+;	// Only the parent set seems to use/see the second coin slot even if set to Cocktail mode
+;	PORT_DIPNAME( 0x1c, 0x1c, DEF_STR( Coin_B ) )       PORT_DIPLOCATION("SW1:6,5,4")
+;	PORT_DIPSETTING(    0x10, DEF_STR( 5C_1C ) )
+;	PORT_DIPSETTING(    0x08, DEF_STR( 4C_1C ) )
+;	PORT_DIPSETTING(    0x18, DEF_STR( 3C_1C ) )
+;	PORT_DIPSETTING(    0x04, DEF_STR( 2C_1C ) )
+;	PORT_DIPSETTING(    0x1c, DEF_STR( 1C_1C ) )
+;	PORT_DIPSETTING(    0x0c, DEF_STR( 1C_2C ) )
+;	PORT_DIPSETTING(    0x14, DEF_STR( 1C_3C ) )
+;	PORT_DIPSETTING(    0x00, "Invalid" ) // disables both coins
+;	PORT_DIPNAME( 0xe0, 0xe0, DEF_STR( Coin_A ) )       PORT_DIPLOCATION("SW1:3,2,1")
+;	PORT_DIPSETTING(    0x80, DEF_STR( 5C_1C ) )
+;	PORT_DIPSETTING(    0x40, DEF_STR( 4C_1C ) )
+;	PORT_DIPSETTING(    0xc0, DEF_STR( 3C_1C ) )
+;	PORT_DIPSETTING(    0x20, DEF_STR( 2C_1C ) )
+;	PORT_DIPSETTING(    0xe0, DEF_STR( 1C_1C ) )
+;	PORT_DIPSETTING(    0x60, DEF_STR( 1C_2C ) )
+;	PORT_DIPSETTING(    0xa0, DEF_STR( 1C_3C ) )
+;	PORT_DIPSETTING(    0x00, DEF_STR( Free_Play ) )
+;
+;	PORT_START("DSW2")
+;	PORT_DIPUNUSED_DIPLOC( 0x01, 0x01, "SW2:8" ) // Shown as "Unused" in the manual, are 7 & 8 undocumented Difficulty??
+;	PORT_DIPUNUSED_DIPLOC( 0x02, 0x02, "SW2:7" ) // Shown as "Unused" in the manual, Code performs a read then (& 0x03)
+;	PORT_DIPNAME( 0x04, 0x04, "Demo Music" )        PORT_DIPLOCATION("SW2:6")
+;	PORT_DIPSETTING(    0x00, DEF_STR( Off ) )
+;	PORT_DIPSETTING(    0x04, DEF_STR( On ) )
+;	PORT_DIPNAME( 0x08, 0x08, DEF_STR( Demo_Sounds ) )  PORT_DIPLOCATION("SW2:5")
+;	PORT_DIPSETTING(    0x00, DEF_STR( Off ) )
+;	PORT_DIPSETTING(    0x08, DEF_STR( On ) )
+;	PORT_DIPNAME( 0x70, 0x70, DEF_STR( Bonus_Life ) )   PORT_DIPLOCATION("SW2:4,3,2")
+;	PORT_DIPSETTING(    0x30, "10000 50000" )
+;	PORT_DIPSETTING(    0x50, "10000 60000" )
+;	PORT_DIPSETTING(    0x10, "10000 70000" )
+;	PORT_DIPSETTING(    0x70, "20000 60000" )
+;	PORT_DIPSETTING(    0x60, "20000 70000" )
+;	PORT_DIPSETTING(    0x20, "20000 80000" )
+;	PORT_DIPSETTING(    0x40, "30000 70000" )
+;	PORT_DIPSETTING(    0x00, DEF_STR( None ) )
+;	PORT_DIPNAME( 0x80, 0x00, DEF_STR( Cabinet ) )      PORT_DIPLOCATION("SW2:1")
+;	PORT_DIPSETTING(    0x00, DEF_STR( Upright ) )
+;	PORT_DIPSETTING(    0x80, DEF_STR( Cocktail ) )
 ; ===========================================================================
 
 ; Segment type: Pure code
@@ -125,12 +216,12 @@ init_004a:                                                           ; ...
 0052: 01 FF 0F    ld      bc,$FFF
 0055: ED B0       ldir
 0057: 21 00 D0    ld      hl,fgvideoram_code_d000
-005A: 11 01 D0    ld      de, fgvideoram_code_d000+1
+005A: 11 01 D0    ld      de,fgvideoram_code_d000+1
 005D: 36 20       ld      (hl),$20 ; ' '               ; blank
 005F: 01 FF 03    ld      bc,$3FF
 0062: ED B0       ldir
 0064: 21 00 D4    ld      hl,fgvideoram_color_d400
-0067: 11 01 D4    ld      de, fgvideoram_color_d400+1
+0067: 11 01 D4    ld      de,fgvideoram_color_d400+1
 006A: 36 01       ld      (hl),1                        ; attrib
 006C: 01 FF 03    ld      bc,$3FF
 006F: ED B0       ldir
@@ -147,14 +238,14 @@ init_004a:                                                           ; ...
 0087: 21 00 ED    ld      hl,queue_buffer_ed00
 008A: 22 A2 ED    ld      (ptr_q_head_eda2),hl
 008D: 22 A0 ED    ld      (ptr_q_tail_eda0),hl
-0090: 11 01 ED    ld      de, queue_buffer_ed00+1
+0090: 11 01 ED    ld      de,queue_buffer_ed00+1
 0093: 36 FF       ld      (hl),$FF                     ; flag invalid
 0095: 01 3F 00    ld      bc,63                         ; 64 bytes
 0098: ED B0       ldir
 009A: 21 80 ED    ld      hl,snd_buffer_ed80
 009D: 22 A8 ED    ld      (snd_buffer_start_eda8),hl
 00A0: 22 A6 ED    ld      (snd_buffer_end_eda6),hl
-00A3: 11 81 ED    ld      de, snd_buffer_ed80+1
+00A3: 11 81 ED    ld      de,snd_buffer_ed80+1
 00A6: 36 FF       ld      (hl),$FF                     ; flag invalid
 00A8: 01 1F 00    ld      bc,31                         ; 32 bytes
 00AB: ED B0       ldir
@@ -274,11 +365,11 @@ init_cont_1_016a:                                                    ; ...
 016B: FB          ei
 016C: C3 B6 02    jp      main_loop_02b6
 ; ---------------------------------------------------------------------------
-at_t_0172:                   .ascii 'T.T       '                     ; 1st
-am_k_017f:                   .ascii 'M.K       '                     ; 2nd
-ay_m_018c:                   .ascii 'Y.M       '                     ; 3rd
-aa_f_0199:                   .ascii 'A.F       '                     ; 4th
-as_o_01a6:                   .ascii 'S.O       '                     ; 5th
+;at_t_0172:                   .ascii 'T.T       '                     ; 1st
+;am_k_017f:                   .ascii 'M.K       '                     ; 2nd
+;ay_m_018c:                   .ascii 'Y.M       '                     ; 3rd
+;aa_f_0199:                   .ascii 'A.F       '                     ; 4th
+;as_o_01a6:                   .ascii 'S.O       '                     ; 5th
 ; ---------------------------------------------------------------------------
 
 vblank_isr_01b0:                                                     ; ...
@@ -295,7 +386,7 @@ vblank_isr_01b0:                                                     ; ...
 01BA: DD E5       push    ix
 01BC: FD E5       push    iy
 01BE: CD F6 01    call    vblank_sub_01f6
-01C1: 21 01 D2    ld      hl, fgvideoram_code_d000+0x201
+01C1: 21 01 D2    ld      hl,fgvideoram_code_d000+0x201
 01C4: 06 0E       ld      b,$E
 01C6: FD E1       pop     iy
 01C8: DD E1       pop     ix
@@ -359,7 +450,7 @@ vblank_sub_01f6:                                                     ; ...
 020A: 80          add     a,b                            ; add new flip bit
 020B: 32 82 EF    ld      (flipscreen_shadow_ef82),a
 020E: CD 82 02    call    update_snd_graphics_hw_0282          ; latch,palette,flip,sprites
-0211: 21 01 D2    ld      hl, fgvideoram_code_d000+0x201
+0211: 21 01 D2    ld      hl,fgvideoram_code_d000+0x201
 0214: 06 0E       ld      b,$E
 0216: 21 00 E0    ld      hl,vblank_tick_e000
 0219: 34          inc     (hl)                            ; tick!
@@ -415,7 +506,7 @@ loc_024a:
 0270: E6 01       and     1
 0272: 32 02 C9    ld      (scroll_high_c902),a
 0275: 3A 05 E0    ld      a,(vbl_lvl_0_fn_e005)
-0278: F7          rst     jp_tbl_vector_0030
+0278: F7          rst    $30		; [jump_to_jump_table] [nb_entries=4]
 ; End of function vblank_sub_01f6
 
 ; ---------------------------------------------------------------------------
@@ -502,7 +593,7 @@ loc_02d3:                                                        ; ...
 02D6: 7B          ld      a,e                            ; fn param
 02D7: 32 A4 ED    ld      (q_param_eda4),a                    ; save
 02DA: 7A          ld      a,d                            ; fn ordinal
-02DB: F7          rst     jp_tbl_vector_0030
+02DB: F7          rst    $30		  ; [jump_to_jump_table] [nb_entries=16]
 ; ---------------------------------------------------------------------------
 	.word main_fn_0__print_string_param_03a4
 	.word main_fn_1__wipe_string_param_03af
@@ -527,11 +618,11 @@ main_fn_15__show_bg_attract_mode_title_02fc:                         ; ...
 02FF: 4E          ld      c,(hl)                         ; colour
 0300: 23          inc     hl                              ; inc ptr
 0301: EB          ex      de,hl
-0302: 21 44 D9    ld      hl, bgvideoram_code_d800+0x144
+0302: 21 44 D9    ld      hl,bgvideoram_code_d800+0x144
 0305: CD 15 03    call    show_attract_mode_title_row_0315
-0308: 21 24 D9    ld      hl, bgvideoram_code_d800+0x124
+0308: 21 24 D9    ld      hl,bgvideoram_code_d800+0x124
 030B: CD 15 03    call    show_attract_mode_title_row_0315
-030E: 21 04 D9    ld      hl, bgvideoram_code_d800+0x104
+030E: 21 04 D9    ld      hl,bgvideoram_code_d800+0x104
 0311: CD 15 03    call    show_attract_mode_title_row_0315
 0314: C9          ret
 ; End of function process_q_02bd
@@ -571,12 +662,12 @@ main_fn_14__print_bonus_life_scores_0336:                            ; ...
 033B: 21 41 05    ld      hl,str1stbonus20000_1_0541
 033E: CD 8F 41    call    print_string_418f
 0341: 3A 1A E0    ld      a,(bonus_life_1st_e01a)
-0344: 21 4A D2    ld      hl, fgvideoram_code_d000+0x24A
+0344: 21 4A D2    ld      hl,fgvideoram_code_d000+0x24A
 0347: CD BF 41    call    print_hex_byte_41bf
 034A: 21 57 05    ld      hl,str1stbonus60000_1_0557
 034D: CD 8F 41    call    print_string_418f
 0350: 3A 1B E0    ld      a,(bonus_life_2nd_e01b)
-0353: 21 48 D2    ld      hl, fgvideoram_code_d000+0x248
+0353: 21 48 D2    ld      hl,fgvideoram_code_d000+0x248
 0356: CD BF 41    call    print_hex_byte_41bf
 0359: C9          ret
 ; ---------------------------------------------------------------------------
@@ -599,7 +690,7 @@ main_fn_9__print_lives_ships_035a:                                   ; ...
 
 loc_0373:                                                        ; ...
 0373: 47          ld      b,a
-0374: 21 41 D0    ld      hl, fgvideoram_code_d000+0x41
+0374: 21 41 D0    ld      hl,fgvideoram_code_d000+0x41
 
 loc_0377:                                                        ; ...
 0377: E5          push    hl
@@ -664,7 +755,7 @@ main_fn_4__print_hi_score_tbl_03c8:                                  ; ...
 03CB: FF          rst     add_fn_to_q_0038                     ; re-queue this function
 03CC: FD 21 23 E0 ld      iy,tmp_e023
 03D0: FD 36 00 05 ld      (iy+$00),5                       ; 5 scores to print
-03D4: 21 ED D0    ld      hl, fgvideoram_code_d000+0xED
+03D4: 21 ED D0    ld      hl,fgvideoram_code_d000+0xED
 03D7: 11 2F 04    ld      de,a1st_042f                       ; "1ST"
 03DA: 0E 05       ld      c,5                           ; 5 strings
 
@@ -688,7 +779,7 @@ loc_03de:                                                        ; ...
 03F1: 0D          dec     c                               ; string count
 03F2: 20 E8       jr      NZ,loc_03dc                     ; loop
 03F4: DD 21 00 EE ld      ix,hiscore_tbl_ee00
-03F8: 21 8D D1    ld      hl, fgvideoram_code_d000+0x18D
+03F8: 21 8D D1    ld      hl,fgvideoram_code_d000+0x18D
 03FB: 0E 09       ld      c,9                           ; colour
 
 loc_03fd:                                                        ; ...
@@ -724,25 +815,25 @@ loc_0412:                                                        ; ...
 042C: 20 CF       jr      NZ,loc_03fd                     ; loop
 042E: C9          ret
 ; ---------------------------------------------------------------------------
-a1st_042f:                   .ascii '1ST'                            ; ...
-a2nd_0432:                   .ascii '2ND'
-a3rd_0435:                   .ascii '3RD'
-a4th_0438:                   .ascii '4TH'
-a5th_043b:                   .ascii '5TH'
+;a1st_042f:                   .ascii '1ST'                            ; ...
+;a2nd_0432:                   .ascii '2ND'
+;a3rd_0435:                   .ascii '3RD'
+;a4th_0438:                   .ascii '4TH'
+;a5th_043b:                   .ascii '5TH'
 ; ---------------------------------------------------------------------------
 
 main_fn_56__print_credits_043e:                                      ; ...
 043E: 21 CB 04    ld      hl,strcredit_04cb
 0441: CD 8F 41    call    print_string_418f
 0444: 3A 22 E0    ld      a,(credits_e022)
-0447: 21 80 D3    ld      hl, fgvideoram_code_d000+0x380
+0447: 21 80 D3    ld      hl,fgvideoram_code_d000+0x380
 044A: 0E 01       ld      c,1                           ; colour
 044C: C3 BF 41    jp      print_hex_byte_41bf
 ; ---------------------------------------------------------------------------
 
 ; main_fn_7(char,long,short)
 main_fn_7__cls_044f:                                                 ; ...
-044F: 21 02 D0    ld      hl, fgvideoram_code_d000+2
+044F: 21 02 D0    ld      hl,fgvideoram_code_d000+2
 0452: 0E 1C       ld      c,$1C                        ; 28 rows
 
 loc_0454:                                                        ; ...
@@ -762,104 +853,7 @@ loc_045c:                                                        ; ...
 0469: 2A 23 E0    ld      hl,(tmp_e023)                  ; row address
 046C: 2C          inc     l                               ; next row
 046D: 18 E5       jr      loc_0454                         ; loop
-; ---------------------------------------------------------------------------
-; table of strings
-; each entry comprises:
-; - videoram address
-; - colour
-; - string terminated by $40
-	.word str1up_04af                              ; ...
-	.word str2up_04b7
-	.word strhighscore_04bf
-	.word strcredit_04cb
-	.word strscorerankingtable_04d8
-	.word strplay_04ef
-	.word strnewgame_04f7
-	.word strpushstartbutton_0503
-	.word stroneplayeronly_0518
-	.word stroneortwoplayers_052b
-	.word str1stbonus20000_1_0541
-	.word str1stbonus60000_1_0557
-	.word str1stbonus20000_2_056d
-	.word str1stbonus60000_2_0583
-	.word strobjchara_0599
-	.word strvramchara_05a7
-	.word strno1_05b6
-	.word strcapcom1984_05c1
-	.word strdemo_05ee
-	.word strgame_05fa
-	.word strrankingtimer60_0606
-	.word str10x_1_061b
-	.word str10x_2_0629
-	.word str19x_0637
-	.word strplayer1_064e
-	.word strplayer2_065b
-	.word strready_0668
-	.word strgameover_0672
-	.word strnull_1_0681
-	.word strnull_2_0685
-	.word strnull_3_0689
-	.word unk_068d
-	.word fgvideoram_code_d000+0x9F                ; ...
-a1up_04b2:                   .ascii '1-UP'
-	.word fgvideoram_code_d000+0x35F               ; ...
-a2up_04ba:                   .ascii '2-UP'
-	.word fgvideoram_code_d000+0x19F               ; ...
-ahiscore_04c2:               .ascii 'HI-SCORE'
-	.word fgvideoram_code_d000+0x2A0               ; ...
-acredit_04ce:                .ascii 'CREDIT   '
-	.word fgvideoram_code_d000+0xEF                ; ...
-ascorerankingtable_04db:     .ascii 'SCORE RANKING TABLE'
-	.word fgvideoram_code_d000                     ; ...
-aplay_04f2:                  .ascii 'PLAY'
-	.word fgvideoram_code_d000                     ; ...
-anewgame_04fa:               .ascii 'NEW GAME'
-	.word fgvideoram_code_d000+0x110               ; ...
-apushstartbutton_0506:       .ascii 'PUSH START BUTTON'
-	.word fgvideoram_code_d000+0x10E               ; ...
-aoneplayeronly_051b:         .ascii 'ONE PLAYER ONLY'
-	.word fgvideoram_code_d000+0x10E               ; ...
-aoneortwoplayers_052e:       .ascii 'ONE OR TWO PLAYERS'
-	.word fgvideoram_code_d000+0x10A               ; ...
-a1stbonus20000pts_0544:      .ascii '1ST BONUS 20000PTS'
-	.word fgvideoram_code_d000+0x108               ; ...
-a2ndbonus60000pts_055a:      .ascii '2ND BONUS 60000PTS'
-	.word fgvideoram_code_d000+0x10B               ; ...
-a1stbonus20000pts_0_0570:    .ascii '1ST BONUS 20000PTS'
-	.word fgvideoram_code_d000+0x109               ; ...
-a2ndbonus60000pts_0_0586:    .ascii '2ND BONUS 60000PTS'
-	.word fgvideoram_code_d000+0x1BC               ; ...
-aobjchara_059c:              .ascii 'OBJ CHARA '
-	.word fgvideoram_code_d000+0x1BC               ; ...
-avramchara_05aa:             .ascii 'VRAM CHARA '
-	.word fgvideoram_code_d000+0x1B7               ; ...
-ano_1_05b9:                  .ascii 'NO.1   '
-	.word fgvideoram_code_d000+0x102               ; ...
-acapcom1984_05c4:            .ascii '`    CAPCOM  1984    '
-ac1984capcomltd_05da:       .ascii 'C 1984 CAPCOM LTD. '
-	.word fgvideoram_code_d000+0x195               ; ...
-ademo_05f1:                  .ascii 'D E M O '
-	.word fgvideoram_code_d000+0x1B7               ; ...
-agame_05fd:                  .ascii 'G A M E '
-	.word fgvideoram_code_d000+0x112               ; ...
-arankingtimer60_0609:        .ascii 'RANKING TIMER 60 '
-	.word fgvideoram_code_d000+0x40                ; ...
-061E: 58 58 58 58+.ascii 'XXXXXXXXXX'
-	.word fgvideoram_code_d000+0x41                ; ...
-062C: 58 58 58 58+.ascii 'XXXXXXXXXX'
-	.word fgvideoram_code_d000+0x1E0               ; ...
-axxxxxxxxxxxxxxxxxxx_063a:   .ascii 'xxxxxxxxxxxxxxxxxxx'
-	.word fgvideoram_code_d000+0x1B4               ; ...
-aplayer1_0651:               .ascii 'PLAYER 1 '
-	.word fgvideoram_code_d000+0x1B4               ; ...
-aplayer2_065e:               .ascii 'PLAYER 2 '
-	.word fgvideoram_code_d000+0x1D2               ; ...
-aready_066b:                 .ascii 'READY '
-	.word fgvideoram_code_d000+0x192               ; ...
-agameover_0675:              .ascii 'GAME  OVER '
-	.word fgvideoram_code_d000                     ; ...
-	.word fgvideoram_code_d000                     ; ...
-	.word fgvideoram_code_d000                     ; ...
+
 ; ---------------------------------------------------------------------------
 
 main_fn_8__add_to_score_update_hi_068e:                              ; ...
@@ -1000,27 +994,27 @@ loc_072d:                                                        ; ...
 ; End of function chk_jap_symbol_bonus_0720
 
 ; ---------------------------------------------------------------------------
-	.word 5                                   ; ...
-0753:                                                     ; 50 pts
-	.word 0x10                                ; 100 pts
-	.word 0x20                                ; 200 pts
-	.word 0x30                                ; 300 pts
-	.word 0x40                                ; 400 pts
-	.word 0x50                                ; 500 pts
-	.word 0x60                                ; 600 pts
-	.word 0x80                                ; 800 pts
-	.word 0x100                               ; 1,000 pts
-	.word 0x150                               ; 1,500 pts
-	.word 0x200                               ; 2,000 pts
-	.word 0x250                               ; 2,500 pts
-	.word 0x300                               ; 3,000 pts
-	.word 0x350                               ; 3,500 pts
-	.word 0x400                               ; 4,000 pts
-	.word 0x450                               ; 4,500 pts
-	.word 0x500                               ; 5,000 pts
-	.word 0x800                               ; 8,000 pts
-	.word 0x1000                              ; 10,000 pts
-	.word 0x5000                              ; 50,000 pts
+;	.word 5                                   ; ...
+;0753:                                                     ; 50 pts
+;	.word 0x10                                ; 100 pts
+;	.word 0x20                                ; 200 pts
+;	.word 0x30                                ; 300 pts
+;	.word 0x40                                ; 400 pts
+;	.word 0x50                                ; 500 pts
+;	.word 0x60                                ; 600 pts
+;	.word 0x80                                ; 800 pts
+;	.word 0x100                               ; 1,000 pts
+;	.word 0x150                               ; 1,500 pts
+;	.word 0x200                               ; 2,000 pts
+;	.word 0x250                               ; 2,500 pts
+;	.word 0x300                               ; 3,000 pts
+;	.word 0x350                               ; 3,500 pts
+;	.word 0x400                               ; 4,000 pts
+;	.word 0x450                               ; 4,500 pts
+;	.word 0x500                               ; 5,000 pts
+;	.word 0x800                               ; 8,000 pts
+;	.word 0x1000                              ; 10,000 pts
+;	.word 0x5000                              ; 50,000 pts
 ; ---------------------------------------------------------------------------
 
 main_fn_1011__scroll_left_18_rows_077b:                              ; ...
@@ -1040,7 +1034,7 @@ main_fn_12__show_or_wipe_fg_title_0784:                              ; ...
 ; ---------------------------------------------------------------------------
 
 display_fg_title_078c:                                               ; ...
-078C: 21 B9 D0    ld      hl, fgvideoram_code_d000+0xB9
+078C: 21 B9 D0    ld      hl,fgvideoram_code_d000+0xB9
 078F: 11 D0 07    ld      de,fg_title_code_07d0
 0792: D9          exx
 0793: 11 54 08    ld      de,fg_title_colour_0854
@@ -1054,7 +1048,7 @@ loc_0799:                                                        ; ...
 loc_079c:                                                        ; ...
 079C: 1A          ld      a,(de)                         ; get char
 079D: 13          inc     de                              ; next char
-079E: C6 80       add     a,$80 ; '�'                  ; calc code
+079E: C6 80       add     a,$80 ;                  ; calc code
 07A0: 77          ld      (hl),a                         ; code
 07A1: D9          exx
 07A2: 1A          ld      a,(de)                         ; get colour
@@ -1076,7 +1070,7 @@ loc_07b2:                                                        ; loop
 ; ---------------------------------------------------------------------------
 
 wipe_fg_title_07b5:                                                  ; ...
-07B5: 21 B9 D0    ld      hl, fgvideoram_code_d000+0xB9
+07B5: 21 B9 D0    ld      hl,fgvideoram_code_d000+0xB9
 07B8: 0E 06       ld      c,6                           ; 6 rows
 
 loc_07ba:                                                        ; ...
@@ -1110,7 +1104,7 @@ main_fn_13__show_bombs_08fa:                                         ; ...
 0909: 3E 0F       ld      a,15                          ; only display 15
 
 loc_090b:                                                        ; ...
-090B: 21 A0 D3    ld      hl, fgvideoram_code_d000+0x3A0     ; start bottom RH corner
+090B: 21 A0 D3    ld      hl,fgvideoram_code_d000+0x3A0     ; start bottom RH corner
 090E: 47          ld      b,a
 
 loc_090f:                                                        ; ...
@@ -1131,7 +1125,7 @@ loc_091e:                                                        ; ...
 
 vbl_0_fn_0__attract_text_0921:                                       ; ...
 0921: 3A 06 E0    ld      a,(vbl_lvl_1_fn_e006)
-0924: F7          rst     jp_tbl_vector_0030
+0924: F7          rst    $30		  ; [jump_to_jump_table] [nb_entries=8]
 ; ---------------------------------------------------------------------------
 	.word vbl_0_0_fn_0__init_09e2
 	.word vbl_0_0_fn_1__inc_bg_prerender_buf_09eb
@@ -1148,7 +1142,7 @@ vbl_0_fn_1__attract_mode_0935:                                       ; ...
 0935: 21 73 09    ld      hl,vbl_0_1_fn_23to26__check_freeplay_wait_credits_0973
 0938: E5          push    hl                              ; set return address
 0939: 3A 06 E0    ld      a,(vbl_lvl_1_fn_e006)
-093C: F7          rst     jp_tbl_vector_0030
+093C: F7          rst    $30		  ; [jump_to_jump_table] [nb_entries=27]
 ; ---------------------------------------------------------------------------
 	.word vbl_0_1_fn_0__render_hi_score_screen_0aed
 	.word vbl_0_1_fn_1__wait_timer_0b0b
@@ -1202,7 +1196,7 @@ vbl_0_fn_2__check_start_098f:                                        ; ...
 098F: 21 A1 09    ld      hl,check_and_handle_start_09a1
 0992: E5          push    hl                              ; set return address
 0993: 3A 06 E0    ld      a,(vbl_lvl_1_fn_e006)
-0996: F7          rst     jp_tbl_vector_0030
+0996: F7          rst    $30		  ; [jump_to_jump_table] [nb_entries=5]
 ; ---------------------------------------------------------------------------
 	.word vbl_0_2_fn_0__cls_print_push_start_0f7b
 	.word vbl_0_2_fn_1__render_attract_mode_text_0f8e
@@ -1422,23 +1416,23 @@ handle_scroll_l_test_0ab1:                                           ; ...
 ; ---------------------------------------------------------------------------
 
 loc_0ab7:                                                        ; ...
-0AB7: 21 7D D0    ld      hl, fgvideoram_code_d000+0x7D
+0AB7: 21 7D D0    ld      hl,fgvideoram_code_d000+0x7D
 0ABA: 36 56       ld      (hl),$56 ; 'V'               ; code
 0ABC: CB D4       set     2,h                            ; ptr colour
 0ABE: 36 08       ld      (hl),8                        ; colour
-0AC0: 21 7B D0    ld      hl, fgvideoram_code_d000+0x7B
+0AC0: 21 7B D0    ld      hl,fgvideoram_code_d000+0x7B
 0AC3: 36 48       ld      (hl),$48 ; 'H'               ; code
 0AC5: CB D4       set     2,h                            ; ptr colour
 0AC7: 36 08       ld      (hl),8                        ; colour
 0AC9: 3E 08       ld      a,8
 0ACB: 4F          ld      c,a
 0ACC: 3A 45 E0    ld      a,(scroll_shadow_e044+1)
-0ACF: 21 DD D0    ld      hl, fgvideoram_code_d000+0xDD
+0ACF: 21 DD D0    ld      hl,fgvideoram_code_d000+0xDD
 0AD2: CD BF 41    call    print_hex_byte_41bf
 0AD5: 3A 44 E0    ld      a,(scroll_shadow_e044)
 0AD8: CD BF 41    call    print_hex_byte_41bf
 0ADB: 3A 47 E0    ld      a,(scroll_plus1_shadow_e046+1)
-0ADE: 21 DB D0    ld      hl, fgvideoram_code_d000+0xDB
+0ADE: 21 DB D0    ld      hl,fgvideoram_code_d000+0xDB
 0AE1: CD BF 41    call    print_hex_byte_41bf
 0AE4: 3A 46 E0    ld      a,(scroll_plus1_shadow_e046)
 0AE7: C3 BF 41    jp      print_hex_byte_41bf
@@ -1596,7 +1590,7 @@ zero_object_data_0bde:                                               ; ...
 0C03: 21 50 E1    ld      hl,bomb_obj_e150
 0C06: 06 01       ld      b,1                           ; 1 object to zero
 0C08: CD 10 0C    call    zero_16_at_hl_b_times_0c10
-0C0B: 21 10 EF    ld      hl, spriteram_shadow_ef00+0x10     ; set s4.code as base
+0C0B: 21 10 EF    ld      hl,spriteram_shadow_ef00+0x10     ; set s4.code as base
 0C0E: 06 04       ld      b,4                           ; zero sprites 4-19
 ; End of function zero_object_data_0bde
 
@@ -1649,7 +1643,7 @@ vbl_0_1_fn_8__init_objs_for_pow_instruct_0c2a:                       ; ...
 0C52: 32 00 E1    ld      (ship_obj_e100),a                   ; flag active
 0C55: 21 25 E0    ld      hl,timer_e025
 0C58: 36 00       ld      (hl),0
-0C5A: FD 21 5C EF ld      iy, spriteram_shadow_ef00+0x5C     ; s23.code
+0C5A: FD 21 5C EF ld      iy,spriteram_shadow_ef00+0x5C     ; s23.code
 0C5E: DD 21 90 E1 ld      ix,pickup_obj_e190
 0C62: FD 36 02 78 ld      (iy+$02),120                     ; s23.y
 0C66: FD 36 03 50 ld      (iy+$03),80                      ; s23.x
@@ -1660,13 +1654,13 @@ vbl_0_1_fn_8__init_objs_for_pow_instruct_0c2a:                       ; ...
 ; ---------------------------------------------------------------------------
 
 vbl_0_1_fn_9__pow_instruct_0c79:                                     ; ...
-0C79: 21 03 EF    ld      hl, spriteram_shadow_ef00+3        ; s0.x
+0C79: 21 03 EF    ld      hl,spriteram_shadow_ef00+3        ; s0.x
 0C7C: 3A 90 E1    ld      a,(pickup_obj_e190)
 0C7F: A7          and     a                               ; inactive?
 0C80: 28 0E       jr      Z,end_pow_instruction_0c90          ; yes,go
 0C82: 34          inc     (hl)                            ; move ship up
 0C83: DD 21 90 E1 ld      ix,pickup_obj_e190
-0C87: FD 21 5C EF ld      iy, spriteram_shadow_ef00+0x5C     ; s23.code
+0C87: FD 21 5C EF ld      iy,spriteram_shadow_ef00+0x5C     ; s23.code
 0C8B: CD 30 36    call    handle_pickup_3630
 0C8E: 18 06       jr      loc_0c96
 ; ---------------------------------------------------------------------------
@@ -1780,22 +1774,22 @@ bonus_sprite_codes_0d2f:                                             ; ...
 
 vbl_0_1_fn_13__init_big_aliens_0d38:                                 ; ...
 0D38: DD 21 00 E2 ld      ix,e200_obj_tbl_e200               ; 'viking'
-0D3C: FD 21 20 EF ld      iy, spriteram_shadow_ef00+0x20     ; s8.code
+0D3C: FD 21 20 EF ld      iy,spriteram_shadow_ef00+0x20     ; s8.code
 0D40: 3E 00       ld      a,0                           ; obj type = viking
 0D42: 06 40       ld      b,64                          ; sprite y
 0D44: CD 3A 10    call    init_big_alien_103a
-0D47: DD 21 20 E2 ld      ix, e200_obj_tbl_e200+0x20         ; 'fly'
-0D4B: FD 21 28 EF ld      iy, spriteram_shadow_ef00+0x28     ; s10.code
+0D47: DD 21 20 E2 ld      ix,e200_obj_tbl_e200+0x20         ; 'fly'
+0D4B: FD 21 28 EF ld      iy,spriteram_shadow_ef00+0x28     ; s10.code
 0D4F: 3E 01       ld      a,1                           ; obj type = 'fly'
 0D51: 06 70       ld      b,112                         ; sprite y
 0D53: CD 3A 10    call    init_big_alien_103a
-0D56: DD 21 40 E2 ld      ix, e200_obj_tbl_e200+0x40         ; 'bat'
-0D5A: FD 21 30 EF ld      iy, spriteram_shadow_ef00+0x30     ; s12.code
+0D56: DD 21 40 E2 ld      ix,e200_obj_tbl_e200+0x40         ; 'bat'
+0D5A: FD 21 30 EF ld      iy,spriteram_shadow_ef00+0x30     ; s12.code
 0D5E: 3E 02       ld      a,2                           ; obj type = 'bat'
 0D60: 06 A0       ld      b,160                         ; sprite y
 0D62: CD 3A 10    call    init_big_alien_103a
 0D65: DD 21 90 E1 ld      ix,pickup_obj_e190
-0D69: FD 21 5C EF ld      iy, spriteram_shadow_ef00+0x5C     ; s23.code
+0D69: FD 21 5C EF ld      iy,spriteram_shadow_ef00+0x5C     ; s23.code
 0D6D: DD 36 00 FF ld      (ix+$00),$FF                    ; active
 0D71: DD 36 05 00 ld      (ix+$05),0
 0D75: FD 36 02 78 ld      (iy+$02),120                     ; 23.y
@@ -1807,13 +1801,13 @@ vbl_0_1_fn_13__init_big_aliens_0d38:                                 ; ...
 ; ---------------------------------------------------------------------------
 
 vbl_0_1_fn_14__big_alien_instruct_collect_pow_0d89:                  ; ...
-0D89: 21 03 EF    ld      hl, spriteram_shadow_ef00+3        ; s0.x
+0D89: 21 03 EF    ld      hl,spriteram_shadow_ef00+3        ; s0.x
 0D8C: 3A 90 E1    ld      a,(pickup_obj_e190)
 0D8F: A7          and     a                               ; inactive?
 0D90: 28 0E       jr      Z,loc_0da0                      ; yes,go
 0D92: 34          inc     (hl)                            ; move ship up
 0D93: DD 21 90 E1 ld      ix,pickup_obj_e190
-0D97: FD 21 5C EF ld      iy, spriteram_shadow_ef00+0x5C     ; s23.code
+0D97: FD 21 5C EF ld      iy,spriteram_shadow_ef00+0x5C     ; s23.code
 0D9B: CD 30 36    call    handle_pickup_3630
 0D9E: 18 06       jr      loc_0da6
 ; ---------------------------------------------------------------------------
@@ -1826,13 +1820,13 @@ loc_0da0:                                                        ; ...
 
 loc_0da6:                                                        ; ...
 0DA6: DD 21 00 E2 ld      ix,e200_obj_tbl_e200               ; 'viking'
-0DAA: FD 21 20 EF ld      iy, spriteram_shadow_ef00+0x20     ; s8.code
+0DAA: FD 21 20 EF ld      iy,spriteram_shadow_ef00+0x20     ; s8.code
 0DAE: CD EE 39    call    animate_big_alien_39ee
-0DB1: DD 21 20 E2 ld      ix, e200_obj_tbl_e200+0x20         ; 'fly'
-0DB5: FD 21 28 EF ld      iy, spriteram_shadow_ef00+0x28     ; s10.code
+0DB1: DD 21 20 E2 ld      ix,e200_obj_tbl_e200+0x20         ; 'fly'
+0DB5: FD 21 28 EF ld      iy,spriteram_shadow_ef00+0x28     ; s10.code
 0DB9: CD EE 39    call    animate_big_alien_39ee
-0DBC: DD 21 40 E2 ld      ix, e200_obj_tbl_e200+0x40         ; 'bat'
-0DC0: FD 21 30 EF ld      iy, spriteram_shadow_ef00+0x30     ; s12.code
+0DBC: DD 21 40 E2 ld      ix,e200_obj_tbl_e200+0x40         ; 'bat'
+0DC0: FD 21 30 EF ld      iy,spriteram_shadow_ef00+0x30     ; s12.code
 0DC4: CD EE 39    call    animate_big_alien_39ee
 0DC7: 21 25 E0    ld      hl,timer_e025
 0DCA: 35          dec     (hl)                            ; expired?
@@ -1846,13 +1840,13 @@ loc_0da6:                                                        ; ...
 vbl_0_1_fn_15__big_alien_instruct_fire_bomb_0dd7:                    ; ...
 0DD7: CD 4B 1E    call    update_bomb_1e4b
 0DDA: DD 21 00 E2 ld      ix,e200_obj_tbl_e200               ; 'viking'
-0DDE: FD 21 20 EF ld      iy, spriteram_shadow_ef00+0x20     ; s8.code
+0DDE: FD 21 20 EF ld      iy,spriteram_shadow_ef00+0x20     ; s8.code
 0DE2: CD EE 39    call    animate_big_alien_39ee
-0DE5: DD 21 20 E2 ld      ix, e200_obj_tbl_e200+0x20         ; 'fly'
-0DE9: FD 21 28 EF ld      iy, spriteram_shadow_ef00+0x28     ; s10.code
+0DE5: DD 21 20 E2 ld      ix,e200_obj_tbl_e200+0x20         ; 'fly'
+0DE9: FD 21 28 EF ld      iy,spriteram_shadow_ef00+0x28     ; s10.code
 0DED: CD EE 39    call    animate_big_alien_39ee
-0DF0: DD 21 40 E2 ld      ix, e200_obj_tbl_e200+0x40         ; 'bat'
-0DF4: FD 21 30 EF ld      iy, spriteram_shadow_ef00+0x30     ; s12.code
+0DF0: DD 21 40 E2 ld      ix,e200_obj_tbl_e200+0x40         ; 'bat'
+0DF4: FD 21 30 EF ld      iy,spriteram_shadow_ef00+0x30     ; s12.code
 0DF8: CD EE 39    call    animate_big_alien_39ee
 0DFB: 21 25 E0    ld      hl,timer_e025
 0DFE: 35          dec     (hl)                            ; expired?
@@ -1860,8 +1854,8 @@ vbl_0_1_fn_15__big_alien_instruct_fire_bomb_0dd7:                    ; ...
 0E00: AF          xor     a
 0E01: 32 06 EF    ld      (spriteram_shadow_ef00+6),a         ; s1.y (hide bomb)
 0E04: CD 58 47    call    stop_bomb_snd_4758
-0E07: DD 21 20 E2 ld      ix, e200_obj_tbl_e200+0x20         ; 'fly'
-0E0B: FD 21 28 EF ld      iy, spriteram_shadow_ef00+0x28     ; s10.code
+0E07: DD 21 20 E2 ld      ix,e200_obj_tbl_e200+0x20         ; 'fly'
+0E0B: FD 21 28 EF ld      iy,spriteram_shadow_ef00+0x28     ; s10.code
 0E0F: DD 36 00 01 ld      (ix+$00),1                       ; obj state=1 (about to explode?)
 0E13: DD 36 01 00 ld      (ix+$01),0                       ; obj counter
 0E17: DD 36 02 00 ld      (ix+$02),0                       ; obj hit count
@@ -1872,17 +1866,17 @@ vbl_0_1_fn_15__big_alien_instruct_fire_bomb_0dd7:                    ; ...
 
 vbl_0_1_fn_16__big_alien_instruct_explode_fly_0e24:                  ; ...
 0E24: DD 21 00 E2 ld      ix,e200_obj_tbl_e200               ; 'viking'
-0E28: FD 21 20 EF ld      iy, spriteram_shadow_ef00+0x20     ; s8
+0E28: FD 21 20 EF ld      iy,spriteram_shadow_ef00+0x20     ; s8
 0E2C: CD EE 39    call    animate_big_alien_39ee
-0E2F: DD 21 20 E2 ld      ix, e200_obj_tbl_e200+0x20         ; 'fly'
-0E33: FD 21 28 EF ld      iy, spriteram_shadow_ef00+0x28     ; s10
+0E2F: DD 21 20 E2 ld      ix,e200_obj_tbl_e200+0x20         ; 'fly'
+0E33: FD 21 28 EF ld      iy,spriteram_shadow_ef00+0x28     ; s10
 0E37: DD 7E 00    ld      a,(ix+$00)                        ; obj state
 0E3A: CD B9 3A    call    check_large_alien_hit_3ab9
 0E3D: DD 7E 00    ld      a,(ix+$00)                        ; obj state
 0E40: A7          and     a                               ; done exploding?
 0E41: CA D6 0F    jp      Z,next_vbl_lvl_1_fn_0fd6            ; yes,go
-0E44: DD 21 40 E2 ld      ix, e200_obj_tbl_e200+0x40         ; 'bat'
-0E48: FD 21 30 EF ld      iy, spriteram_shadow_ef00+0x30     ; s12
+0E44: DD 21 40 E2 ld      ix,e200_obj_tbl_e200+0x40         ; 'bat'
+0E48: FD 21 30 EF ld      iy,spriteram_shadow_ef00+0x30     ; s12
 0E4C: CD EE 39    call    animate_big_alien_39ee
 0E4F: C9          ret
 ; ---------------------------------------------------------------------------
@@ -1890,12 +1884,12 @@ vbl_0_1_fn_16__big_alien_instruct_explode_fly_0e24:                  ; ...
 vbl_0_1_fn_17__big_alien_instruct_move_left_0e50:                    ; ...
 0E50: DD 21 00 E2 ld      ix,e200_obj_tbl_e200               ; 'viking'
 0E54: DD 36 02 00 ld      (ix+$02),0                       ; obj hit count
-0E58: FD 21 20 EF ld      iy, spriteram_shadow_ef00+0x20     ; s8
+0E58: FD 21 20 EF ld      iy,spriteram_shadow_ef00+0x20     ; s8
 0E5C: CD EE 39    call    animate_big_alien_39ee
-0E5F: DD 21 40 E2 ld      ix, e200_obj_tbl_e200+0x40         ; 'bat'
-0E63: FD 21 30 EF ld      iy, spriteram_shadow_ef00+0x30     ; s12
+0E5F: DD 21 40 E2 ld      ix,e200_obj_tbl_e200+0x40         ; 'bat'
+0E63: FD 21 30 EF ld      iy,spriteram_shadow_ef00+0x30     ; s12
 0E67: CD EE 39    call    animate_big_alien_39ee
-0E6A: 21 02 EF    ld      hl, spriteram_shadow_ef00+2        ; s0.y
+0E6A: 21 02 EF    ld      hl,spriteram_shadow_ef00+2        ; s0.y
 0E6D: 35          dec     (hl)                            ; move left
 0E6E: 7E          ld      a,(hl)                         ; get y
 0E6F: FE 49       cp      73                             ; done?
@@ -1912,7 +1906,7 @@ vbl_0_1_fn_18__big_alien_instruct_shoot_viking_0e7a:                 ; ...
 0E82: CD D6 43    call    check_objs_hit_43d6
 0E85: CD A5 1C    call    update_sprite_bullets_1ca5
 0E88: DD 21 00 E2 ld      ix,e200_obj_tbl_e200               ; 'viking'
-0E8C: FD 21 20 EF ld      iy, spriteram_shadow_ef00+0x20     ; s8
+0E8C: FD 21 20 EF ld      iy,spriteram_shadow_ef00+0x20     ; s8
 0E90: DD 7E 00    ld      a,(ix+$00)                        ; obj state
 0E93: 3C          inc     a                               ; active?
 0E94: 28 12       jr      Z,loc_0ea8                      ; yes,go
@@ -1925,8 +1919,8 @@ vbl_0_1_fn_18__big_alien_instruct_shoot_viking_0e7a:                 ; ...
 
 loc_0ea8:                                                        ; ...
 0EA8: CD EE 39    call    animate_big_alien_39ee
-0EAB: DD 21 40 E2 ld      ix, e200_obj_tbl_e200+0x40         ; 'bat'
-0EAF: FD 21 30 EF ld      iy, spriteram_shadow_ef00+0x30     ; s12.code
+0EAB: DD 21 40 E2 ld      ix,e200_obj_tbl_e200+0x40         ; 'bat'
+0EAF: FD 21 30 EF ld      iy,spriteram_shadow_ef00+0x30     ; s12.code
 0EB3: CD EE 39    call    animate_big_alien_39ee
 0EB6: C9          ret
 ; ---------------------------------------------------------------------------
@@ -1944,13 +1938,13 @@ big_alien_instruct_viking_destroyed_0eb7:                            ; ...
 vbl_0_1_fn_19__big_alien_instruct_explode_viking_0eca:               ; ...
 0ECA: CD A5 1C    call    update_sprite_bullets_1ca5
 0ECD: DD 21 00 E2 ld      ix,e200_obj_tbl_e200               ; 'viking'
-0ED1: FD 21 20 EF ld      iy, spriteram_shadow_ef00+0x20     ; s8.code
+0ED1: FD 21 20 EF ld      iy,spriteram_shadow_ef00+0x20     ; s8.code
 0ED5: CD B9 3A    call    check_large_alien_hit_3ab9
 0ED8: DD 7E 00    ld      a,(ix+$00)                        ; obj state
 0EDB: A7          and     a                               ; inactive?
 0EDC: CA D6 0F    jp      Z,next_vbl_lvl_1_fn_0fd6            ; yes,go
-0EDF: DD 21 40 E2 ld      ix, e200_obj_tbl_e200+0x40         ; 'bat'
-0EE3: FD 21 30 EF ld      iy, spriteram_shadow_ef00+0x30     ; s12.code
+0EDF: DD 21 40 E2 ld      ix,e200_obj_tbl_e200+0x40         ; 'bat'
+0EE3: FD 21 30 EF ld      iy,spriteram_shadow_ef00+0x30     ; s12.code
 0EE7: CD EE 39    call    animate_big_alien_39ee
 0EEA: 21 25 E0    ld      hl,timer_e025
 0EED: 36 60       ld      (hl),$60 ; '`'               ; init timer_e025
@@ -1961,8 +1955,8 @@ vbl_0_1_fn_20__big_alien_instruct_move_to_bat_0ef0:                  ; ...
 0EF0: FD 21 00 EF ld      iy,spriteram_shadow_ef00           ; s0
 0EF4: FD 34 02    inc     (iy+$02)                           ; move right
 0EF7: FD 34 03    inc     (iy+$03)                           ; move up
-0EFA: DD 21 40 E2 ld      ix, e200_obj_tbl_e200+0x40         ; 'bat'
-0EFE: FD 21 30 EF ld      iy, spriteram_shadow_ef00+0x30     ; s12.code
+0EFA: DD 21 40 E2 ld      ix,e200_obj_tbl_e200+0x40         ; 'bat'
+0EFE: FD 21 30 EF ld      iy,spriteram_shadow_ef00+0x30     ; s12.code
 0F02: CD EE 39    call    animate_big_alien_39ee
 0F05: 21 25 E0    ld      hl,timer_e025
 0F08: 35          dec     (hl)                            ; expired?
@@ -1983,8 +1977,8 @@ vbl_0_1_fn_21__big_alien_instruct_explode_bat_0f24:                  ; ...
 0F24: 21 25 E0    ld      hl,timer_e025
 0F27: 35          dec     (hl)                            ; expired?
 0F28: CA 5C 0F    jp      Z,loc_0f5c                      ; yes,go
-0F2B: DD 21 40 E2 ld      ix, e200_obj_tbl_e200+0x40         ; 'bat'
-0F2F: FD 21 30 EF ld      iy, spriteram_shadow_ef00+0x30     ; s12.code
+0F2B: DD 21 40 E2 ld      ix,e200_obj_tbl_e200+0x40         ; 'bat'
+0F2F: FD 21 30 EF ld      iy,spriteram_shadow_ef00+0x30     ; s12.code
 0F33: DD 7E 00    ld      a,(ix+$00)                        ; obj state
 0F36: A7          and     a                               ; inactive?
 0F37: C4 B9 3A    call    NZ,check_large_alien_hit_3ab9       ; no,go
@@ -2106,7 +2100,7 @@ next_vbl_lvl_1_fn_0fd6:                                              ; ...
 init_objs_at_e200_from_tbl_0fdb:                                     ; ...
 0FDB: D9          exx
 0FDC: DD 21 00 E2 ld      ix,e200_obj_tbl_e200               ; live object data
-0FE0: FD 21 20 EF ld      iy, spriteram_shadow_ef00+0x20     ; s4.code
+0FE0: FD 21 20 EF ld      iy,spriteram_shadow_ef00+0x20     ; s4.code
 0FE4: 11 10 00    ld      de,16                         ; data bytes per object
 0FE7: 01 04 00    ld      bc,4                          ; bytes per sprite
 0FEA: D9          exx
@@ -2118,14 +2112,14 @@ init_objs_at_e200_from_tbl_0fdb:                                     ; ...
 loc_0ff1:                                                        ; ...
 0FF1: 7E          ld      a,(hl)                         ; 1st byte for object
 0FF2: 23          inc     hl
-0FF3: DD 77 0B    ld      0xB(ix),a
+0FF3: DD 77 0B    ld      (ix+$0B),a
 0FF6: 3E 05       ld      a,5
 0FF8: 86          add     a,(hl)                         ; 2nd byte for object
 0FF9: 23          inc     hl
 0FFA: DD 77 05    ld      (ix+$05),a                        ; obj type=5+(byte)
 0FFD: 7E          ld      a,(hl)                         ; 3rd byte for object
 0FFE: 23          inc     hl
-0FFF: DD 77 0D    ld      0xD(ix),a
+0FFF: DD 77 0D    ld      (ix+$0D),a
 1002: 7E          ld      a,(hl)                         ; 4th byte for object
 1003: 23          inc     hl
 1004: FD 77 02    ld      (iy+$02),a                        ; sprite y
@@ -2136,12 +2130,12 @@ loc_0ff1:                                                        ; ...
 1010: FD 36 01 00 ld      (iy+$01),0                       ; sprite colour
 1014: DD 36 00 FE ld      (ix+$00),$FE ; '�'              ; obj state=spawning?
 1018: AF          xor     a
-1019: DD 77 0C    ld      0xC(ix),a
+1019: DD 77 0C    ld      (ix+$0C),a
 101C: DD 77 02    ld      (ix+$02),a                        ; obj timer_e025
 101F: DD 77 03    ld      (ix+$03),a                        ; obj y lsb
 1022: DD 77 04    ld      (ix+$04),a                        ; obj x lsb
-1025: DD 36 0F 08 ld      0xF(ix),8                     ; obj aiming entry
-1029: DD 36 0A 05 ld      0xA(ix),5                     ; dy_dx lookup tbl index
+1025: DD 36 0F 08 ld      (ix+$0f),8                     ; obj aiming entry
+1029: DD 36 0A 05 ld      (ix+$0a),5                     ; dy_dx lookup tbl index
 102D: D9          exx
 102E: DD 19       add     ix,de                          ; next object data
 1030: FD 09       add     iy,bc                          ; next sprite
@@ -2173,7 +2167,7 @@ init_big_alien_103a:                                                 ; ...
 
 vbl_0_fn_3__handle_game_1057:                                        ; ...
 1057: 3A 06 E0    ld      a,(vbl_lvl_1_fn_e006)
-105A: F7          rst     jp_tbl_vector_0030
+105A: F7          rst    $30		  ; [jump_to_jump_table] [nb_entries=11]
 ; ---------------------------------------------------------------------------
 	.word vbl_0_3_fn_0__init_and_wipe_1up_2up_1102
 	.word vbl_0_3_fn_1__switch_to_next_player_1132
@@ -2191,16 +2185,16 @@ vbl_0_fn_3__handle_game_1057:                                        ; ...
 
 
 clear_all_player_sprite_bullets_1071:                                ; ...
-1071: FD 21 12 EF ld      iy, spriteram_shadow_ef00+0x12     ; set s4.y as base
+1071: FD 21 12 EF ld      iy,spriteram_shadow_ef00+0x12     ; set s4.y as base
 1075: FD 36 00 00 ld      (iy+$00),0                       ; s4.y
 1079: FD 36 04 00 ld      (iy+$04),0                       ; s5.y
 107D: FD 36 08 00 ld      (iy+$08),0                       ; s6.y
 1081: FD 36 0C 00 ld      (iy+$0c),0                      ; s7.y
 1085: DD 21 10 E1 ld      ix,bullet_obj_tbl_e110
 1089: DD 36 00 00 ld      (ix+$00),0                       ; obj0 state=inactive
-108D: DD 36 10 00 ld      0x(ix+$0a),0                    ; obj1 state=inactive
-1091: DD 36 20 00 ld      0x(ix+$14),0                    ; obj2 state=inactive
-1095: DD 36 30 00 ld      0x(ix+$1e),0                    ; obj3 state=inactive
+108D: DD 36 10 00 ld      (ix+$10),0                    ; obj1 state=inactive
+1091: DD 36 20 00 ld      (ix+$20),0                    ; obj2 state=inactive
+1095: DD 36 30 00 ld      (ix+$30),0                    ; obj3 state=inactive
 1099: C9          ret
 ; End of function clear_all_player_sprite_bullets_1071
 
@@ -2212,7 +2206,7 @@ init_p1_p2_data_109a:                                                ; ...
 109A: AF          xor     a
 109B: 32 01 EC    ld      (curr_player_ec01),a
 109E: 32 07 E0    ld      (curr_controls_e007),a
-10A1: 21 5E D0    ld      hl, fgvideoram_code_d000+0x5E
+10A1: 21 5E D0    ld      hl,fgvideoram_code_d000+0x5E
 10A4: 06 08       ld      b,8                           ; 8 chars to clear
 10A6: 11 20 00    ld      de,$20 ; ' '                 ; column offset
 
@@ -2220,7 +2214,7 @@ loc_10a9:                                                       ; ...
 10A9: 36 20       ld      (hl),$20 ; ' '
 10AB: 19          add     hl,de                          ; next column
 10AC: 10 FB       djnz    loc_10a9
-10AE: 21 DE D2    ld      hl, fgvideoram_code_d000+0x2DE
+10AE: 21 DE D2    ld      hl,fgvideoram_code_d000+0x2DE
 10B1: 06 08       ld      b,8                           ; 8 chars to clear
 
 loc_10b3:                                                       ; ...
@@ -2292,7 +2286,7 @@ vbl_0_3_fn_0__init_and_wipe_1up_2up_1102:                            ; ...
 loc_1122:                                                       ; ...
 1122: 11 01 00    ld      de,1                          ; wipe 1UP
 1125: FF          rst     add_fn_to_q_0038
-1126: 21 BE D3    ld      hl, fgvideoram_code_d000+0x3BE
+1126: 21 BE D3    ld      hl,fgvideoram_code_d000+0x3BE
 1129: 36 30       ld      (hl),$30 ; '0'               ; code
 112B: CB D4       set     2,h                            ; ptr colour
 112D: 36 09       ld      (hl),9                        ; colour
@@ -2637,7 +2631,7 @@ ranking_timer_tick_1345:                                             ; ...
 
 
 print_ranking_timer_1355:                                            ; ...
-1355: 21 D2 D2    ld      hl, fgvideoram_code_d000+0x2D2     ; ranking timer_e025 value addr
+1355: 21 D2 D2    ld      hl,fgvideoram_code_d000+0x2D2     ; ranking timer_e025 value addr
 1358: 0E 08       ld      c,8                           ; update colour (red)
 135A: C3 BF 41    jp      print_hex_byte_41bf                  ; print value
 ; End of function print_ranking_timer_1355
@@ -2930,8 +2924,8 @@ insert_hi_score_14ca:                                                ; ...
 14D5: E7          rst     content_hl_plus_a_0020               ; get pointer first score to move down
 14D6: 4F          ld      c,a
 14D7: 06 00       ld      b,0                           ; bytes to move down
-14D9: 11 40 EE    ld      de, hi_name_5th_ee37+9             ; destination
-14DC: 21 33 EE    ld      hl, hi_name_4th_ee2a+9             ; source
+14D9: 11 40 EE    ld      de,hi_name_5th_ee37+9             ; destination
+14DC: 21 33 EE    ld      hl,hi_name_4th_ee2a+9             ; source
 14DF: ED B8       lddr                                    ; move down
 14E1: 23          inc     hl
 14E2: C3 E8 14    jp      loc_14e8
@@ -3639,7 +3633,7 @@ update_sprite_bullets_1ca5:                                          ; ...
 ; FUNCTION CHUNK AT ROM:2990 SIZE 00000009 BYTES
 
 1CA5: DD 21 10 E1 ld      ix,bullet_obj_tbl_e110
-1CA9: FD 21 10 EF ld      iy, spriteram_shadow_ef00+0x10     ; s4
+1CA9: FD 21 10 EF ld      iy,spriteram_shadow_ef00+0x10     ; s4
 1CAD: 06 04       ld      b,4
 
 loc_1caf:                                                       ; ...
@@ -3795,7 +3789,7 @@ add_player_bullet_obj_1d73:                                          ; ...
 
 update_player_fg_bullets_1d90:                                       ; ...
 1D90: DD 21 10 E1 ld      ix,bullet_obj_tbl_e110
-1D94: FD 21 10 EF ld      iy, spriteram_shadow_ef00+0x10     ; *** NOT USED (s4.code)
+1D94: FD 21 10 EF ld      iy,spriteram_shadow_ef00+0x10     ; *** NOT USED (s4.code)
 1D98: 06 04       ld      b,4                           ; 4 bullets
 
 loc_1d9a:                                                       ; ...
@@ -3878,7 +3872,7 @@ start_bomb_1e0b:                                                     ; ...
 1E15: 34          inc     (hl)
 1E16: 11 00 0D    ld      de,$D00                      ; show bombs
 1E19: FF          rst     add_fn_to_q_0038
-1E1A: FD 21 04 EF ld      iy, spriteram_shadow_ef00+4        ; s1.code
+1E1A: FD 21 04 EF ld      iy,spriteram_shadow_ef00+4        ; s1.code
 1E1E: DD 21 50 E1 ld      ix,bomb_obj_e150
 1E22: 3A 02 EF    ld      a,(spriteram_shadow_ef00+2)         ; s0.y
 1E25: FD 77 02    ld      (iy+$02),a                        ; copy to s1.y
@@ -3904,7 +3898,7 @@ update_bomb_if_ship_active_1e46:                                     ; ...
 
 update_bomb_1e4b:                                                    ; ...
 1E4B: DD 21 50 E1 ld      ix,bomb_obj_e150
-1E4F: FD 21 04 EF ld      iy, spriteram_shadow_ef00+4        ; s1.code
+1E4F: FD 21 04 EF ld      iy,spriteram_shadow_ef00+4        ; s1.code
 1E53: DD 7E 00    ld      a,(ix+$00)
 1E56: A7          and     a                               ; inactive?
 1E57: C8          ret     Z                               ; yes,exit
@@ -4065,7 +4059,7 @@ render_player_bullet_on_fg_1eb7:                                     ; ...
 
 update_e200_objects_20be:                                            ; ...
 20BE: DD 21 00 E2 ld      ix,e200_obj_tbl_e200
-20C2: FD 21 20 EF ld      iy, spriteram_shadow_ef00+0x20     ; set s8.code as base
+20C2: FD 21 20 EF ld      iy,spriteram_shadow_ef00+0x20     ; set s8.code as base
 20C6: 06 09       ld      b,9                           ; 9 objects
 20C8: 21 AB E0    ld      hl,spawn_flying_free_slot_threshold_e0ab
 20CB: 36 00       ld      (hl),0                        ; reset
@@ -4107,7 +4101,7 @@ update_e200_obj_20f3:                                                ; ...
 2104: E6 0F       and     $F
 2106: FE 0F       cp      $F                            ; spinning_disc?
 2108: 28 1D       jr      Z,update_spinning_disc_2127         ; yes,go
-210A: F7          rst     jp_tbl_vector_0030
+210A: F7          rst    $30		  ; [jump_to_jump_table] [nb_entries=14]
 ; ---------------------------------------------------------------------------
 	.word update_e200_type_0_tumble_ship_255a
 	.word update_e200_type_1_plane_2569
@@ -4167,20 +4161,20 @@ loc_2161:                                                       ; ...
 2166: DD 77 01    ld      (ix+$01),a                        ; update obj counter
 2169: DD 77 02    ld      (ix+$02),a                        ; init obj timer_e025
 216C: DD 34 05    inc     (ix+$05)                           ; obj type++
-216F: DD 36 0A 00 ld      0xA(ix),0                     ; dy_dx_lookup table entry
+216F: DD 36 0A 00 ld      (ix+$0a),0                     ; dy_dx_lookup table entry
 2173: DD 36 06 80 ld      (ix+$06),128                     ; obj dy msb
 2177: DD 36 08 20 ld      (ix+$08),32                      ; obj dx msb
 217B: CD 91 2A    call    rand_2a91
 217E: E6 07       and     7
-2180: DD 77 0B    ld      0xB(ix),a
-2183: DD 36 0C 00 ld      0xC(ix),0
-2187: DD 36 0E 20 ld      0xE(ix),$20 ; ' '
-218B: DD 36 0F 00 ld      0xF(ix),0                     ; aim directly at ship
+2180: DD 77 0B    ld      (ix+$0B),a
+2183: DD 36 0C 00 ld      (ix+$0C),0
+2187: DD 36 0E 20 ld      (ix+$0E),$20 ; ' '
+218B: DD 36 0F 00 ld      (ix+$0f),0                     ; aim directly at ship
 218F: C9          ret
 ; ---------------------------------------------------------------------------
 
 move_by_large_alien_dy_dx_2190:                                      ; ...
-2190: DD 35 0D    dec     0xD(ix)
+2190: DD 35 0D    dec     (ix+$0D)
 2193: 28 31       jr      Z,loc_21c6
 2195: CD 3B 24    call    move_object_self_243b
 2198: FD 56 02    ld      d,(iy+$02)                        ; sprite y
@@ -4207,7 +4201,7 @@ move_by_large_alien_dy_dx_2190:                                      ; ...
 ; ---------------------------------------------------------------------------
 
 loc_21c6:                                                       ; ...
-21C6: DD 34 0E    inc     0xE(ix)
+21C6: DD 34 0E    inc     (ix+$0E)
 21C9: 18 3C       jr      loc_2207
 ; ---------------------------------------------------------------------------
 
@@ -4217,15 +4211,15 @@ loc_21cb:                                                       ; ...
 21D1: C6 40       add     a,$40 ; '@'
 21D3: DD 77 01    ld      (ix+$01),a
 21D6: DD 77 02    ld      (ix+$02),a                        ; int obj timer_e025
-21D9: DD 36 0A 0C ld      0xA(ix),$C
+21D9: DD 36 0A 0C ld      (ix+$0a),$C
 21DD: DD 36 08 FF ld      (ix+$08),-1                      ; init obj dx msb=-1
 21E1: CD 98 28    call    lookup_dy_dx_store_2898
 21E4: DD 36 06 00 ld      (ix+$06),0                       ; overwrite obj dy msb=0
 21E8: E6 07       and     7
-21EA: DD 36 0B 07 ld      0xB(ix),7
-21EE: DD 36 0C 00 ld      0xC(ix),0
-21F2: DD 36 0E 20 ld      0xE(ix),$20 ; ' '
-21F6: DD 36 0F 00 ld      0xF(ix),0                     ; aim directly at ship
+21EA: DD 36 0B 07 ld      (ix+$0B),7
+21EE: DD 36 0C 00 ld      (ix+$0C),0
+21F2: DD 36 0E 20 ld      (ix+$0E),$20 ; ' '
+21F6: DD 36 0F 00 ld      (ix+$0f),0                     ; aim directly at ship
 21FA: C9          ret
 ; ---------------------------------------------------------------------------
 
@@ -4233,7 +4227,7 @@ update_e200_type_1012_rock_21fb:                                     ; ...
 21FB: 3A 60 E1    ld      a,(large_alien_obj_tbl_e160)
 21FE: 3C          inc     a                               ; active?
 21FF: 20 CA       jr      NZ,loc_21cb                    ; no,go
-2201: DD 7E 0E    ld      a,0xE(ix)
+2201: DD 7E 0E    ld      a,(ix+$0E)
 2204: A7          and     a
 2205: 28 89       jr      Z,move_by_large_alien_dy_dx_2190
 
@@ -4252,12 +4246,12 @@ loc_2207:                                                       ; ...
 221D: E6 07       and     7
 221F: 21 78 22    ld      hl,byte_2278
 2222: E7          rst     content_hl_plus_a_0020
-2223: DD 77 0A    ld      0xA(ix),a                      ; lookup_dy_dx_28cb table entry
+2223: DD 77 0A    ld      (ix+$0a),a                      ; lookup_dy_dx_28cb table entry
 2226: CD 98 28    call    lookup_dy_dx_store_2898
 2229: 3A CD E0    ld      a,(related_to_big_alien_y_e0cd)
-222C: DD 77 0B    ld      0xB(ix),a
+222C: DD 77 0B    ld      (ix+$0B),a
 222F: 3A CE E0    ld      a,(related_to_big_alien_x_e0ce)
-2232: DD 77 0C    ld      0xC(ix),a
+2232: DD 77 0C    ld      (ix+$0C),a
 2235: DD 66 06    ld      h,(ix+$06)
 2238: DD 6E 07    ld      l,(ix+$07)                        ; HL=obj dy
 223B: 29          add     hl,hl                          ; x2
@@ -4265,7 +4259,7 @@ loc_2207:                                                       ; ...
 223D: 29          add     hl,hl                          ; x8
 223E: 29          add     hl,hl                          ; x16
 223F: 29          add     hl,hl                          ; x32
-2240: DD 56 0B    ld      d,0xB(ix)
+2240: DD 56 0B    ld      d,(ix+$0B)
 2243: 1E 00       ld      e,0
 2245: 19          add     hl,de                          ; dy x 32 + [$0B].00
 2246: FD 74 02    ld      (iy+$02),h                        ; update sprite y
@@ -4276,7 +4270,7 @@ loc_2207:                                                       ; ...
 2251: 29          add     hl,hl                          ; x8
 2252: 29          add     hl,hl                          ; x16
 2253: 29          add     hl,hl                          ; x32
-2254: DD 56 0C    ld      d,0xC(ix)
+2254: DD 56 0C    ld      d,(ix+$0C)
 2257: 1E 00       ld      e,0
 2259: 19          add     hl,de                          ; dx x 32 + [$0C].00
 225A: FD 74 03    ld      (iy+$03),h                        ; update sprite x
@@ -4305,14 +4299,14 @@ set_rock_sprite_code_225d:                                           ; ...
 ; ---------------------------------------------------------------------------
 
 loc_2288:                                                       ; ...
-2288: DD 35 0D    dec     0xD(ix)
+2288: DD 35 0D    dec     (ix+$0D)
 228B: C0          ret     NZ
 228C: DD 34 00    inc     (ix+$00)                           ; state++
 228F: C9          ret
 ; ---------------------------------------------------------------------------
 
 loc_2290:                                                       ; ...
-2290: DD 7E 0A    ld      a,0xA(ix)
+2290: DD 7E 0A    ld      a,(ix+$0a)
 2293: 3C          inc     a
 2294: C2 90 29    jp      NZ,deactivate_obj_2990
 2297: DD 7E 02    ld      a,(ix+$02)                        ; obj timer_e025
@@ -4355,7 +4349,7 @@ award_extra_life_for_spinning_disc_22e2:                             ; ...
 22E2: DD 36 01 0F ld      (ix+$01),$F                     ; init obj counter
 22E6: DD 36 02 3C ld      (ix+$02),$3C ; '<'              ; init obj timer_e025
 22EA: DD 36 00 01 ld      (ix+$00),1                       ; obj state=1
-22EE: DD 36 0A FF ld      0xA(ix),$FF                  ; obj dy_dx_lookyp table entry = invalid?
+22EE: DD 36 0A FF ld      (ix+$0a),$FF                  ; obj dy_dx_lookyp table entry = invalid?
 22F2: 21 00 E5    ld      hl,curr_lives_left_e500
 22F5: 34          inc     (hl)                            ; extra life
 22F6: CD 28 47    call    snd_cmd_01_4728
@@ -4376,7 +4370,7 @@ loc_22fe:                                                       ; ...
 2311: FD 36 00 20 ld      (iy+$00),$20 ; ' '              ; sprite code=explosion
 2315: FD 36 01 00 ld      (iy+$01),0                       ; sprite colour
 2319: CD 38 47    call    snd_cmd_04_4738
-231C: DD 7E 0A    ld      a,0xA(ix)
+231C: DD 7E 0A    ld      a,(ix+$0a)
 231F: 3C          inc     a
 2320: 28 48       jr      Z,loc_236a
 2322: DD 7E 05    ld      a,(ix+$05)                        ; obj type
@@ -4400,7 +4394,7 @@ check_formation_destroyed_1_2331:                                    ; ...
 2343: FE 09       cp      9                              ; spinning_disc?
 2345: 28 6A       jr      Z,award_extra_life_for_formation_23b1 ; yes,go
 2347: DD 36 02 3C ld      (ix+$02),$3C ; '<'              ; obj timer_e025
-234B: DD 36 0A FF ld      0xA(ix),$FF                  ; obj dy_dx_lookup table entry = invalid?
+234B: DD 36 0A FF ld      (ix+$0a),$FF                  ; obj dy_dx_lookup table entry = invalid?
 234F: 21 C8 E0    ld      hl,formations_destroyed_cnt_e0c8
 2352: 7E          ld      a,(hl)                         ; get count
 2353: 34          inc     (hl)                            ; ++
@@ -4470,7 +4464,7 @@ loc_23a7:                                                       ; ...
 ; destroying a formation of spinning_discs!
 
 award_extra_life_for_formation_23b1:                                 ; ...
-23B1: DD 36 0A 00 ld      0xA(ix),0
+23B1: DD 36 0A 00 ld      (ix+$0a),0
 23B5: 21 00 E5    ld      hl,curr_lives_left_e500
 23B8: 34          inc     (hl)                            ; extra life
 23B9: CD 28 47    call    snd_cmd_01_4728
@@ -4482,7 +4476,7 @@ award_extra_life_for_formation_23b1:                                 ; ...
 ; ---------------------------------------------------------------------------
 
 loc_23c1:                                                       ; ...
-23C1: DD 7E 0A    ld      a,0xA(ix)
+23C1: DD 7E 0A    ld      a,(ix+$0a)
 23C4: 3C          inc     a
 23C5: 20 07       jr      NZ,loc_23ce
 23C7: 3E 3F       ld      a,$3F ; '?'
@@ -4507,7 +4501,7 @@ loc_23ce:                                                       ; ...
 explode_and_add_50_pts_23e7:                                         ; ...
 23E7: 3E 24       ld      a,$24 ; '$'
 23E9: DD 77 00    ld      (ix+$00),a                        ; obj state=?
-23EC: DD 36 0A 00 ld      0xA(ix),0                     ; obj dy_dx_lookup table entry
+23EC: DD 36 0A 00 ld      (ix+$0a),0                     ; obj dy_dx_lookup table entry
 23F0: FD 36 00 20 ld      (iy+$00),$20 ; ' '              ; sprite code=explosion
 23F4: FD 36 01 00 ld      (iy+$01),0                       ; sprite colour
 23F8: CD 38 47    call    snd_cmd_04_4738
@@ -4604,10 +4598,10 @@ loc_2495:                                                       ; ...
 ; ---------------------------------------------------------------------------
 
 loc_249d:                                                       ; ...
-249D: DD 7E 0D    ld      a,0xD(ix)
+249D: DD 7E 0D    ld      a,(ix+$0D)
 24A0: A7          and     a
 24A1: CC AE 24    call    Z,sub_24ae
-24A4: DD 35 0D    dec     0xD(ix)
+24A4: DD 35 0D    dec     (ix+$0D)
 24A7: CD 3B 24    call    move_object_self_243b
 24AA: CD 13 27    call    animate_e200_object_sprite_2713
 24AD: C9          ret
@@ -4617,11 +4611,11 @@ loc_249d:                                                       ; ...
 
 sub_24ae:                                                       ; ...
 24AE: 21 2C 34    ld      hl,off_342c
-24B1: DD 7E 0B    ld      a,0xB(ix)
+24B1: DD 7E 0B    ld      a,(ix+$0B)
 24B4: EF          rst     de_eq_contents_hl_plus_2a_0028
 24B5: EB          ex      de,hl
-24B6: DD 7E 0C    ld      a,0xC(ix)
-24B9: DD 34 0C    inc     0xC(ix)
+24B6: DD 7E 0C    ld      a,(ix+$0C)
+24B9: DD 34 0C    inc     (ix+$0C)
 24BC: 87          add     a,a
 24BD: E7          rst     content_hl_plus_a_0020
 24BE: FE FF       cp      $FF
@@ -4629,7 +4623,7 @@ sub_24ae:                                                       ; ...
 24C2: DD 77 01    ld      (ix+$01),a
 24C5: 23          inc     hl
 24C6: 7E          ld      a,(hl)
-24C7: DD 77 0D    ld      0xD(ix),a
+24C7: DD 77 0D    ld      (ix+$0D),a
 24CA: CD 98 28    call    lookup_dy_dx_store_2898
 24CD: C9          ret
 ; ---------------------------------------------------------------------------
@@ -4639,7 +4633,7 @@ loc_24ce:                                                       ; ...
 24CF: 7E          ld      a,(hl)
 24D0: FE FF       cp      $FF
 24D2: 28 14       jr      Z,loc_24e8
-24D4: DD 77 0D    ld      0xD(ix),a
+24D4: DD 77 0D    ld      (ix+$0D),a
 24D7: DD 36 06 00 ld      (ix+$06),0
 24DB: DD 36 07 00 ld      (ix+$07),0
 24DF: DD 36 08 00 ld      (ix+$08),0
@@ -4656,7 +4650,7 @@ loc_24e8:                                                       ; ...
 24F2: 0F          rrca
 24F3: 0F          rrca
 24F4: E6 03       and     3
-24F6: F7          rst     jp_tbl_vector_0030
+24F6: F7          rst    $30	  ; [jump_to_jump_table] [nb_entries=4]
 ; End of function sub_24ae
 
 ; ---------------------------------------------------------------------------
@@ -4671,16 +4665,16 @@ loc_24ff:                                                       ; ...
 2502: DD 77 01    ld      (ix+$01),a
 
 loc_2505:                                                       ; ...
-2505: DD 36 0A 08 ld      0xA(ix),8
+2505: DD 36 0A 08 ld      (ix+$0a),8
 2509: C3 98 28    jp      lookup_dy_dx_store_2898
 ; ---------------------------------------------------------------------------
 
 loc_250c:                                                       ; ...
 250C: DD 36 06 60 ld      (ix+$06),$60 ; '`'
 2510: DD 36 08 00 ld      (ix+$08),0
-2514: DD 36 0A 06 ld      0xA(ix),6
-2518: DD 36 0E 18 ld      0xE(ix),$18
-251C: DD 36 0F 00 ld      0xF(ix),0                     ; aim directly at ship
+2514: DD 36 0A 06 ld      (ix+$0a),6
+2518: DD 36 0E 18 ld      (ix+$0E),$18
+251C: DD 36 0F 00 ld      (ix+$0f),0                     ; aim directly at ship
 2520: C9          ret
 ; ---------------------------------------------------------------------------
 
@@ -4690,9 +4684,9 @@ loc_2521:                                                       ; ...
 2526: DD 77 02    ld      (ix+$02),a
 2529: DD 36 06 50 ld      (ix+$06),$50 ; 'P'
 252D: DD 36 08 FF ld      (ix+$08),$FF
-2531: DD 36 0A 03 ld      0xA(ix),3
-2535: DD 36 0E FF ld      0xE(ix),$FF
-2539: DD 36 0F 00 ld      0xF(ix),0                     ; aim directly at ship
+2531: DD 36 0A 03 ld      (ix+$0a),3
+2535: DD 36 0E FF ld      (ix+$0E),$FF
+2539: DD 36 0F 00 ld      (ix+$0f),0                     ; aim directly at ship
 253D: C9          ret
 
 ; =============== S U B R O U T I N E =======================================
@@ -4709,7 +4703,7 @@ sub_253e:                                                       ; ...
 ; ---------------------------------------------------------------------------
 
 loc_254d:                                                       ; ...
-254D: DD 7E 0E    ld      a,0xE(ix)
+254D: DD 7E 0E    ld      a,(ix+$0E)
 2550: DD 77 08    ld      (ix+$08),a                        ; update dx
 2553: CD 9C 6A    call    aim_near_ship_6a9c
 2556: DD 77 02    ld      (ix+$02),a
@@ -4765,9 +4759,9 @@ sub_25a2:                                                       ; ...
 
 ; FUNCTION CHUNK AT ROM:255D SIZE 0000000C BYTES
 
-25A2: DD 7E 0C    ld      a,0xC(ix)
+25A2: DD 7E 0C    ld      a,(ix+$0C)
 25A5: E6 03       and     3
-25A7: F7          rst     jp_tbl_vector_0030
+25A7: F7          rst    $30		  ; [jump_to_jump_table] [nb_entries=4]
 ; End of function sub_25a2
 
 ; ---------------------------------------------------------------------------
@@ -4829,10 +4823,10 @@ sub_25e4:                                                       ; ...
 25E8: C0          ret     NZ
 
 loc_25e9:
-25E9: DD 7E 0D    ld      a,0xD(ix)
+25E9: DD 7E 0D    ld      a,(ix+$0D)
 25EC: A7          and     a
 25ED: CC 27 26    call    Z,sub_2627
-25F0: DD 35 0D    dec     0xD(ix)
+25F0: DD 35 0D    dec     (ix+$0D)
 25F3: C9          ret
 ; End of function sub_25e4
 
@@ -4840,11 +4834,11 @@ loc_25e9:
 ; START OF FUNCTION CHUNK FOR sub_2627
 
 something_for_moth_25f4:                                             ; ...
-25F4: DD 7E 0C    ld      a,0xC(ix)
-25F7: DD 34 0C    inc     0xC(ix)
-25FA: DD 36 0D 30 ld      0xD(ix),$30 ; '0'
+25F4: DD 7E 0C    ld      a,(ix+$0C)
+25F7: DD 34 0C    inc     (ix+$0C)
+25FA: DD 36 0D 30 ld      (ix+$0D),$30 ; '0'
 25FE: E6 03       and     3
-2600: F7          rst     jp_tbl_vector_0030
+2600: F7          rst    $30	  ; [jump_to_jump_table] [nb_entries=4]
 ; ---------------------------------------------------------------------------
 	.word locret_2609
 	.word loc_260a
@@ -4857,22 +4851,22 @@ locret_2609:                                                    ; ...
 ; ---------------------------------------------------------------------------
 
 loc_260a:                                                       ; ...
-260A: DD 36 0D 20 ld      0xD(ix),$20 ; ' '
+260A: DD 36 0D 20 ld      (ix+$0D),$20 ; ' '
 260E: C9          ret
 ; END OF FUNCTION CHUNK FOR sub_2627
 ; ---------------------------------------------------------------------------
 
 loc_260f:                                                       ; ...
-260F: DD 36 0F 00 ld      0xF(ix),0                     ; aim directly at ship
-2613: DD 36 0A 0C ld      0xA(ix),$C
+260F: DD 36 0F 00 ld      (ix+$0f),0                     ; aim directly at ship
+2613: DD 36 0A 0C ld      (ix+$0a),$C
 2617: C9          ret
 ; ---------------------------------------------------------------------------
 
 loc_2618:                                                       ; ...
-2618: DD 36 0F 09 ld      0xF(ix),9                     ; obj aiming entry
+2618: DD 36 0F 09 ld      (ix+$0f),9                     ; obj aiming entry
 261C: CD 9C 6A    call    aim_near_ship_6a9c
 261F: DD 77 02    ld      (ix+$02),a
-2622: DD 36 0A 04 ld      0xA(ix),4
+2622: DD 36 0A 04 ld      (ix+$0a),4
 2626: C9          ret
 
 ; =============== S U B R O U T I N E =======================================
@@ -4887,11 +4881,11 @@ sub_2627:                                                       ; ...
 262C: FE 04       cp      4                              ; moth?
 262E: 28 C4       jr      Z,something_for_moth_25f4           ; yes,go
 2630: 21 6E 26    ld      hl,off_266e
-2633: DD 7E 0B    ld      a,0xB(ix)                      ; offset of table
+2633: DD 7E 0B    ld      a,(ix+$0B)                      ; offset of table
 2636: EF          rst     de_eq_contents_hl_plus_2a_0028       ; addr of aiming entries table
 2637: EB          ex      de,hl
-2638: DD 7E 0C    ld      a,0xC(ix)                      ; aiming table entry offset
-263B: DD 34 0C    inc     0xC(ix)                         ; ++
+2638: DD 7E 0C    ld      a,(ix+$0C)                      ; aiming table entry offset
+263B: DD 34 0C    inc     (ix+$0C)                         ; ++
 263E: E7          rst     content_hl_plus_a_0020
 263F: 47          ld      b,a                            ; save entry
 2640: FE FF       cp      $FF
@@ -4903,26 +4897,26 @@ sub_2627:                                                       ; ...
 264A: 0F          rrca
 264B: 0F          rrca
 264C: E6 F0       and     $F0 ; '�'                     ; lo->hi nibble
-264E: DD 77 0D    ld      0xD(ix),a
+264E: DD 77 0D    ld      (ix+$0D),a
 2651: 78          ld      a,b
 2652: 0F          rrca
 2653: 0F          rrca
 2654: 0F          rrca
 2655: 0F          rrca                                    ; hi->lo nibble
 2656: E6 0F       and     $F
-2658: DD 77 0F    ld      0xF(ix),a                      ; obj aiming entry
+2658: DD 77 0F    ld      (ix+$0f),a                      ; obj aiming entry
 265B: C9          ret
 ; ---------------------------------------------------------------------------
 
 loc_265c:                                                       ; ...
 265C: DD CB 05 F6 set     6,(ix+$05)
-2660: DD 36 0D FF ld      0xD(ix),$FF
+2660: DD 36 0D FF ld      (ix+$0D),$FF
 2664: C9          ret
 ; ---------------------------------------------------------------------------
 
 loc_2665:                                                       ; ...
 2665: DD CB 05 F6 set     6,(ix+$05)
-2669: DD 36 0D FF ld      0xD(ix),$FF
+2669: DD 36 0D FF ld      (ix+$0D),$FF
 266D: C9          ret
 ; End of function sub_2627
 
@@ -4955,19 +4949,19 @@ sub_26b0:                                                       ; ...
 26C4: C6 0C       add     a,$C
 26C6: FE 30       cp      $30 ; '0'                     ; time to ???
 26C8: D8          ret     C
-26C9: DD 7E 0A    ld      a,0xA(ix)
+26C9: DD 7E 0A    ld      a,(ix+$0a)
 26CC: FE 06       cp      6                              ; time to ???
 26CE: D8          ret     C
-26CF: DD 35 0A    dec     0xA(ix)
-26D2: DD 35 0A    dec     0xA(ix)
+26CF: DD 35 0A    dec     (ix+$0a)
+26D2: DD 35 0A    dec     (ix+$0a)
 26D5: C9          ret
 ; ---------------------------------------------------------------------------
 
 loc_26d6:                                                       ; ...
-26D6: DD 7E 0A    ld      a,0xA(ix)
+26D6: DD 7E 0A    ld      a,(ix+$0a)
 26D9: FE 0C       cp      $C
 26DB: D0          ret     NC
-26DC: DD 34 0A    inc     0xA(ix)
+26DC: DD 34 0A    inc     (ix+$0a)
 26DF: C9          ret
 ; End of function sub_26b0
 
@@ -4999,7 +4993,7 @@ loc_26f0:                                                       ; ...
 2701: DD 77 07    ld      (ix+$07),a                        ; obj dy lsb
 2704: A7          and     a
 2705: 20 07       jr      NZ,loc_270e
-2707: DD 7E 0E    ld      a,0xE(ix)
+2707: DD 7E 0E    ld      a,(ix+$0E)
 270A: DD 77 08    ld      (ix+$08),a                        ; obj dx msb
 270D: C9          ret
 ; ---------------------------------------------------------------------------
@@ -5014,7 +5008,7 @@ loc_270e:                                                       ; ...
 animate_e200_object_sprite_2713:                                     ; ...
 2713: DD 7E 05    ld      a,(ix+$05)                        ; obj type
 2716: E6 0F       and     $F
-2718: F7          rst     jp_tbl_vector_0030
+2718: F7          rst    $30	  ; [jump_to_jump_table] [nb_entries=10]
 ; End of function animate_e200_object_sprite_2713
 
 ; ---------------------------------------------------------------------------
@@ -5179,7 +5173,7 @@ animate_spinning_disc_2884:                                          ; ...
 ; ---------------------------------------------------------------------------
 ; *** UNUSED???
 288C: 0E C4       ld      c,$C4 ; '�'
-288E: DD 7E 0B    ld      a,0xB(ix)
+288E: DD 7E 0B    ld      a,(ix+$0B)
 2891: E6 01       and     1
 2893: 81          add     a,c
 2894: FD 77 00    ld      (iy+$00),a
@@ -5223,7 +5217,7 @@ move_object_lookup_28a8:                                             ; ...
 
 
 lookup_dy_dx_28cb:                                                   ; ...
-28CB: DD 7E 0A    ld      a,0xA(ix)                      ; lookup table entry
+28CB: DD 7E 0A    ld      a,(ix+$0a)                      ; lookup table entry
 28CE: 21 20 9C    ld      hl,off_9c20
 28D1: EF          rst     de_eq_contents_hl_plus_2a_0028
 28D2: EB          ex      de,hl
@@ -5285,7 +5279,7 @@ loc_2914:                                                       ; ...
 2918: 07          rlca
 2919: 07          rlca
 291A: E6 03       and     3
-291C: F7          rst     jp_tbl_vector_0030
+291C: F7          rst    $30	  ; [jump_to_jump_table] [nb_entries=4]
 ; ---------------------------------------------------------------------------
 	.word loc_2925
 	.word loc_292b
@@ -5383,7 +5377,7 @@ deactivate_obj_2990:                                                 ; ...
 
 update_alien_bullets_2999:                                           ; ...
 2999: DD 21 A0 E2 ld      ix,alien_bullet_obj_tbl_e2a0
-299D: FD 21 44 EF ld      iy, spriteram_shadow_ef00+0x44     ; set s17.code as base
+299D: FD 21 44 EF ld      iy,spriteram_shadow_ef00+0x44     ; set s17.code as base
 29A1: 06 06       ld      b,6                           ; 6 alien bullets
 29A3: AF          xor     a
 29A4: 32 AD E0    ld      (num_active_alien_bullets_e0ad),a   ; zero cnt
@@ -5477,7 +5471,7 @@ handle_e200_firing_29df:                                             ; ...
 2A22: FD 66 02    ld      h,(iy+$02)                        ; obj??? sprite y
 2A25: FD 6E 03    ld      l,(iy+$03)                        ; obj??? sprite x
 2A28: DD 21 A0 E2 ld      ix,alien_bullet_obj_tbl_e2a0
-2A2C: FD 21 44 EF ld      iy, spriteram_shadow_ef00+0x44     ; s17.code as base
+2A2C: FD 21 44 EF ld      iy,spriteram_shadow_ef00+0x44     ; s17.code as base
 2A30: 06 06       ld      b,6                           ; 6 alien bullet slots
 2A32: D9          exx
 2A33: 11 04 00    ld      de,4                          ; bytes per sprite
@@ -5506,8 +5500,8 @@ spawn_alien_bullet_2a4e:                                             ; ...
 2A5C: DD 71 01    ld      (ix+$01),c                        ; obj counter (returned from aim routine)
 2A5F: DD 36 05 00 ld      (ix+$05),0                       ; obj type
 2A63: 3A B7 E0    ld      a,(area_dy_dx_lookup_tbl_entry_e0b7)
-2A66: DD 77 0A    ld      0xA(ix),a                      ; dy_dx_lookup table entry
-2A69: DD 36 0F 00 ld      0xF(ix),0                     ; aim directly at ship
+2A66: DD 77 0A    ld      (ix+$0a),a                      ; dy_dx_lookup table entry
+2A69: DD 36 0F 00 ld      (ix+$0f),0                     ; aim directly at ship
 2A6D: CD 98 28    call    lookup_dy_dx_store_2898
 2A70: 3A A7 E0    ld      a,(area_alien_bullet_tmr_init_e0a7)
 2A73: 32 A8 E0    ld      (alien_bullet_tmr_e0a8),a           ; re-init bullet timer_e025
@@ -5541,7 +5535,7 @@ rand_2a91:                                                           ; ...
 2A99: 47          ld      b,a
 2A9A: 3A 00 EF    ld      a,(spriteram_shadow_ef00)           ; s0.code
 2A9D: 80          add     a,b
-2A9E: 21 4B EE    ld      hl, rand_buffer_ee4a+1
+2A9E: 21 4B EE    ld      hl,rand_buffer_ee4a+1
 2AA1: 11 4A EE    ld      de,rand_buffer_ee4a
 2AA4: ED A0       ldi
 2AA6: ED A0       ldi
@@ -5586,8 +5580,8 @@ handle_large_alien_bullets_2aba:                                     ; ...
 2ADF: FD 7E 03    ld      a,(iy+$03)                        ; sn.x
 2AE2: C6 08       add     a,8                           ; +8
 2AE4: 6F          ld      l,a
-2AE5: DD 21 F0 E2 ld      ix, alien_bullet_obj_tbl_e2a0+0x50 ; 6th entry
-2AE9: FD 21 58 EF ld      iy, spriteram_shadow_ef00+0x58     ; s22.code
+2AE5: DD 21 F0 E2 ld      ix,alien_bullet_obj_tbl_e2a0+0x50 ; 6th entry
+2AE9: FD 21 58 EF ld      iy,spriteram_shadow_ef00+0x58     ; s22.code
 2AED: 11 FC FF    ld      de,-4                         ; 4 bytes per sprite
 2AF0: 01 F0 FF    ld      bc,-16                        ; 16 bytes per object
 2AF3: D9          exx
@@ -5613,7 +5607,7 @@ spawn_large_alien_bullet_2b07:                                       ; ...
 2B0E: FD 36 00 5F ld      (iy+$00),$5F ; '_'              ; alien bullet
 2B12: CD 95 6A    call    aim_directly_at_ship_6a95
 2B15: DD 77 01    ld      (ix+$01),a
-2B18: DD 36 0A 0D ld      0xA(ix),$D
+2B18: DD 36 0A 0D ld      (ix+$0a),$D
 2B1C: CD 98 28    call    lookup_dy_dx_store_2898
 2B1F: DD 36 05 00 ld      (ix+$05),0                       ; obj type=0
 2B23: DD 36 00 FF ld      (ix+$00),$FF                    ; obj state=active
@@ -5827,7 +5821,7 @@ spawn_e200_objects_2c3b:                                             ; ...
 2C53: B8          cp      b                               ; less than missed E?
 2C54: D0          ret     NC                              ; no,exit
 2C55: DD 21 00 E2 ld      ix,e200_obj_tbl_e200
-2C59: FD 21 20 EF ld      iy, spriteram_shadow_ef00+0x20     ; set s8.code as base
+2C59: FD 21 20 EF ld      iy,spriteram_shadow_ef00+0x20     ; set s8.code as base
 2C5D: 11 10 00    ld      de,$10                       ; bytes per obj
 2C60: 01 04 00    ld      bc,4                          ; bytes per sprite
 
@@ -5870,7 +5864,7 @@ spawn_japanese_symbol_2c86:                                          ; ...
 2C96: FD 36 00 C4 ld      (iy+$00),$C4 ; '�'              ; sprite code=japanese symbol
 2C9A: FD 36 01 00 ld      (iy+$01),0                       ; sprite colour
 2C9E: DD 36 01 E0 ld      (ix+$01),$E0 ; '�'              ; obj counter
-2CA2: DD 36 0A 02 ld      0xA(ix),2                     ; dy_dx_lookup table index
+2CA2: DD 36 0A 02 ld      (ix+$0a),2                     ; dy_dx_lookup table index
 2CA6: CD 98 28    call    lookup_dy_dx_store_2898
 2CA9: AF          xor     a
 2CAA: 32 9D E0    ld      (spawn_jap_symb_flag_e09d),a        ; clear flag
@@ -5889,7 +5883,7 @@ spawn_e200_object_2cae:                                              ; ...
 2CB2: 20 D2       jr      NZ,spawn_japanese_symbol_2c86       ; yes,go
 2CB4: 3A B9 E0    ld      a,(area_firing_alien_type_e0b9)
 2CB7: FE 0A       cp      10                             ; type 10 (rock)?
-2CB9: 28 32       jr      Z,spawn_rock_3c73                   ; yes,go
+2CB9: 28 32       jr      Z,spawn_rock_2ced                   ; yes,go
 2CBB: CD 91 2A    call    rand_2a91
 2CBE: E6 1F       and     31
 2CC0: 47          ld      b,a
@@ -5908,7 +5902,7 @@ spawn_e200_object_2cae:                                              ; ...
 2CD7: FD 36 00 FF ld      (iy+$00),$FF                    ; init state=active
 2CDB: FD 36 01 00 ld      (iy+$01),0                       ; sprite colour
 2CDF: 3A B9 E0    ld      a,(area_firing_alien_type_e0b9)
-2CE2: F7          rst     jp_tbl_vector_0030
+2CE2: F7          rst    $30		  ; [jump_to_jump_table] [nb_entries=5]
 ; ---------------------------------------------------------------------------
 	.word spawn_tumble_ship_2d3b
 	.word spawn_plane_2d69
@@ -5917,7 +5911,7 @@ spawn_e200_object_2cae:                                              ; ...
 	.word spawn_moth_2df3
 ; ---------------------------------------------------------------------------
 
-spawn_rock_3c73:                                                     ; ...
+spawn_rock_2ced:                                                     ; ...
 2CED: 3A 60 E1    ld      a,(large_alien_obj_tbl_e160)        ; object 0
 2CF0: 3C          inc     a                               ; active?
 2CF1: C0          ret     NZ                              ; no,exit
@@ -5927,9 +5921,9 @@ spawn_rock_3c73:                                                     ; ...
 ; large alien is vulgus
 2CF8: DD 36 00 FF ld      (ix+$00),$FF                    ; state=active
 2CFC: DD 36 05 0A ld      (ix+$05),10                      ; init obj type
-2D00: DD 36 0E 00 ld      0xE(ix),0
-2D04: DD 36 0D 28 ld      0xD(ix),$28 ; '('
-2D08: DD 36 0A 00 ld      0xA(ix),0                     ; lookup_dx_dy index
+2D00: DD 36 0E 00 ld      (ix+$0E),0
+2D04: DD 36 0D 28 ld      (ix+$0D),$28 ; '('
+2D08: DD 36 0A 00 ld      (ix+$0a),0                     ; lookup_dx_dy index
 2D0C: DD E5       push    ix
 2D0E: E1          pop     hl
 2D0F: 7D          ld      a,l
@@ -5960,16 +5954,16 @@ spawn_tumble_ship_2d3b:                                              ; ...
 2D3E: DD 36 05 00 ld      (ix+$05),0                       ; obj type
 2D42: DD 36 06 60 ld      (ix+$06),96                      ; obj dy
 2D46: DD 36 08 20 ld      (ix+$08),32                      ; obj dx
-2D4A: DD 36 0A 0A ld      0xA(ix),$A                   ; dy_dx_lookup table entry
+2D4A: DD 36 0A 0A ld      (ix+$0a),$A                   ; dy_dx_lookup table entry
 2D4E: 3A 00 E0    ld      a,(vblank_tick_e000)
 2D51: 07          rlca
 2D52: 07          rlca
 2D53: E6 07       and     7
-2D55: DD 77 0B    ld      0xB(ix),a                      ; (related to y)
-2D58: DD 36 0C 00 ld      0xC(ix),0                     ; (related to x)
-2D5C: DD 36 0D 00 ld      0xD(ix),0
-2D60: DD 36 0E 30 ld      0xE(ix),$30 ; '0'
-2D64: DD 36 0F 00 ld      0xF(ix),0                     ; aim directly at ship
+2D55: DD 77 0B    ld      (ix+$0B),a                      ; (related to y)
+2D58: DD 36 0C 00 ld      (ix+$0C),0                     ; (related to x)
+2D5C: DD 36 0D 00 ld      (ix+$0D),0
+2D60: DD 36 0E 30 ld      (ix+$0E),$30 ; '0'
+2D64: DD 36 0F 00 ld      (ix+$0f),0                     ; aim directly at ship
 2D68: C9          ret
 ; ---------------------------------------------------------------------------
 
@@ -5978,16 +5972,16 @@ spawn_plane_2d69:                                                    ; ...
 2D6C: DD 36 05 01 ld      (ix+$05),1                       ; obj type
 2D70: DD 36 06 60 ld      (ix+$06),96                      ; obj dy
 2D74: DD 36 08 28 ld      (ix+$08),40                      ; obj dx
-2D78: DD 36 0A 02 ld      0xA(ix),2                     ; dy_dx_lookup table entry
+2D78: DD 36 0A 02 ld      (ix+$0a),2                     ; dy_dx_lookup table entry
 2D7C: 3A 00 E0    ld      a,(vblank_tick_e000)
 2D7F: 07          rlca
 2D80: 07          rlca
 2D81: E6 07       and     7
-2D83: DD 77 0B    ld      0xB(ix),a                      ; (related to y)
-2D86: DD 36 0C 00 ld      0xC(ix),0                     ; (related to x)
-2D8A: DD 36 0D 00 ld      0xD(ix),0
-2D8E: DD 36 0E 20 ld      0xE(ix),$20 ; ' '
-2D92: DD 36 0F 00 ld      0xF(ix),0                     ; aim directly at ship
+2D83: DD 77 0B    ld      (ix+$0B),a                      ; (related to y)
+2D86: DD 36 0C 00 ld      (ix+$0C),0                     ; (related to x)
+2D8A: DD 36 0D 00 ld      (ix+$0D),0
+2D8E: DD 36 0E 20 ld      (ix+$0E),$20 ; ' '
+2D92: DD 36 0F 00 ld      (ix+$0f),0                     ; aim directly at ship
 2D96: C9          ret
 ; ---------------------------------------------------------------------------
 
@@ -5996,16 +5990,16 @@ spawn_ray_2d97:                                                      ; ...
 2D9A: DD 36 05 02 ld      (ix+$05),2                       ; obj type
 2D9E: DD 36 06 70 ld      (ix+$06),112                     ; obj dy
 2DA2: DD 36 08 24 ld      (ix+$08),36                      ; obj dx
-2DA6: DD 36 0A 05 ld      0xA(ix),5                     ; dy_dx_lookup table entry
+2DA6: DD 36 0A 05 ld      (ix+$0a),5                     ; dy_dx_lookup table entry
 2DAA: 3A 00 E0    ld      a,(vblank_tick_e000)
 2DAD: 07          rlca
 2DAE: 07          rlca
 2DAF: E6 07       and     7
-2DB1: DD 77 0B    ld      0xB(ix),a                      ; (related to y)
-2DB4: DD 36 0C 00 ld      0xC(ix),0                     ; (related to x)
-2DB8: DD 36 0D 00 ld      0xD(ix),0
-2DBC: DD 36 0E 20 ld      0xE(ix),$20 ; ' '
-2DC0: DD 36 0F 00 ld      0xF(ix),0                     ; aim directly at ship
+2DB1: DD 77 0B    ld      (ix+$0B),a                      ; (related to y)
+2DB4: DD 36 0C 00 ld      (ix+$0C),0                     ; (related to x)
+2DB8: DD 36 0D 00 ld      (ix+$0D),0
+2DBC: DD 36 0E 20 ld      (ix+$0E),$20 ; ' '
+2DC0: DD 36 0F 00 ld      (ix+$0f),0                     ; aim directly at ship
 2DC4: C9          ret
 ; ---------------------------------------------------------------------------
 
@@ -6014,16 +6008,16 @@ spawn_butterfly_2dc5:                                                ; ...
 2DC8: DD 36 05 03 ld      (ix+$05),3                       ; obj type
 2DCC: DD 36 06 70 ld      (ix+$06),112                     ; obj dy
 2DD0: DD 36 08 18 ld      (ix+$08),24                      ; obj dx
-2DD4: DD 36 0A 05 ld      0xA(ix),5                     ; dy_dx_lookup table entry
+2DD4: DD 36 0A 05 ld      (ix+$0a),5                     ; dy_dx_lookup table entry
 2DD8: 3A 00 E0    ld      a,(vblank_tick_e000)
 2DDB: 07          rlca
 2DDC: 07          rlca
 2DDD: E6 07       and     7
-2DDF: DD 77 0B    ld      0xB(ix),a                      ; (related to y)
-2DE2: DD 36 0C 00 ld      0xC(ix),0                     ; (related to x)
-2DE6: DD 36 0D 00 ld      0xD(ix),0
-2DEA: DD 36 0E 18 ld      0xE(ix),$18
-2DEE: DD 36 0F 00 ld      0xF(ix),0                     ; aim directly at ship
+2DDF: DD 77 0B    ld      (ix+$0B),a                      ; (related to y)
+2DE2: DD 36 0C 00 ld      (ix+$0C),0                     ; (related to x)
+2DE6: DD 36 0D 00 ld      (ix+$0D),0
+2DEA: DD 36 0E 18 ld      (ix+$0E),$18
+2DEE: DD 36 0F 00 ld      (ix+$0f),0                     ; aim directly at ship
 2DF2: C9          ret
 ; ---------------------------------------------------------------------------
 
@@ -6032,16 +6026,16 @@ spawn_moth_2df3:                                                     ; ...
 2DF6: DD 36 05 04 ld      (ix+$05),4                       ; obj type
 2DFA: DD 36 06 90 ld      (ix+$06),144                     ; obj dy
 2DFE: DD 36 08 18 ld      (ix+$08),24                      ; obj dx
-2E02: DD 36 0A 04 ld      0xA(ix),4                     ; dy_dx_lookup table entry
+2E02: DD 36 0A 04 ld      (ix+$0a),4                     ; dy_dx_lookup table entry
 2E06: 3A 00 E0    ld      a,(vblank_tick_e000)
 2E09: 07          rlca
 2E0A: 07          rlca
 2E0B: E6 07       and     7
-2E0D: DD 77 0B    ld      0xB(ix),a                      ; (related to y)
-2E10: DD 36 0D 00 ld      0xD(ix),0                     ; (related to x)
-2E14: DD 36 0C 00 ld      0xC(ix),0
-2E18: DD 36 0E 28 ld      0xE(ix),$28 ; '('
-2E1C: DD 36 0F 00 ld      0xF(ix),0                     ; aim directly at ship
+2E0D: DD 77 0B    ld      (ix+$0B),a                      ; (related to y)
+2E10: DD 36 0D 00 ld      (ix+$0D),0                     ; (related to x)
+2E14: DD 36 0C 00 ld      (ix+$0C),0
+2E18: DD 36 0E 28 ld      (ix+$0E),$28 ; '('
+2E1C: DD 36 0F 00 ld      (ix+$0f),0                     ; aim directly at ship
 2E20: C9          ret
 ; ---------------------------------------------------------------------------
 ; init values for e200 objects type 0-4
@@ -6070,7 +6064,7 @@ check_spawn_formation_2e81:                                          ; ...
 2E9C: AF          xor     a
 2E9D: 32 C7 E0    ld      (formation_cnt_e0c7),a
 2EA0: DD 21 00 E2 ld      ix,e200_obj_tbl_e200
-2EA4: FD 21 20 EF ld      iy, spriteram_shadow_ef00+0x20     ; sprite 8
+2EA4: FD 21 20 EF ld      iy,spriteram_shadow_ef00+0x20     ; sprite 8
 2EA8: 06 09       ld      b,9                           ; 9 objects
 
 loc_2eaa:                                                       ; ...
@@ -6103,14 +6097,14 @@ spawn_formation_alien_2ecb:                                          ; ...
 2ECD: 08          ex      af,af'
 2ECE: 7E          ld      a,(hl)                         ; byte $00
 2ECF: 23          inc     hl
-2ED0: DD 77 0B    ld      0xB(ix),a                      ; (related to y)
+2ED0: DD 77 0B    ld      (ix+$0B),a                      ; (related to y)
 2ED3: 3A CB E0    ld      a,(area_formation_alien_type_e0cb)
 2ED6: 86          add     a,(hl)                         ; + byte $01
 2ED7: 23          inc     hl
 2ED8: DD 77 05    ld      (ix+$05),a                        ; obj type
 2EDB: 7E          ld      a,(hl)                         ; byte $02
 2EDC: 23          inc     hl
-2EDD: DD 77 0D    ld      0xD(ix),a
+2EDD: DD 77 0D    ld      (ix+$0D),a
 2EE0: 7E          ld      a,(hl)                         ; byte $03
 2EE1: 23          inc     hl
 2EE2: FD 77 02    ld      (iy+$02),a                        ; sprite y
@@ -6122,12 +6116,12 @@ spawn_formation_alien_2ecb:                                          ; ...
 2EF2: 3E FE       ld      a,$FE ; '�'
 2EF4: DD 77 00    ld      (ix+$00),a                        ; obj state
 2EF7: AF          xor     a
-2EF8: DD 77 0C    ld      0xC(ix),a
+2EF8: DD 77 0C    ld      (ix+$0C),a
 2EFB: DD 77 02    ld      (ix+$02),a
 2EFE: DD 77 03    ld      (ix+$03),a
 2F01: DD 77 04    ld      (ix+$04),a
-2F04: DD 36 0F 08 ld      0xF(ix),8                     ; obj aiming entry
-2F08: DD 36 0A 05 ld      0xA(ix),5
+2F04: DD 36 0F 08 ld      (ix+$0f),8                     ; obj aiming entry
+2F08: DD 36 0A 05 ld      (ix+$0a),5
 2F0C: 3A C7 E0    ld      a,(formation_cnt_e0c7)
 2F0F: 3C          inc     a
 2F10: 32 C7 E0    ld      (formation_cnt_e0c7),a
@@ -6243,7 +6237,7 @@ lower_flying_spawn_threshold_2f20:                                   ; ...
 
 update_pickup_3494:                                                  ; ...
 3494: DD 21 90 E1 ld      ix,pickup_obj_e190
-3498: FD 21 5C EF ld      iy, spriteram_shadow_ef00+0x5C     ; set s23.code as base
+3498: FD 21 5C EF ld      iy,spriteram_shadow_ef00+0x5C     ; set s23.code as base
 349C: DD 7E 00    ld      a,(ix+$00)
 349F: A7          and     a                               ; inactive?
 34A0: 28 22       jr      Z,spawn_pickup_34c4                 ; yes,go
@@ -6285,7 +6279,7 @@ loc_34ce:                                                       ; ...
 34DF: E6 0F       and     $F
 34E1: E7          rst     content_hl_plus_a_0020
 34E2: DD 77 05    ld      (ix+$05),a                        ; pickup type
-34E5: F7          rst     jp_tbl_vector_0030
+34E5: F7          rst    $30		  ; [jump_to_jump_table] [nb_entries=5]
 ; End of function update_pickup_3494
 
 ; ---------------------------------------------------------------------------
@@ -6436,7 +6430,7 @@ loc_3665:                                                       ; ...
 3680: DD 36 00 00 ld      (ix+$00),0                       ; obj state=inactive
 3684: DD 34 09    inc     (ix+$09)                           ; ???
 3687: DD 7E 05    ld      a,(ix+$05)                        ; type
-368A: F7          rst     jp_tbl_vector_0030
+368A: F7          rst    $30			  ; [jump_to_jump_table] [nb_entries=5]
 ; ---------------------------------------------------------------------------
 	.word collect_pow_36ca
 	.word collect_letter_3695                      ; 'E'
@@ -6496,7 +6490,7 @@ pickup_off_screen_36e2:                                              ; ...
 36F4: C8          ret     Z
 36F5: FE 04       cp      4
 36F7: C8          ret     Z
-36F8: F7          rst     jp_tbl_vector_0030
+36F8: F7          rst    $30		  ; [jump_to_jump_table] [nb_entries=4]
 ; ---------------------------------------------------------------------------
 	.word missed_e_3701                            ; unused
 	.word missed_e_3701                            ; 'E'
@@ -6555,7 +6549,7 @@ spawn_large_alien_3722:                                              ; ...
 3734: DD 21 60 E1 ld      ix,large_alien_obj_tbl_e160
 
 loc_3738:                                                       ; s2.code
-3738: FD 21 08 EF ld      iy, spriteram_shadow_ef00+8
+3738: FD 21 08 EF ld      iy,spriteram_shadow_ef00+8
 ; End of function spawn_large_alien_3722
 
 373C: 26 00       ld      h,0
@@ -6576,9 +6570,9 @@ loc_3738:                                                       ; s2.code
 3750: FD 19       add     iy,de                          ; calc addr alien sprite
 3752: 3A C3 E0    ld      a,(byte_e0c3)
 3755: E6 07       and     7
-3757: DD 77 0B    ld      0xB(ix),a
-375A: DD 36 0C 00 ld      0xC(ix),0
-375E: DD 36 0D 00 ld      0xD(ix),0
+3757: DD 77 0B    ld      (ix+$0B),a
+375A: DD 36 0C 00 ld      (ix+$0C),0
+375E: DD 36 0D 00 ld      (ix+$0D),0
 3762: DD 36 00 FF ld      (ix+$00),$FF                    ; init state=active
 3766: 21 94 37    ld      hl,large_alien_sprite_yx_tbl_3794
 3769: 87          add     a,a                            ; x2
@@ -6590,7 +6584,7 @@ loc_3738:                                                       ; s2.code
 3773: 3A C2 E0    ld      a,(area_large_alien_type_e0c2)      ; alien type from map data
 3776: DD 77 05    ld      (ix+$05),a                        ; init type
 3779: DD 36 02 00 ld      (ix+$02),0                       ; init hit count
-377D: DD 36 0A 05 ld      0xA(ix),5                     ; dy_dx lookup entry index?
+377D: DD 36 0A 05 ld      (ix+$0a),5                     ; dy_dx lookup entry index?
 3781: FD 36 01 40 ld      (iy+$01),$40 ; '@'              ; sn.colour
 3785: FD 36 05 40 ld      (iy+$05),$40 ; '@'              ; s(n+1).colour
 3789: 3A C0 E0    ld      a,(area_large_alien_spawn_tmr_init_e0c0)
@@ -6608,7 +6602,7 @@ update_large_aliens_37a4:                                            ; ...
 
 ; FUNCTION CHUNK AT ROM:3AA8 SIZE 00000011 BYTES
 
-37A4: FD 21 08 EF ld      iy, spriteram_shadow_ef00+8        ; set s2.code as base
+37A4: FD 21 08 EF ld      iy,spriteram_shadow_ef00+8        ; set s2.code as base
 37A8: DD 21 60 E1 ld      ix,large_alien_obj_tbl_e160
 37AC: 06 03       ld      b,3                           ; 3 objects to check
 
@@ -6671,10 +6665,10 @@ update_2nd_sprite_37eb:                                              ; ...
 
 
 sub_3804:                                                       ; ...
-3804: DD 7E 0D    ld      a,0xD(ix)
+3804: DD 7E 0D    ld      a,(ix+$0D)
 3807: A7          and     a
 3808: CC AB 38    call    Z,sub_38ab
-380B: DD 35 0D    dec     0xD(ix)
+380B: DD 35 0D    dec     (ix+$0D)
 380E: C3 3B 24    jp      move_object_self_243b
 ; End of function sub_3804
 
@@ -6682,8 +6676,8 @@ sub_3804:                                                       ; ...
 ; START OF FUNCTION CHUNK FOR sub_38ab
 
 loc_3811:                                                       ; ...
-3811: DD 7E 0C    ld      a,0xC(ix)
-3814: DD 34 0C    inc     0xC(ix)
+3811: DD 7E 0C    ld      a,(ix+$0C)
+3814: DD 34 0C    inc     (ix+$0C)
 3817: CB 47       bit     0,a
 3819: 20 55       jr      NZ,loc_3870
 381B: E6 1E       and     $1E
@@ -6725,7 +6719,7 @@ loc_3811:                                                       ; ...
 3863: CB 1B       rr      e
 3865: DD 72 08    ld      (ix+$08),d
 3868: DD 73 09    ld      (ix+$09),e
-386B: DD 36 0D 40 ld      0xD(ix),$40 ; '@'
+386B: DD 36 0D 40 ld      (ix+$0D),$40 ; '@'
 386F: C9          ret
 ; ---------------------------------------------------------------------------
 
@@ -6734,7 +6728,7 @@ loc_3870:                                                       ; ...
 3874: DD 36 07 00 ld      (ix+$07),0
 3878: DD 36 08 00 ld      (ix+$08),0
 387C: DD 36 09 00 ld      (ix+$09),0
-3880: DD 36 0D 3C ld      0xD(ix),$3C ; '<'
+3880: DD 36 0D 3C ld      (ix+$0D),$3C ; '<'
 3884: C9          ret
 ; END OF FUNCTION CHUNK FOR sub_38ab
 ; ---------------------------------------------------------------------------
@@ -6750,13 +6744,13 @@ sub_38ab:                                                       ; ...
 38AE: FE 03       cp      3
 38B0: D2 11 38    jp      NC,loc_3811
 38B3: 21 0A 39    ld      hl,off_390a
-38B6: DD 7E 0B    ld      a,0xB(ix)
+38B6: DD 7E 0B    ld      a,(ix+$0B)
 38B9: FE FF       cp      $FF
 38BB: C8          ret     Z
 38BC: EF          rst     de_eq_contents_hl_plus_2a_0028
 38BD: EB          ex      de,hl
-38BE: DD 7E 0C    ld      a,0xC(ix)
-38C1: DD 34 0C    inc     0xC(ix)
+38BE: DD 7E 0C    ld      a,(ix+$0C)
+38C1: DD 34 0C    inc     (ix+$0C)
 38C4: 87          add     a,a
 38C5: E7          rst     content_hl_plus_a_0020
 38C6: FE FF       cp      $FF
@@ -6766,7 +6760,7 @@ sub_38ab:                                                       ; ...
 38CE: DD 77 01    ld      (ix+$01),a
 38D1: 23          inc     hl
 38D2: 7E          ld      a,(hl)
-38D3: DD 77 0D    ld      0xD(ix),a
+38D3: DD 77 0D    ld      (ix+$0D),a
 38D6: C3 98 28    jp      lookup_dy_dx_store_2898
 ; ---------------------------------------------------------------------------
 
@@ -6775,7 +6769,7 @@ loc_38d9:                                                       ; ...
 38DA: 7E          ld      a,(hl)
 38DB: FE FF       cp      $FF
 38DD: CA F1 38    jp      Z,loc_38f1
-38E0: DD 77 0D    ld      0xD(ix),a
+38E0: DD 77 0D    ld      (ix+$0D),a
 38E3: AF          xor     a
 38E4: DD 77 06    ld      (ix+$06),a
 38E7: DD 77 07    ld      (ix+$07),a
@@ -6785,7 +6779,7 @@ loc_38d9:                                                       ; ...
 ; ---------------------------------------------------------------------------
 
 loc_38f1:                                                       ; ...
-38F1: DD 36 0B FF ld      0xB(ix),$FF
+38F1: DD 36 0B FF ld      (ix+$0B),$FF
 38F5: C3 98 28    jp      lookup_dy_dx_store_2898
 ; ---------------------------------------------------------------------------
 
@@ -6795,8 +6789,8 @@ loc_38f8:                                                       ; ...
 38FA: EB          ex      de,hl
 38FB: 21 07 39    ld      hl,byte_3907
 38FE: E7          rst     content_hl_plus_a_0020
-38FF: DD 77 0A    ld      0xA(ix),a
-3902: DD 36 0D 01 ld      0xD(ix),1
+38FF: DD 77 0A    ld      (ix+$0a),a
+3902: DD 36 0D 01 ld      (ix+$0D),1
 3906: C9          ret
 ; End of function sub_38ab
 
@@ -6815,7 +6809,7 @@ loc_38f8:                                                       ; ...
 
 animate_big_alien_39ee:                                              ; ...
 39EE: DD 7E 05    ld      a,(ix+$05)                        ; type
-39F1: F7          rst     jp_tbl_vector_0030
+39F1: F7          rst    $30			  ; [jump_to_jump_table] [nb_entries=5]
 ; End of function animate_big_alien_39ee
 
 ; ---------------------------------------------------------------------------
@@ -7074,7 +7068,7 @@ spawn_e300_objects_3bc0:                                             ; ...
 3BC5: 3A B4 E0    ld      a,(spawn_non_firing_tmr_e0b4)       ; *** ALWAYS 0
 3BC8: A7          and     a                               ; expired?
 3BC9: C0          ret     NZ                              ; no,exit
-3BCA: FD 21 10 EF ld      iy, spriteram_shadow_ef00+0x10     ; set s4.code as base
+3BCA: FD 21 10 EF ld      iy,spriteram_shadow_ef00+0x10     ; set s4.code as base
 3BCE: DD 21 00 E3 ld      ix,e300_obj_tbl_e300
 3BD2: 26 04       ld      h,4                           ;  objs to check
 3BD4: 3A 02 E5    ld      a,(map_planet_e502)
@@ -7112,7 +7106,7 @@ spawn_non_firing_and_init_tmr_3bef:                                  ; ...
 
 spawn_e300_object_3bf9:                                              ; ...
 3BF9: 3A C9 E0    ld      a,(area_non_firing_alien_type_0_based_e0c9)
-3BFC: F7          rst     jp_tbl_vector_0030
+3BFC: F7          rst    $30				  ; [jump_to_jump_table] [nb_entries=5]
 ; End of function spawn_e300_object_3bf9
 
 ; ---------------------------------------------------------------------------
@@ -7144,8 +7138,8 @@ spawn_spinning_disc_3c07:                                            ; ...
 3C32: DD 74 08    ld      (ix+$08),h
 3C35: DD 75 09    ld      (ix+$09),l                        ; init obj dx
 3C38: 21 06 00    ld      hl,6
-3C3B: DD 74 0C    ld      0xC(ix),h
-3C3E: DD 75 0D    ld      0xD(ix),l                      ; init obj ddx
+3C3B: DD 74 0C    ld      (ix+$0C),h
+3C3E: DD 75 0D    ld      (ix+$0D),l                      ; init obj ddx
 3C41: 3E 01       ld      a,1                           ; dy msb=1
 3C43: FD CB 02 7E bit     7,(iy+$02)                        ; sn.y
 3C47: 28 02       jr      Z,loc_3c4b                     ; adjust for dir
@@ -7155,8 +7149,8 @@ loc_3c4b:                                                       ; ...
 3C4B: DD 77 06    ld      (ix+$06),a                        ; init obj dy msb
 3C4E: F1          pop     af                              ; rnd
 3C4F: DD 77 07    ld      (ix+$07),a                        ; init obj dy lsb
-3C52: DD 36 0A 00 ld      0xA(ix),0
-3C56: DD 36 0B 00 ld      0xB(ix),0                     ; zero obj ddy
+3C52: DD 36 0A 00 ld      (ix+$0a),0
+3C56: DD 36 0B 00 ld      (ix+$0B),0                     ; zero obj ddy
 3C5A: C9          ret
 ; ---------------------------------------------------------------------------
 
@@ -7165,7 +7159,7 @@ spawn_e300_rnd_type_012_3c5b:                                        ; ...
 3C5E: 0F          rrca
 3C5F: 0F          rrca
 3C60: E6 07       and     7
-3C62: F7          rst     jp_tbl_vector_0030
+3C62: F7          rst    $30		  ; [jump_to_jump_table] [nb_entries=8]
 ; ---------------------------------------------------------------------------
 	.word spawn_spinning_block_3d5f
 	.word spawn_yashichi_3d22
@@ -7178,7 +7172,7 @@ spawn_e300_rnd_type_012_3c5b:                                        ; ...
 ; ---------------------------------------------------------------------------
 
 spawn_rock_3c73:                                                     ; ...
-3C73: DD 36 0E 00 ld      0xE(ix),0
+3C73: DD 36 0E 00 ld      (ix+$0E),0
 3C77: 3A 60 E1    ld      a,(large_alien_obj_tbl_e160)        ; 1st alien
 3C7A: 3C          inc     a                               ; active?
 3C7B: 20 DE       jr      NZ,spawn_e300_rnd_type_012_3c5b     ; no,go
@@ -7186,7 +7180,7 @@ spawn_rock_3c73:                                                     ; ...
 3C80: FE 03       cp      3                              ; vulgus?
 3C82: 38 D7       jr      C,spawn_e300_rnd_type_012_3c5b      ; no,go
 ; *** vlugus is active
-3C84: DD 36 0E 01 ld      0xE(ix),1
+3C84: DD 36 0E 01 ld      (ix+$0E),1
 3C88: 3A 00 E0    ld      a,(vblank_tick_e000)
 3C8B: ED 44       neg
 3C8D: E6 7F       and     $7F ; ''
@@ -7202,7 +7196,7 @@ spawn_rock_3c73:                                                     ; ...
 3C9A: DD 77 01    ld      (ix+$01),a                        ; obj counter/flag
 3C9D: DD 36 00 FF ld      (ix+$00),$FF                    ; state=active
 3CA1: DD 36 05 03 ld      (ix+$05),3                       ; init type=rock
-3CA5: DD 36 0C D0 ld      0xC(ix),$D0 ; '�'            ; init ddx msb
+3CA5: DD 36 0C D0 ld      (ix+$0C),$D0 ; '�'            ; init ddx msb
 3CA9: 3A CD E0    ld      a,(related_to_big_alien_y_e0cd)
 3CAC: FD 77 02    ld      (iy+$02),a                        ; init sn.y
 3CAF: 3A CE E0    ld      a,(related_to_big_alien_x_e0ce)
@@ -7210,9 +7204,9 @@ spawn_rock_3c73:                                                     ; ...
 3CB5: FD 36 00 FF ld      (iy+$00),$FF                    ; sn.code=blank
 3CB9: FD 36 01 00 ld      (iy+$01),0                       ; sn.colour
 3CBD: CD 91 2A    call    rand_2a91
-3CC0: DD 77 0D    ld      0xD(ix),a                      ; init ddx lsb
-3CC3: DD 77 0B    ld      0xB(ix),a
-3CC6: DD 36 0A 00 ld      0xA(ix),0                     ; init ddy
+3CC0: DD 77 0D    ld      (ix+$0D),a                      ; init ddx lsb
+3CC3: DD 77 0B    ld      (ix+$0B),a
+3CC6: DD 36 0A 00 ld      (ix+$0a),0                     ; init ddy
 3CCA: C9          ret
 ; ---------------------------------------------------------------------------
 
@@ -7237,8 +7231,8 @@ spawn_eyeball_3ccb:                                                  ; ...
 3CF9: DD 74 08    ld      (ix+$08),h
 3CFC: DD 75 09    ld      (ix+$09),l                        ; init obj dx
 3CFF: 21 06 00    ld      hl,6
-3D02: DD 74 0C    ld      0xC(ix),h
-3D05: DD 75 0D    ld      0xD(ix),l                      ; init obj ddx
+3D02: DD 74 0C    ld      (ix+$0C),h
+3D05: DD 75 0D    ld      (ix+$0D),l                      ; init obj ddx
 3D08: 3E 01       ld      a,1                           ; dy msb=1
 3D0A: FD CB 02 7E bit     7,(iy+$02)                        ; sn.y
 3D0E: 28 02       jr      Z,loc_3d12                     ; adjust dy dir
@@ -7247,8 +7241,8 @@ spawn_eyeball_3ccb:                                                  ; ...
 loc_3d12:                                                       ; ...
 3D12: DD 77 06    ld      (ix+$06),a
 3D15: DD 36 07 80 ld      (ix+$07),128                     ; init obj dy
-3D19: DD 36 0A 00 ld      0xA(ix),0
-3D1D: DD 36 0B 00 ld      0xB(ix),0                     ; init obj ddy
+3D19: DD 36 0A 00 ld      (ix+$0a),0
+3D1D: DD 36 0B 00 ld      (ix+$0B),0                     ; init obj ddy
 3D21: C9          ret
 ; ---------------------------------------------------------------------------
 
@@ -7264,18 +7258,18 @@ spawn_yashichi_3d22:                                                 ; ...
 3D3F: DD 74 08    ld      (ix+$08),h
 3D42: DD 75 09    ld      (ix+$09),l                        ; init obj dy
 3D45: 21 07 00    ld      hl,7
-3D48: DD 74 0C    ld      0xC(ix),h
-3D4B: DD 75 0D    ld      0xD(ix),l                      ; init obj ddx
+3D48: DD 74 0C    ld      (ix+$0C),h
+3D4B: DD 75 0D    ld      (ix+$0D),l                      ; init obj ddx
 3D4E: DD 36 06 00 ld      (ix+$06),0
 3D52: DD 36 07 00 ld      (ix+$07),0                       ; init obj dx
-3D56: DD 36 0A 00 ld      0xA(ix),0
-3D5A: DD 36 0B 00 ld      0xB(ix),0                     ; zero obj ddy
+3D56: DD 36 0A 00 ld      (ix+$0a),0
+3D5A: DD 36 0B 00 ld      (ix+$0B),0                     ; zero obj ddy
 3D5E: C9          ret
 ; ---------------------------------------------------------------------------
 
 spawn_spinning_block_3d5f:                                           ; ...
 3D5F: CD 91 2A    call    rand_2a91
-3D62: DD 77 0D    ld      0xD(ix),a                      ; init obj ddx lsb
+3D62: DD 77 0D    ld      (ix+$0D),a                      ; init obj ddx lsb
 3D65: E6 1E       and     $1E
 3D67: 21 A2 3D    ld      hl,e300_type0_spawn_coords_3da2
 3D6A: E7          rst     content_hl_plus_a_0020
@@ -7314,7 +7308,7 @@ update_e300_objects_3dc2:                                            ; ...
 ; FUNCTION CHUNK AT ROM:3E85 SIZE 00000005 BYTES
 
 3DC2: DD 21 00 E3 ld      ix,e300_obj_tbl_e300
-3DC6: FD 21 10 EF ld      iy, spriteram_shadow_ef00+0x10     ; set s4.code as base
+3DC6: FD 21 10 EF ld      iy,spriteram_shadow_ef00+0x10     ; set s4.code as base
 3DCA: 06 04       ld      b,4                           ; 4 objs to check
 
 loc_3dcc:                                                       ; ...
@@ -7385,7 +7379,7 @@ animate_active_e300_obj_3e39:                                        ; ...
 3E39: CD 2B 24    call    check_sprite_off_screen_242b         ; off-screen?
 3E3C: DA 90 29    jp      C,deactivate_obj_2990               ; yes,go
 3E3F: DD 7E 05    ld      a,(ix+$05)                        ; type
-3E42: F7          rst     jp_tbl_vector_0030
+3E42: F7          rst    $30			  ; [jump_to_jump_table] [nb_entries=8]
 ; End of function update_e300_objects_3dc2
 
 ; ---------------------------------------------------------------------------
@@ -7431,11 +7425,11 @@ init_spinning_disc_dy_dx_3e6c:                                       ; ...
 3E75: DD 36 07 00 ld      (ix+$07),0                       ; obj dy = 0
 3E79: DD 36 08 03 ld      (ix+$08),3
 3E7D: DD 36 09 00 ld      (ix+$09),0                       ; obj dx = 3.0
-3E81: DD 36 0C 00 ld      0xC(ix),0
+3E81: DD 36 0C 00 ld      (ix+$0C),0
 ; End of function init_spinning_disc_dy_dx_3e6c
 
 ; START OF FUNCTION CHUNK FOR update_e300_objects_3dc2
-3E85: DD 36 0D 00 ld      0xD(ix),0                     ; zero obj dxx
+3E85: DD 36 0D 00 ld      (ix+$0D),0                     ; zero obj dxx
 3E89: C9          ret
 ; END OF FUNCTION CHUNK FOR update_e300_objects_3dc2
 ; ---------------------------------------------------------------------------
@@ -7446,7 +7440,7 @@ loc_3e93:                                                       ; ...
 3E93: DD 34 05    inc     (ix+$05)                           ; obj type++
 3E96: CD 95 6A    call    aim_directly_at_ship_6a95
 3E99: DD 77 01    ld      (ix+$01),a                        ; obj counter/flag
-3E9C: DD 36 0A 0D ld      0xA(ix),13                    ; dy_dx entry index
+3E9C: DD 36 0A 0D ld      (ix+$0a),13                    ; dy_dx entry index
 3EA0: CD 98 28    call    lookup_dy_dx_store_2898
 
 animate_rock_1_3ea3:                                                 ; ...
@@ -7461,10 +7455,10 @@ animate_rock_0_3ea9:                                                 ; ...
 3EAC: 3C          inc     a                               ; active?
 3EAD: 20 E4       jr      NZ,loc_3e93                    ; no,go
 3EAF: 3A CD E0    ld      a,(related_to_big_alien_y_e0cd)
-3EB2: DD 77 0B    ld      0xB(ix),a
+3EB2: DD 77 0B    ld      (ix+$0B),a
 3EB5: 3A CE E0    ld      a,(related_to_big_alien_x_e0ce)
-3EB8: DD 77 0C    ld      0xC(ix),a
-3EBB: DD 35 0D    dec     0xD(ix)
+3EB8: DD 77 0C    ld      (ix+$0C),a
+3EBB: DD 35 0D    dec     (ix+$0D)
 3EBE: 28 D3       jr      Z,loc_3e93
 3EC0: DD 7E 01    ld      a,(ix+$01)                        ; obj counter
 3EC3: C6 FE       add     a,-2                          ; adjust
@@ -7477,7 +7471,7 @@ animate_rock_0_3ea9:                                                 ; ...
 3ED3: 29          add     hl,hl                          ; x8
 3ED4: 29          add     hl,hl                          ; x16
 3ED5: 29          add     hl,hl                          ; x32
-3ED6: DD 56 0B    ld      d,0xB(ix)
+3ED6: DD 56 0B    ld      d,(ix+$0B)
 3ED9: 1E 00       ld      e,0                           ; obj ddy (msb.0)
 3EDB: 19          add     hl,de
 3EDC: FD 74 02    ld      (iy+$02),h                        ; update sprite y
@@ -7488,7 +7482,7 @@ animate_rock_0_3ea9:                                                 ; ...
 3EE7: 29          add     hl,hl                          ; x8
 3EE8: 29          add     hl,hl                          ; x16
 3EE9: 29          add     hl,hl                          ; x32
-3EEA: DD 56 0C    ld      d,0xC(ix)
+3EEA: DD 56 0C    ld      d,(ix+$0C)
 3EED: 1E 00       ld      e,0                           ; obj ddx (msb.0)
 3EEF: 19          add     hl,de                          ; dx+ddx
 3EF0: FD 74 03    ld      (iy+$03),h                        ; update sprite x
@@ -7537,8 +7531,8 @@ zero_obj_dx_ddx_3f2d:                                                ; ...
 3F31: C0          ret     NZ                              ; yes,exit
 3F32: DD 36 08 00 ld      (ix+$08),0
 3F36: DD 36 09 00 ld      (ix+$09),0                       ; obj dx=0
-3F3A: DD 36 0C 00 ld      0xC(ix),0
-3F3E: DD 36 0D 00 ld      0xD(ix),0                     ; zero obj ddx
+3F3A: DD 36 0C 00 ld      (ix+$0C),0
+3F3E: DD 36 0D 00 ld      (ix+$0D),0                     ; zero obj ddx
 3F42: C9          ret
 ; End of function zero_obj_dx_ddx_3f2d
 
@@ -7595,8 +7589,8 @@ calc_yashichi_dy_dx_3f73:                                            ; ...
 3F96: CB 1D       rr      l                               ; /32
 3F98: DD 74 06    ld      (ix+$06),h
 3F9B: DD 75 07    ld      (ix+$07),l                        ; init obj dy
-3F9E: DD 36 0A 00 ld      0xA(ix),0
-3FA2: DD 36 0B 00 ld      0xB(ix),0                     ; zero obj ddy
+3F9E: DD 36 0A 00 ld      (ix+$0a),0
+3FA2: DD 36 0B 00 ld      (ix+$0B),0                     ; zero obj ddy
 3FA6: 3A 03 EF    ld      a,(spriteram_shadow_ef00+3)         ; s0.x
 3FA9: FD 96 03    sub     (iy+$03)                           ; sub obj x
 3FAC: 67          ld      h,a
@@ -7613,8 +7607,8 @@ calc_yashichi_dy_dx_3f73:                                            ; ...
 3FC1: CB 1D       rr      l                               ; /32
 3FC3: DD 74 08    ld      (ix+$08),h
 3FC6: DD 75 09    ld      (ix+$09),l                        ; init dx
-3FC9: DD 36 0C 00 ld      0xC(ix),0
-3FCD: DD 36 0D 00 ld      0xD(ix),0                     ; zero obj ddx
+3FC9: DD 36 0C 00 ld      (ix+$0C),0
+3FCD: DD 36 0D 00 ld      (ix+$0D),0                     ; zero obj ddx
 3FD1: C9          ret
 ; End of function calc_yashichi_dy_dx_3f73
 
@@ -7625,8 +7619,8 @@ calc_yashichi_dy_dx_3f73:                                            ; ...
 move_e300_obj_3fd2:                                                  ; ...
 3FD2: DD 66 06    ld      h,(ix+$06)
 3FD5: DD 6E 07    ld      l,(ix+$07)                        ; obj dy
-3FD8: DD 56 0A    ld      d,0xA(ix)
-3FDB: DD 5E 0B    ld      e,0xB(ix)                      ; obj ddy
+3FD8: DD 56 0A    ld      d,(ix+$0a)
+3FDB: DD 5E 0B    ld      e,(ix+$0B)                      ; obj ddy
 3FDE: 19          add     hl,de
 3FDF: DD 74 06    ld      (ix+$06),h
 3FE2: DD 75 07    ld      (ix+$07),l                        ; update obj dy
@@ -7640,8 +7634,8 @@ move_e300_obj_3fd2:                                                  ; ...
 3FF4: DD 75 03    ld      (ix+$03),l                        ; update obj y lsb
 3FF7: DD 66 08    ld      h,(ix+$08)
 3FFA: DD 6E 09    ld      l,(ix+$09)                        ; obj dx
-3FFD: DD 56 0C    ld      d,0xC(ix)
-4000: DD 5E 0D    ld      e,0xD(ix)                      ; obj ddx
+3FFD: DD 56 0C    ld      d,(ix+$0C)
+4000: DD 5E 0D    ld      e,(ix+$0D)                      ; obj ddx
 4003: 19          add     hl,de
 4004: DD 74 08    ld      (ix+$08),h
 4007: DD 75 09    ld      (ix+$09),l                        ; update obj dx
@@ -7659,7 +7653,7 @@ move_e300_obj_3fd2:                                                  ; ...
 animate_spinning_block_4018:                                         ; ...
 4018: DD 7E 01    ld      a,(ix+$01)                        ; obj counter
 401B: E6 03       and     3
-401D: F7          rst     jp_tbl_vector_0030
+401D: F7          rst    $30			  ; [jump_to_jump_table] [nb_entries=3]
 ; ---------------------------------------------------------------------------
 	.word anim_block_z_spin_4024
 	.word anim_block_y_spin_4053
@@ -7672,9 +7666,9 @@ anim_block_z_spin_4024:                                              ; ...
 402A: 47          ld      b,a
 402B: 0F          rrca
 402C: E6 03       and     3
-402E: C6 D4       add     a,$D4 ; '�'                  ; calc sprite code
+402E: C6 D4       add     a,$D4 ;                   ; calc sprite code
 4030: FD 77 00    ld      (iy+$00),a                        ; sprite code
-4033: DD 35 0D    dec     0xD(ix)                         ; obj ddx lsb
+4033: DD 35 0D    dec     (ix+$0D)                         ; obj ddx lsb
 4036: C0          ret     NZ
 4037: DD 34 01    inc     (ix+$01)
 403A: DD 66 06    ld      h,(ix+$06)
@@ -7764,8 +7758,8 @@ inc_bg_prerender_buffer_40a6:                                        ; ...
 
 clear_bg_via_renderer_40b8:                                          ; ...
 40B8: DD 21 A0 E1 ld      ix,curr_player_map_data_e1a0
-40BC: DD 66 0A    ld      h,0xA(ix)
-40BF: DD 6E 0B    ld      l,0xB(ix)
+40BC: DD 66 0A    ld      h,(ix+$0a)
+40BF: DD 6E 0B    ld      l,(ix+$0b)
 40C2: 22 49 E0    ld      (bg_prerender_ptr_e049),hl
 40C5: 3E 20       ld      a,32                          ; 32 lines to render
 40C7: 32 48 E0    ld      (bg_lines_to_render_e048),a
@@ -7777,7 +7771,7 @@ clear_bg_via_renderer_40b8:                                          ; ...
 
 
 show_char_test_screen_40cc:                                          ; ...
-40CC: 21 BB D0    ld      hl, fgvideoram_code_d000+0xBB
+40CC: 21 BB D0    ld      hl,fgvideoram_code_d000+0xBB
 40CF: 0E 08       ld      c,8
 40D1: AF          xor     a
 
@@ -7822,7 +7816,7 @@ print_color_e021_40fa:                                               ; ...
 ; END OF FUNCTION CHUNK FOR sub_4110
 ; ---------------------------------------------------------------------------
 	.word fgvideoram_code_d000+0x9D                ; ...
-acolor_4109:                 .ascii 'COLOR '
+;acolor_4109:                 .ascii 'COLOR '
 
 ; =============== S U B R O U T I N E =======================================
 
@@ -7899,7 +7893,7 @@ loc_4160:                                                       ; ...
 
 fg_set_colour_4166:                                                  ; ...
 4166: 3A 21 E0    ld      a,(tmp_e021)                   ; colour
-4169: 21 A5 D4    ld      hl, fgvideoram_color_d400+0xA5
+4169: 21 A5 D4    ld      hl,fgvideoram_color_d400+0xA5
 416C: 0E 18       ld      c,24                          ; rows to fill
 
 loc_416e:                                                       ; ...
@@ -8023,11 +8017,11 @@ print_hex_digit_41cc:                                                ; ...
 print_p1_score_0_41ec:                                               ; ...
 41EC: 3E 09       ld      a,9                           ; colour
 41EE: 4F          ld      c,a                            ; save
-41EF: 21 1E D1    ld      hl, fgvideoram_code_d000+0x11E
+41EF: 21 1E D1    ld      hl,fgvideoram_code_d000+0x11E
 41F2: 36 30       ld      (hl),$30 ; '0'
 41F4: CB D4       set     2,h                            ; ptr colour
 41F6: 71          ld      (hl),c                         ; colour
-41F7: 21 5E D0    ld      hl, fgvideoram_code_d000+0x5E
+41F7: 21 5E D0    ld      hl,fgvideoram_code_d000+0x5E
 41FA: 11 41 EE    ld      de,p1_score_ee41
 41FD: C3 97 43    jp      print_score_digits_4397
 ; ---------------------------------------------------------------------------
@@ -8037,11 +8031,11 @@ print_p1_score_0_41ec:                                               ; ...
 print_p2_score_0_4201:                                               ; ...
 4201: 3E 09       ld      a,9
 4203: 4F          ld      c,a
-4204: 21 BE D3    ld      hl, fgvideoram_code_d000+0x3BE
+4204: 21 BE D3    ld      hl,fgvideoram_code_d000+0x3BE
 4207: 36 30       ld      (hl),$30 ; '0'
 4209: CB D4       set     2,h                            ; ptr colour
 420B: 71          ld      (hl),c                         ; colour
-420C: 21 FE D2    ld      hl, fgvideoram_code_d000+0x2FE
+420C: 21 FE D2    ld      hl,fgvideoram_code_d000+0x2FE
 420F: 11 44 EE    ld      de,p2_score_ee44
 4212: C3 97 43    jp      print_score_digits_4397
 
@@ -8051,12 +8045,12 @@ print_p2_score_0_4201:                                               ; ...
 print_hi_score_0_4215:                                               ; ...
 4215: 3E 01       ld      a,1                           ; colour
 4217: 4F          ld      c,a                            ; save
-4218: 21 7E D2    ld      hl, fgvideoram_code_d000+0x27E
+4218: 21 7E D2    ld      hl,fgvideoram_code_d000+0x27E
 421B: 36 30       ld      (hl),$30 ; '0'               ; '0'
 421D: CB D4       set     2,h                            ; ptr to colour
 421F: 71          ld      (hl),c
 4220: CB 94       res     2,h                            ; ptr to code
-4222: 21 BE D1    ld      hl, fgvideoram_code_d000+0x1BE
+4222: 21 BE D1    ld      hl,fgvideoram_code_d000+0x1BE
 4225: 11 47 EE    ld      de,hi_score_ee47
 4228: C3 97 43    jp      print_score_digits_4397
 ; End of function print_hi_score_0_4215
@@ -8111,7 +8105,7 @@ init_scroll_cnt_4256:                                                ; ...
 
 
 scroll_left_1_col_425c:                                              ; ...
-425C: 21 22 D0    ld      hl, fgvideoram_code_d000+0x22
+425C: 21 22 D0    ld      hl,fgvideoram_code_d000+0x22
 425F: 22 26 E0    ld      (tmp_scroll_addr_e026),hl
 4262: 3E 1C       ld      a,28
 4264: 32 28 E0    ld      (tmp_scroll_cols_e028),a
@@ -8199,7 +8193,7 @@ loc_42b9:                                                       ; ...
 42DE: CD 8F 41    call    print_string_418f
 42E1: 3A 29 E0    ld      a,(left_right_b1_pressed_e029)
 42E4: CD BF 41    call    print_hex_byte_41bf
-42E7: 21 96 D0    ld      hl, fgvideoram_code_d000+0x96
+42E7: 21 96 D0    ld      hl,fgvideoram_code_d000+0x96
 42EA: 3A 2A E0    ld      a,(up_down_pressed_e02a)
 42ED: 08          ex      af,af'
 42EE: 0E 03       ld      c,3
@@ -8434,7 +8428,7 @@ check_bomb_hit_e300_obj_43f9:                                        ; ...
 440E: 11 04 00    ld      de,4                          ; bytes per sprite
 4411: D9          exx
 4412: DD 21 00 E3 ld      ix,e300_obj_tbl_e300
-4416: FD 21 10 EF ld      iy, spriteram_shadow_ef00+0x10     ; s4.code
+4416: FD 21 10 EF ld      iy,spriteram_shadow_ef00+0x10     ; s4.code
 441A: 06 04       ld      b,4                           ; 4 objects to check
 
 loc_441c:                                                       ; ...
@@ -8479,7 +8473,7 @@ check_ship_hit_e300_obj_4440:                                        ; ...
 
 loc_444d:
 444D: DD 21 00 E3 ld      ix,e300_obj_tbl_e300
-4451: FD 21 10 EF ld      iy, spriteram_shadow_ef00+0x10     ; s4.code
+4451: FD 21 10 EF ld      iy,spriteram_shadow_ef00+0x10     ; s4.code
 4455: 16 06       ld      d,6                           ; hitbox add
 4457: 1E 0D       ld      e,$D                         ; hitbox cp
 4459: D9          exx
@@ -8527,7 +8521,7 @@ check_bomb_hit_large_alien_448c:                                     ; ...
 4490: 3A 07 EF    ld      a,(spriteram_shadow_ef00+7)         ; s1.x
 4493: 6F          ld      l,a                            ; save
 4494: DD 21 60 E1 ld      ix,large_alien_obj_tbl_e160
-4498: FD 21 08 EF ld      iy, spriteram_shadow_ef00+8        ; s2.code
+4498: FD 21 08 EF ld      iy,spriteram_shadow_ef00+8        ; s2.code
 449C: 11 08 00    ld      de,8
 449F: 06 03       ld      b,3                           ; 3 objects to check
 
@@ -8577,7 +8571,7 @@ check_bomb_hit_large_or_e200_obj_44d0:                               ; ...
 44E3: 3A 07 EF    ld      a,(spriteram_shadow_ef00+7)         ; s1.x
 44E6: 6F          ld      l,a                            ; save
 44E7: DD 21 00 E2 ld      ix,e200_obj_tbl_e200
-44EB: FD 21 20 EF ld      iy, spriteram_shadow_ef00+0x20     ; s8.code
+44EB: FD 21 20 EF ld      iy,spriteram_shadow_ef00+0x20     ; s8.code
 44EF: 06 09       ld      b,9                           ; 9 objects to check
 
 loc_44f1:                                                       ; ...
@@ -8600,7 +8594,7 @@ loc_44f1:                                                       ; ...
 4515: 3C          inc     a                               ; add hit
 4516: 32 54 E1    ld      (bomb_obj_e150+4),a                 ; update bomb hit count
 4519: DD 36 02 3C ld      (ix+$02),60                      ; init obj timer_e025
-451D: DD 36 0A FF ld      0xA(ix),$FF                  ; dy_dx lookup table index (none)
+451D: DD 36 0A FF ld      (ix+$0a),$FF                  ; dy_dx lookup table index (none)
 
 loc_4521:                                                       ; ...
 4521: D9          exx
@@ -8633,7 +8627,7 @@ loc_4536:                                                       ; ...
 ; ---------------------------------------------------------------------------
 
 check_bullet_hit_3_large_alien_453f:                                 ; ...
-453F: FD 21 08 EF ld      iy, spriteram_shadow_ef00+8        ; s2.code
+453F: FD 21 08 EF ld      iy,spriteram_shadow_ef00+8        ; s2.code
 4543: 21 60 E1    ld      hl,large_alien_obj_tbl_e160
 4546: 06 03       ld      b,3                           ; 3 objects to check
 
@@ -8680,7 +8674,7 @@ check_ship_hit_e200_obj_457a:                                        ; ...
 4582: 26 0B       ld      h,11                          ; hitbox add
 4584: 2E 17       ld      l,23                          ; hitbox cp
 4586: D9          exx
-4587: FD 21 20 EF ld      iy, spriteram_shadow_ef00+0x20     ; s8.code
+4587: FD 21 20 EF ld      iy,spriteram_shadow_ef00+0x20     ; s8.code
 458B: DD 21 00 E2 ld      ix,e200_obj_tbl_e200
 458F: 06 09       ld      b,9                           ; 9 objects
 4591: CD 9E 45    call    check_collision_459e
@@ -8737,7 +8731,7 @@ check_alien_bullet_hit_ship_45c5:                                    ; ...
 45CF: 2E 0B       ld      l,$B                         ; hitbox cpl
 45D1: D9          exx
 45D2: DD 21 A0 E2 ld      ix,alien_bullet_obj_tbl_e2a0
-45D6: FD 21 44 EF ld      iy, spriteram_shadow_ef00+0x44     ; s17.code
+45D6: FD 21 44 EF ld      iy,spriteram_shadow_ef00+0x44     ; s17.code
 45DA: 06 06       ld      b,6                           ; 6 objects to check
 
 loc_45dc:                                                       ; ...
@@ -8803,7 +8797,7 @@ loc_462d:                                                       ; ...
 462D: DD 66 01    ld      h,(ix+$01)                        ; bullet y msb
 4630: DD 6E 03    ld      l,(ix+$03)                        ; bullet x msb
 4633: 06 04       ld      b,4                           ; 4 objects to check
-4635: FD 21 10 EF ld      iy, spriteram_shadow_ef00+0x10     ; s4.code
+4635: FD 21 10 EF ld      iy,spriteram_shadow_ef00+0x10     ; s4.code
 4639: D9          exx
 463A: 21 00 E3    ld      hl,e300_obj_tbl_e300
 
@@ -8874,7 +8868,7 @@ check_bullet_hit_9_e200_468d:                                        ; ...
 468D: DD 66 01    ld      h,(ix+$01)                        ; bullet y msb
 4690: DD 6E 03    ld      l,(ix+$03)                        ; bullet x msb
 4693: 06 09       ld      b,9                           ; 9 objects to check
-4695: FD 21 20 EF ld      iy, spriteram_shadow_ef00+0x20     ; s8.code
+4695: FD 21 20 EF ld      iy,spriteram_shadow_ef00+0x20     ; s8.code
 4699: D9          exx
 469A: 21 00 E2    ld      hl,e200_obj_tbl_e200
 
@@ -8924,7 +8918,7 @@ check_ship_hit_large_alien_46cd:                                     ; ...
 46D1: 3A 03 EF    ld      a,(spriteram_shadow_ef00+3)         ; s0.x
 46D4: 6F          ld      l,a                            ; save
 46D5: DD 21 60 E1 ld      ix,large_alien_obj_tbl_e160
-46D9: FD 21 08 EF ld      iy, spriteram_shadow_ef00+8        ; s2.code
+46D9: FD 21 08 EF ld      iy,spriteram_shadow_ef00+8        ; s2.code
 46DD: 06 03       ld      b,3                           ; 3 objects to check
 
 loc_46df:                                                       ; ...
@@ -9212,73 +9206,39 @@ init_curr_player_map_data_47dc:                                      ; ...
 
 loc_4817:                                                       ; ...
 4817: 87          add     a,a                            ; x2
-4818: DD 77 13    ld      0x(ix+$0d),a                     ; $E1B3 (map_planet_space_e1b3)
+4818: DD 77 13    ld      (ix+$13),a                     ; $E1B3 (map_planet_space_e1b3)
 481B: 87          add     a,a                            ; x4
 481C: 21 80 48    ld      hl,map_meta_data_tbl_4880
 481F: EF          rst     de_eq_contents_hl_plus_2a_0028       ; += x8 get entry for this map
-4820: DD 72 11    ld      0x(ix+$0b),d
-4823: DD 73 12    ld      0x(ix+$0c),e                     ; ptr map meta-tile data
+4820: DD 72 11    ld      (ix+$11),d
+4823: DD 73 12    ld      (ix+$12),e                     ; ptr map meta-tile data
 4826: 7E          ld      a,(hl)
 4827: 23          inc     hl
-4828: DD 77 0D    ld      0xD(ix),a
+4828: DD 77 0D    ld      (ix+$0D),a
 482B: 7E          ld      a,(hl)
 482C: 23          inc     hl
-482D: DD 77 0C    ld      0xC(ix),a                      ; ptr map code data
+482D: DD 77 0C    ld      (ix+$0C),a                      ; ptr map code data
 4830: 7E          ld      a,(hl)
 4831: 23          inc     hl
-4832: DD 77 0F    ld      0xF(ix),a
+4832: DD 77 0F    ld      (ix+$0f),a
 4835: 7E          ld      a,(hl)
 4836: 23          inc     hl
-4837: DD 77 0E    ld      0xE(ix),a                      ; ptr map palette data
+4837: DD 77 0E    ld      (ix+$0E),a                      ; ptr map palette data
 483A: 7E          ld      a,(hl)
 483B: 32 83 EF    ld      (palette_bank_shadow_ef83),a
 483E: 21 00 D8    ld      hl,bgvideoram_code_d800
-4841: DD 74 0A    ld      0xA(ix),h
-4844: DD 75 0B    ld      0xB(ix),l                      ; ptr bg videoram render address
+4841: DD 74 0A    ld      (ix+$0a),h
+4844: DD 75 0B    ld      (ix+$0B),l                      ; ptr bg videoram render address
 4847: 21 64 00    ld      hl,$64 ; 'd'
 484A: 22 46 E0    ld      (scroll_plus1_shadow_e046),hl
 484D: 21 80 00    ld      hl,$80 ; '�'
 4850: 22 44 E0    ld      (scroll_shadow_e044),hl
 4853: 21 00 10    ld      hl,$1000
-4856: DD 74 14    ld      0x(ix+$0e),h
-4859: DD 75 15    ld      0x(ix+$0f),l
-485C: DD 75 16    ld      0x(ix+$10),l
+4856: DD 74 14    ld      (ix+$14),h
+4859: DD 75 15    ld      (ix+$15),l
+485C: DD 75 16    ld      (ix+$16),l
 485F: C9          ret
 ; End of function init_curr_player_map_data_47dc
-
-; ---------------------------------------------------------------------------
-; the offset is stored in 7,8(IX) of player map data
-	.word 0x1F8                             ; ...
-	.word 0x1D8
-	.word 0x1B8
-	.word 0x198
-	.word 0x178
-	.word 0x158
-	.word 0x138
-	.word 0x118
-	.word 0xF8
-	.word 0xD8
-	.word 0xB8
-	.word 0x98
-	.word 0x78
-	.word 0x58
-	.word 0x38
-	.word 0x18
-
-; *** planet map data
-
-; rocky planet
-	.word planet_1_meta_data_8000                  ; ...
-	.word planet_1_code_data_8200
-	.word planet_1_colour_data_8790
-; green mountain planet
-	.word planet_2_meta_data_8d20
-	.word planet_2_code_data_8f20
-	.word planet_2_colour_data_95a0
-; icy planet
-	.word planet_3_meta_data_4aac
-	.word planet_3_code_data_4cac
-	.word planet_3_colour_data_51cc
 
 ; =============== S U B R O U T I N E =======================================
 
@@ -9304,13 +9264,13 @@ build_bg_prerender_buffer_48aa:                                      ; ...
 48B2: 0E 08       ld      c,8                           ; 8x 4 tiles
 48B4: DD 66 07    ld      h,(ix+$07)
 48B7: DD 6E 08    ld      l,(ix+$08)                        ; offset into meta-data?
-48BA: DD 56 11    ld      d,0x(ix+$0b)
-48BD: DD 5E 12    ld      e,0x(ix+$0c)                     ; ptr map meta-tile data
+48BA: DD 56 11    ld      d,(ix+$11)
+48BD: DD 5E 12    ld      e,(ix+$12)                     ; ptr map meta-tile data
 48C0: 19          add     hl,de                          ; calc entry address
 
 loc_48c1:                                                       ; ...
 48C1: 7E          ld      a,(hl)
-48C2: DD 77 10    ld      0x(ix+$0a),a
+48C2: DD 77 10    ld      (ix+$10),a
 48C5: D9          exx
 48C6: E6 7F       and     $7F ; ''                     ; mask off flag
 48C8: 6F          ld      l,a
@@ -9320,14 +9280,14 @@ loc_48c1:                                                       ; ...
 48CD: 29          add     hl,hl                          ; x8
 48CE: 29          add     hl,hl                          ; x16
 48CF: DD 7E 09    ld      a,(ix+$09)
-48D2: DD CB 10 7E bit     7,0x(ix+$0a)                     ; flag set?
+48D2: DD CB 10 7E bit     7,(ix+$10)                     ; flag set?
 48D6: 20 06       jr      NZ,loc_48de                    ; yes,skip
-48D8: DD 36 10 00 ld      0x(ix+$0a),0                    ; colour adjustment=0
+48D8: DD 36 10 00 ld      (ix+$10),0                    ; colour adjustment=0
 48DC: 18 08       jr      loc_48e6
 ; ---------------------------------------------------------------------------
 
 loc_48de:                                                       ; ...
-48DE: DD 36 10 20 ld      0x(ix+$0a),$20 ; ' '           ; colour adjustment=32
+48DE: DD 36 10 20 ld      (ix+$10),$20 ; ' '           ; colour adjustment=32
 48E2: 5F          ld      e,a                            ; 9(IX)
 48E3: 3E 0C       ld      a,12
 48E5: 93          sub     e                               ; 12-a
@@ -9336,12 +9296,12 @@ loc_48e6:                                                       ; ...
 48E6: DF          rst     hl_plus_equals_a_0018
 48E7: 54          ld      d,h
 48E8: 5D          ld      e,l
-48E9: DD 46 0C    ld      b,0xC(ix)
-48EC: DD 4E 0D    ld      c,0xD(ix)                      ; ptr map tile code data (base)
+48E9: DD 46 0C    ld      b,(ix+$0C)
+48EC: DD 4E 0D    ld      c,(ix+$0D)                      ; ptr map tile code data (base)
 48EF: 09          add     hl,bc                          ; calc entry address
 48F0: EB          ex      de,hl
-48F1: DD 46 0E    ld      b,0xE(ix)
-48F4: DD 4E 0F    ld      c,0xF(ix)                      ; ptr map palette data
+48F1: DD 46 0E    ld      b,(ix+$0E)
+48F4: DD 4E 0F    ld      c,(ix+$0f)                      ; ptr map palette data
 48F7: 09          add     hl,bc
 48F8: 06 04       ld      b,4                           ; 4 tiles
 
@@ -9349,8 +9309,8 @@ loc_48fa:                                                       ; ...
 48FA: 1A          ld      a,(de)                         ; get bg code
 48FB: FD 77 00    ld      (iy+$00),a                        ; store in prerender buffer
 48FE: 7E          ld      a,(hl)                         ; map colour lookup entry
-48FF: DD 86 10    add     a,0x(ix+$0a)                     ; calc actual colour
-4902: FD 77 20    ld      0x(iy+$14),a                     ; store in prerender buffer
+48FF: DD 86 10    add     a,(ix+$10)                     ; calc actual colour
+4902: FD 77 20    ld      (iy+$20),a                     ; store in prerender buffer
 4905: 23          inc     hl                              ; next colour entry
 4906: 13          inc     de                              ; next code entry
 4907: FD 23       inc     iy                              ; next prerender addr
@@ -9377,27 +9337,27 @@ loc_48fa:                                                       ; ...
 4931: DD 75 08    ld      (ix+$08),l
 
 loc_4934:                                                       ; ...
-4934: DD 66 0A    ld      h,0xA(ix)
-4937: DD 6E 0B    ld      l,0xB(ix)                      ; ptr bg videoram address
+4934: DD 66 0A    ld      h,(ix+$0a)
+4937: DD 6E 0B    ld      l,(ix+$0B)                      ; ptr bg videoram address
 493A: 22 49 E0    ld      (bg_prerender_ptr_e049),hl
 493D: 3E 20       ld      a,$20 ; ' '
 493F: DF          rst     hl_plus_equals_a_0018                ; next column
 4940: 7C          ld      a,h
 4941: E6 DB       and     $DB ; '�'                     ; handle wrap
-4943: DD 77 0A    ld      0xA(ix),a
-4946: DD 75 0B    ld      0xB(ix),l                      ; update
+4943: DD 77 0A    ld      (ix+$0a),a
+4946: DD 75 0B    ld      (ix+$0B),l                      ; update
 4949: C9          ret
 ; ---------------------------------------------------------------------------
 
 loc_494a:                                                       ; ...
-494A: DD 34 13    inc     0x(ix+$0d)                        ; (map_planet_e502 % 3) x2
-494D: DD 7E 13    ld      a,0x(ix+$0d)
+494A: DD 34 13    inc     (ix+$13)                        ; (map_planet_e502 % 3) x2
+494D: DD 7E 13    ld      a,(ix+$13)
 4950: FE 06       cp      6                              ; max?
 4952: 38 04       jr      C,loc_4958                     ; no,skip
-4954: DD 36 13 00 ld      0x(ix+$0d),0                    ; wrap
+4954: DD 36 13 00 ld      (ix+$13),0                    ; wrap
 
 loc_4958:                                                       ; ...
-4958: DD 7E 13    ld      a,0x(ix+$0d)                     ; (map_planet_e502 % 3) x2
+4958: DD 7E 13    ld      a,(ix+$13)                     ; (map_planet_e502 % 3) x2
 495B: E6 01       and     1                              ; in space?
 495D: 20 1E       jr      NZ,loc_497d                    ; yes,go
 495F: 21 01 E5    ld      hl,byte_e501
@@ -9419,7 +9379,7 @@ loc_4974:                                                       ; ...
 
 loc_497d:                                                       ; ...
 497D: 21 BE 49    ld      hl,planet_and_space_data_tbl_49be
-4980: DD 7E 13    ld      a,0x(ix+$0d)                     ; map_planet_space_e1b3
+4980: DD 7E 13    ld      a,(ix+$13)                     ; map_planet_space_e1b3
 4983: 47          ld      b,a
 4984: 87          add     a,a                            ; x2
 4985: 87          add     a,a                            ; x4
@@ -9432,28 +9392,28 @@ loc_497d:                                                       ; ...
 498E: DD 77 07    ld      (ix+$07),a                        ; offset into meta-data
 4991: 23          inc     hl
 4992: 7E          ld      a,(hl)
-4993: DD 77 12    ld      0x(ix+$0c),a
+4993: DD 77 12    ld      (ix+$12),a
 4996: 23          inc     hl
 4997: 7E          ld      a,(hl)
-4998: DD 77 11    ld      0x(ix+$0b),a                     ; ptr map meta-tile data
+4998: DD 77 11    ld      (ix+$11),a                     ; ptr map meta-tile data
 499B: 23          inc     hl
 499C: 7E          ld      a,(hl)
-499D: DD 77 0D    ld      0xD(ix),a
+499D: DD 77 0D    ld      (ix+$0D),a
 49A0: 23          inc     hl
 49A1: 7E          ld      a,(hl)
-49A2: DD 77 0C    ld      0xC(ix),a                      ; ptr map tile code data (base)
+49A2: DD 77 0C    ld      (ix+$0C),a                      ; ptr map tile code data (base)
 49A5: 23          inc     hl
 49A6: 7E          ld      a,(hl)
-49A7: DD 77 0F    ld      0xF(ix),a
+49A7: DD 77 0F    ld      (ix+$0f),a
 49AA: 23          inc     hl
 49AB: 7E          ld      a,(hl)
-49AC: DD 77 0E    ld      0xE(ix),a                      ; ptr map palette data
+49AC: DD 77 0E    ld      (ix+$0E),a                      ; ptr map palette data
 49AF: 23          inc     hl
 49B0: 7E          ld      a,(hl)
 49B1: 32 83 EF    ld      (palette_bank_shadow_ef83),a
 49B4: AF          xor     a
-49B5: DD 77 14    ld      0x(ix+$0e),a
-49B8: DD 77 15    ld      0x(ix+$0f),a
+49B5: DD 77 14    ld      (ix+$14),a
+49B8: DD 77 15    ld      (ix+$15),a
 49BB: C3 34 49    jp      loc_4934
 ; End of function build_bg_prerender_buffer_48aa
 
@@ -9495,11 +9455,11 @@ loc_497d:                                                       ; ...
 sub_49f4:                                                       ; ...
 49F4: DD 21 A0 E1 ld      ix,curr_player_map_data_e1a0
 49F8: 11 08 00    ld      de,8
-49FB: DD 66 14    ld      h,0x(ix+$0e)
-49FE: DD 6E 15    ld      l,0x(ix+$0f)
+49FB: DD 66 14    ld      h,(ix+$14)
+49FE: DD 6E 15    ld      l,(ix+$15)
 4A01: 19          add     hl,de
-4A02: DD 74 14    ld      0x(ix+$0e),h
-4A05: DD 75 15    ld      0x(ix+$0f),l
+4A02: DD 74 14    ld      (ix+$14),h
+4A05: DD 75 15    ld      (ix+$15),l
 4A08: DD 6E 05    ld      l,(ix+$05)
 4A0B: DD 66 04    ld      h,(ix+$04)
 4A0E: DD 7E 03    ld      a,(ix+$03)
@@ -9548,28 +9508,28 @@ loc_4a32:                                                       ; ...
 
 
 sub_4a5f:                                                       ; ...
-4A5F: DD 7E 16    ld      a,0x(ix+$10)
+4A5F: DD 7E 16    ld      a,(ix+$16)
 4A62: A7          and     a
 4A63: 20 1A       jr      NZ,loc_4a7f
-4A65: DD 7E 13    ld      a,0x(ix+$0d)
+4A65: DD 7E 13    ld      a,(ix+$13)
 4A68: E6 01       and     1
 4A6A: C8          ret     Z
-4A6B: DD 7E 15    ld      a,0x(ix+$0f)
+4A6B: DD 7E 15    ld      a,(ix+$15)
 4A6E: A7          and     a
 4A6F: C0          ret     NZ
-4A70: DD 7E 14    ld      a,0x(ix+$0e)
+4A70: DD 7E 14    ld      a,(ix+$14)
 4A73: FE 18       cp      $18
 4A75: 28 03       jr      Z,loc_4a7a
 4A77: FE 50       cp      $50 ; 'P'
 4A79: C0          ret     NZ
 
 loc_4a7a:                                                       ; ...
-4A7A: DD 36 16 FF ld      0x(ix+$10),$FF
+4A7A: DD 36 16 FF ld      (ix+$16),$FF
 4A7E: C9          ret
 ; ---------------------------------------------------------------------------
 
 loc_4a7f:                                                       ; ...
-4A7F: DD 35 16    dec     0x(ix+$10)
+4A7F: DD 35 16    dec     (ix+$16)
 4A82: 28 09       jr      Z,loc_4a8d
 4A84: 3A 00 E0    ld      a,(vblank_tick_e000)
 4A87: E6 03       and     3
@@ -9578,7 +9538,7 @@ loc_4a7f:                                                       ; ...
 ; ---------------------------------------------------------------------------
 
 loc_4a8d:                                                       ; ...
-4A8D: DD 7E 14    ld      a,0x(ix+$0e)
+4A8D: DD 7E 14    ld      a,(ix+$14)
 4A90: FE 30       cp      $30 ; '0'
 4A92: 30 06       jr      NC,loc_4a9a
 4A94: 3E 03       ld      a,3
@@ -9587,7 +9547,7 @@ loc_4a8d:                                                       ; ...
 ; ---------------------------------------------------------------------------
 
 loc_4a9a:                                                       ; ...
-4A9A: DD 7E 13    ld      a,0x(ix+$0d)
+4A9A: DD 7E 13    ld      a,(ix+$13)
 4A9D: 0F          rrca
 4A9E: E6 03       and     3
 4AA0: 21 A8 4A    ld      hl,palette_bank_tbl_4aa8
@@ -9635,44 +9595,44 @@ update_aiming_table_6a1e:                                            ; ...
 6A24: DD 21 80 E3 ld      ix,alien_aiming_tbl_e380
 6A28: 3A 02 EF    ld      a,(spriteram_shadow_ef00+2)         ; s0.y
 6A2B: DD 77 00    ld      (ix+$00),a
-6A2E: DD 77 0E    ld      0xE(ix),a
-6A31: DD 77 10    ld      0x(ix+$0a),a
-6A34: DD 77 12    ld      0x(ix+$0c),a
-6A37: DD 77 14    ld      0x(ix+$0e),a
-6A3A: DD 77 16    ld      0x(ix+$10),a
-6A3D: DD 77 18    ld      0x(ix+$12),a
+6A2E: DD 77 0E    ld      (ix+$0E),a
+6A31: DD 77 10    ld      (ix+$10),a
+6A34: DD 77 12    ld      (ix+$12),a
+6A37: DD 77 14    ld      (ix+$14),a
+6A3A: DD 77 16    ld      (ix+$16),a
+6A3D: DD 77 18    ld      (ix+$18),a
 6A40: C6 10       add     a,16
 6A42: DD 77 04    ld      (ix+$04),a
 6A45: C6 10       add     a,16
 6A47: DD 77 08    ld      (ix+$08),a
 6A4A: C6 10       add     a,16
-6A4C: DD 77 0C    ld      0xC(ix),a
+6A4C: DD 77 0C    ld      (ix+$0C),a
 6A4F: D6 40       sub     64
 6A51: DD 77 02    ld      (ix+$02),a
 6A54: D6 10       sub     16
 6A56: DD 77 06    ld      (ix+$06),a
 6A59: D6 10       sub     16
-6A5B: DD 77 0A    ld      0xA(ix),a
+6A5B: DD 77 0A    ld      (ix+$0a),a
 6A5E: 3A 03 EF    ld      a,(spriteram_shadow_ef00+3)         ; s0.x
 6A61: DD 77 01    ld      (ix+$01),a
 6A64: DD 77 03    ld      (ix+$03),a
 6A67: DD 77 05    ld      (ix+$05),a
 6A6A: DD 77 07    ld      (ix+$07),a
 6A6D: DD 77 09    ld      (ix+$09),a
-6A70: DD 77 0B    ld      0xB(ix),a
-6A73: DD 77 0D    ld      0xD(ix),a
+6A70: DD 77 0B    ld      (ix+$0B),a
+6A73: DD 77 0D    ld      (ix+$0D),a
 6A76: C6 10       add     a,16
-6A78: DD 77 0F    ld      0xF(ix),a
+6A78: DD 77 0F    ld      (ix+$0f),a
 6A7B: C6 10       add     a,16
-6A7D: DD 77 21    ld      0x(ix+$15),a
+6A7D: DD 77 21    ld      (ix+$21),a
 6A80: C6 10       add     a,16
-6A82: DD 77 13    ld      0x(ix+$0d),a
+6A82: DD 77 13    ld      (ix+$13),a
 6A85: D6 40       sub     64
-6A87: DD 77 15    ld      0x(ix+$0f),a
+6A87: DD 77 15    ld      (ix+$15),a
 6A8A: D6 10       sub     16
-6A8C: DD 77 17    ld      0x(ix+$11),a
+6A8C: DD 77 17    ld      (ix+$17),a
 6A8F: D6 10       sub     16
-6A91: DD 77 19    ld      0x(ix+$13),a
+6A91: DD 77 19    ld      (ix+$19),a
 6A94: C9          ret
 ; End of function update_aiming_table_6a1e
 
@@ -9687,7 +9647,7 @@ aim_directly_at_ship_6a95:                                           ; ...
 ; ---------------------------------------------------------------------------
 
 aim_near_ship_6a9c:                                                  ; ...
-6A9C: DD 7E 0F    ld      a,0xF(ix)                      ; obj aiming entry
+6A9C: DD 7E 0F    ld      a,(ix+$0f)                      ; obj aiming entry
 6A9F: 21 80 E3    ld      hl,alien_aiming_tbl_e380
 6AA2: 87          add     a,a                            ; calc offset
 6AA3: E7          rst     content_hl_plus_a_0020
@@ -9816,83 +9776,14 @@ loc_6b2e:                                                       ; ...
 ; *** END OF CODE ***
 ; ***
 
-; ---
-; *** START OF MAP DATA
-	.word byte_9c3c                           ; ...
-	.word byte_9c7c
-	.word byte_9cbc
-	.word byte_9cfc
-	.word byte_9d3c
-	.word byte_9d7c
-	.word byte_9dbc
-	.word byte_9dfc
-	.word byte_9e3c
-	.word byte_9e7c
-	.word byte_9ebc
-	.word byte_9efc
-	.word byte_9f3c
-	.word byte_9f7c
-ROM:9FBC FF FF FF FF+; end of 'ROM'
-ROM:9FBC FF FF FF FF+
-io_c0:C000             ; ===========================================================================
-io_c0:C000
-io_c0:C000             ; Segment type: Regular
-C000:             .org 0xC000
-io_c0:C007             ; end of 'io_c0'
-io_c0:C007
-io_c8:C800             ; ===========================================================================
-io_c8:C800
-io_c8:C800             ; Segment type: Regular
-C800:             .org 0xC800
-io_c8:C807             ; end of 'io_c8'
-io_c8:C807
-io_c9:C900             ; ===========================================================================
-io_c9:C900
-io_c9:C900             ; Segment type: Regular
-C900:             .org 0xC900
-io_c9:C907             ; end of 'io_c9'
-io_c9:C907
-spriteram_cc00:CC00             ; ===========================================================================
-spriteram_cc00:CC00
-spriteram_cc00:CC00             ; Segment type: Regular
-CC00:             .org 0xCC00
-spriteram_cc00:CC00 ?? ?? ?? ??+; end of 'spriteram_cc00'
-spriteram_cc00:CC00 ?? ?? ?? ??+
-fgvideoram:D000             ; ===========================================================================
-fgvideoram:D000
-fgvideoram:D000             ; Segment type: Regular
-D000:             .org 0xD000
-fgvideoram:D400 ?? ?? ?? ??+; end of 'fgvideoram'
-fgvideoram:D400 ?? ?? ?? ??+
-bgvideoram:D800             ; ===========================================================================
-bgvideoram:D800
-bgvideoram:D800             ; Segment type: Regular
-D800:             .org 0xD800
-bgvideoram:DC00 ?? ?? ?? ??+; end of 'bgvideoram'
-bgvideoram:DC00 ?? ?? ?? ??+
 ; ===========================================================================
 
-; Segment type: Regular
-E000:             .org 0xE000
-E042:                                                     ; *** UNUSED???
-E043:                                                     ; *** UNUSED???
-E050: ?? ?? ?? ??+                                        ; code
-E099:                                                     ; *** UNUSED???
-E09A:                                                     ; *** UNUSED???
-
 ; *** the start of per-game variables
-
-E0A0:                                                     ; *** UNUSED???
-E0A1:                                                     ; *** UNUSED???
+                                                ; *** UNUSED???
 ; each time flying objects are updated
 ; this value is initialised to the count of active flying aliens
 ; every 2nd timer_e025 tick,if >= 5,then decremented
 ; - (used to allow formations of 5/6 to be spawned)
-E0B1:                                                     ; *** UNUSED?
-E0B3:                                                     ; *** NEVER EXPLICITLY INITIALISED - ALWAYS 0
-E0B4:                                                     ; as a result,this is always 0 too!
-E0C6:                                                     ; *** UNUSED???
-E0CA:                                                     ; completely benign?
 ; ship object
 ; $00 - state ($00=inactive,$01=exploding,$3f=explode,$ff=active)
 ; $01 - explosion frame cnt
@@ -9996,8 +9887,6 @@ E0CA:                                                     ; completely benign?
 ; $E500 - curr player status
 ; $E520 p1_c001 status
 ; $E540 p2_c002 status
-EE2A: ?? ?? ?? ??+                                        ; 4th
-EE37: ?? ?? ?? ??+                                        ; 5th
 
 ; shadow copy of spriteram_cc00
 ; - sprite allocation:
