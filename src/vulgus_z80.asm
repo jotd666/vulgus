@@ -8,7 +8,8 @@
 ; - alien object data (mainly movement data)
 ; - map generation (packed data structures)
 ;
-
+; this matches "vulgusa" rom
+;
 ; Processor       : z80 []
 ; converted back to MAME-style disassembly by jotd
 
@@ -20,10 +21,10 @@
 ;	map(0xc004, 0xc004).portr("DSW2");
 ;	map(0xc800, 0xc800).w("soundlatch", FUNC(generic_latch_8_device::write));
 ;	map(0xc801, 0xc801).nopw(); // ?
-;	map(0xc802, 0xc803).ram().share(m_scroll_low);
+;	map(0xc802, 0xc803).ram().share(m_scroll_low);  Y then X
 ;	map(0xc804, 0xc804).w(FUNC(vulgus_state::c804_w));
 ;	map(0xc805, 0xc805).w(FUNC(vulgus_state::palette_bank_w));
-;	map(0xc902, 0xc903).ram().share(m_scroll_high);
+;	map(0xc902, 0xc903).ram().share(m_scroll_high);  Y then X
 ;	map(0xcc00, 0xcc7f).ram().share(m_spriteram);
 ;	map(0xd000, 0xd7ff).ram().w(FUNC(vulgus_state::fgvideoram_w)).share(m_fgvideoram);
 ;	map(0xd800, 0xdfff).ram().w(FUNC(vulgus_state::bgvideoram_w)).share(m_bgvideoram);
@@ -107,9 +108,22 @@
 ;	PORT_DIPSETTING(    0x80, DEF_STR( Cocktail ) )
 ; ===========================================================================
 
+dsw1_c003 = $c003
+dsw2_c004 = $c004
+flipscreen_c804  = $c804
+port_1_c001 = $c001
+port_2_c002 = $c002
+palette_bank_w_c805 = $c805
+scroll_high_c902 = $C902
+system_c000 = $C000
+bg_tiles_address_d800 = $d800
+fg_tiles_address_d000 = $d000
+fg_tiles_color_address_d400 = $d400
+bg_tiles_color_address_dc00 = $dc00
+
 ; Segment type: Pure code
 
-reset_0000:
+reset_0000:		; [global]
 0000: F3          di
 0001: 31 00 F0    ld      sp,$F000                     ; end of RAM
 0004: C3 4A 00    jp      init_004a
@@ -323,7 +337,7 @@ loc_0119:                                                        ; demo music
 0122: 32 19 E0    ld      (demo_sounds_e019),a
 0125: 78          ld      a,b                            ; dsw2_c004
 0126: 2F          cpl
-0127: E6 80       and     $80 ; '�'                     ; cabinet_e01d
+0127: E6 80       and     $80 ;                      ; cabinet_e01d
 0129: 32 1D E0    ld      (cabinet_e01d),a                    ; $00 = cocktail
 012C: 78          ld      a,b                            ; dsw2_c004
 012D: 0F          rrca
@@ -340,24 +354,24 @@ loc_0119:                                                        ; demo music
 013D: 32 1B E0    ld      (bonus_life_2nd_e01b),a
 0140: 18 28       jr      init_cont_1_016a
 ; ---------------------------------------------------------------------------
-	.word 0x6020                              ; ...
-0142:                                                     ; 2000,6000
-	.word 0x7020                              ; 2000,7000
-	.word 0x6010                              ; 1000,6000
-	.word 0x7030                              ; 3000,7000
-	.word 0x5010                              ; 1000,5000
-	.word 0x8020                              ; 2000,8000
-	.word 0x7010                              ; 1000,7000
-	.word 0                                   ; None
-; coin A/B settings COIN,CREDIT
-	.word 0x101                               ; ...
-	.word 0x103
-	.word 0x301
-	.word 0x105
-	.word 0x201
-	.word 0x104
-	.word 0x102
-	.word 1
+;	.word 0x6020                              ; ...
+;0142:                                                     ; 2000,6000
+;	.word 0x7020                              ; 2000,7000
+;	.word 0x6010                              ; 1000,6000
+;	.word 0x7030                              ; 3000,7000
+;	.word 0x5010                              ; 1000,5000
+;	.word 0x8020                              ; 2000,8000
+;	.word 0x7010                              ; 1000,7000
+;	.word 0                                   ; None
+;; coin A/B settings COIN,CREDIT
+;	.word 0x101                               ; ...
+;	.word 0x103
+;	.word 0x301
+;	.word 0x105
+;	.word 0x201
+;	.word 0x104
+;	.word 0x102
+;	.word 1
 ; ---------------------------------------------------------------------------
 
 init_cont_1_016a:                                                    ; ...
@@ -372,7 +386,7 @@ init_cont_1_016a:                                                    ; ...
 ;as_o_01a6:                   .ascii 'S.O       '                     ; 5th
 ; ---------------------------------------------------------------------------
 
-vblank_isr_01b0:                                                     ; ...
+vblank_isr_01b0:               ; [global]
 01B0: F5          push    af
 01B1: C5          push    bc
 01B2: D5          push    de
@@ -458,18 +472,18 @@ vblank_sub_01f6:                                                     ; ...
 021D: 3A 00 C0    ld      a,(system_c000)                     ; coin,start
 0220: 2F          cpl
 0221: 32 01 E0    ld      (system_e001),a
-0224: 3A 01 C0    ld      a,(p1_c001)                         ; p1_c001 controls
+0224: 3A 01 C0    ld      a,(port_1_c001)                         ; port_1_c001 controls
 0227: 2F          cpl
 0228: 32 02 E0    ld      (p1_e002),a
-022B: 3A 02 C0    ld      a,(p2_c002)                         ; p2_c002 controls
+022B: 3A 02 C0    ld      a,(port_2_c002)                         ; port_2_c002 controls
 022E: 2F          cpl
 022F: 32 03 E0    ld      (p2_e003),a
-0232: 11 02 E0    ld      de,p1_e002                         ; p1_c001 controls
+0232: 11 02 E0    ld      de,p1_e002                         ; port_1_c001 controls
 0235: 21 08 E0    ld      hl,curr_player_right_e008
 0238: 3A 07 E0    ld      a,(curr_controls_e007)
 023B: E6 01       and     1                              ; p1_e002?
 023D: 28 01       jr      Z,loc_0240                      ; yes,skip
-023F: 1C          inc     e                               ; ptr p2_c002 controls
+023F: 1C          inc     e                               ; ptr port_2_c002 controls
 
 loc_0240:                                                        ; ...
 0240: 1A          ld      a,(de)                         ; get curr player controls
@@ -1062,9 +1076,7 @@ loc_079c:                                                        ; ...
 07AD: 10 ED       djnz    loc_079c                         ; loop
 07AF: E1          pop     hl
 07B0: 2B          dec     hl
-07B1: 0D          dec     c                               ; next row
-
-loc_07b2:                                                        ; loop
+07B1: 0D          dec     c                               ; next row                                                      ; loop
 07B2: 20 E5       jr      NZ,loc_0799
 07B4: C9          ret
 ; ---------------------------------------------------------------------------
@@ -1329,7 +1341,7 @@ vbl_0_0_fn_6__delay_0a52:                                            ; ...
 0A52: 3A 25 E0    ld      a,(timer_e025)
 0A55: A7          and     a                               ; expired?
 0A56: 20 11       jr      NZ,loc_0a69                     ; no,tick & exit
-0A58: CD DB 47    call    nullsub_3
+0A58: CD DB 47    call    nullsub_47db
 0A5B: 3A 01 E0    ld      a,(system_e001)
 0A5E: E6 01       and     1                              ; 1P START?
 0A60: C8          ret     Z                               ; no,return
@@ -2247,7 +2259,7 @@ loc_10b3:                                                       ; ...
 10E0: 2C          inc     l
 10E1: 36 00       ld      (hl),0
 10E3: 2C          inc     l
-10E4: 36 00       ld      (hl),0                        ; init p1_c001 score
+10E4: 36 00       ld      (hl),0                        ; init port_1_c001 score
 10E6: 3A 00 EC    ld      a,(two_p_game_ec00)
 10E9: A7          and     a                               ; 2P?
 10EA: C8          ret     Z                               ; no,exit
@@ -4923,14 +4935,14 @@ loc_2665:                                                       ; ...
 ; ---------------------------------------------------------------------------
 ; hi nibble is aiming table entry
 ; lo nibble -> $0D
-	.word byte_267e                           ; ...
-	.word byte_2685
-	.word byte_268c
-	.word byte_2693
-	.word byte_269a
-	.word byte_26a1
-	.word byte_26a8
-	.word byte_26af
+;	.word byte_267e                           ; ...
+;	.word byte_2685
+;	.word byte_268c
+;	.word byte_2693
+;	.word byte_269a
+;	.word byte_26a1
+;	.word byte_26a8
+;	.word byte_26af
 
 ; =============== S U B R O U T I N E =======================================
 
@@ -5065,22 +5077,22 @@ set_sprite_code_colour_2763:                                         ; ...
 2766: FD 36 01 00 ld      (iy+$01),0                       ; set colour
 276A: C9          ret
 ; ---------------------------------------------------------------------------
-	.word byte_27a3                     ; ...
-	.word byte_27a3
-	.word byte_27a3
-	.word byte_279b
-	.word byte_279b
-	.word byte_27ab
-	.word byte_27ab
-	.word byte_27ab
-	.word byte_27bb
-	.word byte_27bb
-	.word byte_27bb
-	.word byte_27b3
-	.word byte_27b3
-	.word byte_27c3
-	.word byte_27c3
-	.word byte_27c3
+;	.word byte_27a3                     ; ...
+;	.word byte_27a3
+;	.word byte_27a3
+;	.word byte_279b
+;	.word byte_279b
+;	.word byte_27ab
+;	.word byte_27ab
+;	.word byte_27ab
+;	.word byte_27bb
+;	.word byte_27bb
+;	.word byte_27bb
+;	.word byte_27b3
+;	.word byte_27b3
+;	.word byte_27c3
+;	.word byte_27c3
+;	.word byte_27c3
 ; ---------------------------------------------------------------------------
 
 animate_plane_27cb:                                                  ; ...
@@ -6151,22 +6163,22 @@ lower_flying_spawn_threshold_2f20:                                   ; ...
 2F2B: C3 C2 2E    jp      done_spawning_formation_2ec2
 ; END OF FUNCTION CHUNK FOR spawn_e200_objects_2c3b
 ; ---------------------------------------------------------------------------
-	.word unk_2f4e                            ; ...
-	.word unk_2f6d
-	.word pow_instruct_formation_1_tbl_2f8c
-	.word unk_2fab
-	.word unk_2fca
-	.word bomb_instruct_formation_tbl_2fe9
-	.word unk_3008
-	.word unk_3027
-	.word unk_3065
-	.word unk_3046
-	.word unk_3099
-	.word unk_307f
-	.word unk_30d2
-	.word unk_30b8
-	.word unk_30ec
-	.word unk_310b
+;	.word unk_2f4e                            ; ...
+;	.word unk_2f6d
+;	.word pow_instruct_formation_1_tbl_2f8c
+;	.word unk_2fab
+;	.word unk_2fca
+;	.word bomb_instruct_formation_tbl_2fe9
+;	.word unk_3008
+;	.word unk_3027
+;	.word unk_3065
+;	.word unk_3046
+;	.word unk_3099
+;	.word unk_307f
+;	.word unk_30d2
+;	.word unk_30b8
+;	.word unk_30ec
+;	.word unk_310b
 
 ; formation object initialisation tables
 ; 1st byte = objects in table
@@ -6178,59 +6190,59 @@ lower_flying_spawn_threshold_2f20:                                   ; ...
 ; $03 - sprite y
 ; $04 - sprite x
 
-2F8C:                                                     ; objects to follow
-	.word byte_312a                           ; ...
-	.word byte_313a
-	.word byte_314a
-	.word byte_3154
-	.word byte_315e
-	.word byte_316a
-	.word byte_3176
-	.word byte_3182
-	.word byte_3192
-	.word byte_31a2
-	.word byte_31b4
-	.word byte_31c0
-	.word byte_31d2
-	.word byte_31e4
-	.word byte_31f0
-	.word byte_3202
-	.word byte_320c
-	.word byte_3218
-	.word byte_3224
-	.word byte_322e
-	.word byte_3238
-	.word byte_3240
-	.word byte_324a
-	.word byte_3254
-	.word byte_325e
-	.word byte_3268
-	.word byte_3272
-	.word byte_327c
-	.word byte_328c
-	.word byte_329c
-	.word byte_32ac
-	.word byte_32bc
-	.word byte_32c8
-	.word byte_32f0
-	.word byte_3316
-	.word byte_3326
-	.word byte_3336
-	.word byte_334c
-	.word byte_3360
-	.word byte_33b8
-	.word byte_33c4
-	.word byte_33d0
-	.word byte_33dc
-	.word byte_33e8
-	.word byte_33f4
-	.word byte_3404
-	.word byte_3414
-	.word byte_3422
-	.word byte_3370
-	.word byte_3382
-	.word byte_3394
-	.word byte_33a6
+                                                     ; objects to follow
+;	.word byte_312a                           ; ...
+;	.word byte_313a
+;	.word byte_314a
+;	.word byte_3154
+;	.word byte_315e
+;	.word byte_316a
+;	.word byte_3176
+;	.word byte_3182
+;	.word byte_3192
+;	.word byte_31a2
+;	.word byte_31b4
+;	.word byte_31c0
+;	.word byte_31d2
+;	.word byte_31e4
+;	.word byte_31f0
+;	.word byte_3202
+;	.word byte_320c
+;	.word byte_3218
+;	.word byte_3224
+;	.word byte_322e
+;	.word byte_3238
+;	.word byte_3240
+;	.word byte_324a
+;	.word byte_3254
+;	.word byte_325e
+;	.word byte_3268
+;	.word byte_3272
+;	.word byte_327c
+;	.word byte_328c
+;	.word byte_329c
+;	.word byte_32ac
+;	.word byte_32bc
+;	.word byte_32c8
+;	.word byte_32f0
+;	.word byte_3316
+;	.word byte_3326
+;	.word byte_3336
+;	.word byte_334c
+;	.word byte_3360
+;	.word byte_33b8
+;	.word byte_33c4
+;	.word byte_33d0
+;	.word byte_33dc
+;	.word byte_33e8
+;	.word byte_33f4
+;	.word byte_3404
+;	.word byte_3414
+;	.word byte_3422
+;	.word byte_3370
+;	.word byte_3382
+;	.word byte_3394
+;	.word byte_33a6
 
 ; =============== S U B R O U T I N E =======================================
 
@@ -6363,15 +6375,15 @@ defer_spawn_timer_357e:                                              ; ...
 ; ---------------------------------------------------------------------------
 ; pointers to tables of pickup types per map_planet_e502
 ; - 0=POW,1=E,2=S,3=D,4=star
-	.word planet_1_pickup_type_tbl_359d            ; ...
-	.word planet_2_pickup_type_tbl_35ad
-	.word planet_3_pickup_type_tbl_35bd
-	.word planet_4_pickup_type_tbl_35cd
-	.word planet_5_pickup_type_tbl_35dd
-	.word planet_6_pickup_type_tbl_35ed
-	.word planet_7_pickup_type_tbl_35fd
-	.word planet_8_pickup_type_tbl_360d
-	.word planet_9_pickup_type_tbl_361d
+;	.word planet_1_pickup_type_tbl_359d            ; ...
+;	.word planet_2_pickup_type_tbl_35ad
+;	.word planet_3_pickup_type_tbl_35bd
+;	.word planet_4_pickup_type_tbl_35cd
+;	.word planet_5_pickup_type_tbl_35dd
+;	.word planet_6_pickup_type_tbl_35ed
+;	.word planet_7_pickup_type_tbl_35fd
+;	.word planet_8_pickup_type_tbl_360d
+;	.word planet_9_pickup_type_tbl_361d
 ; ---------------------------------------------------------------------------
 
 update_active_pickup_362d:                                           ; ...
@@ -6795,14 +6807,14 @@ loc_38f8:                                                       ; ...
 ; End of function sub_38ab
 
 ; ---------------------------------------------------------------------------
-	.word byte_391a                           ; ...
-	.word byte_3932
-	.word byte_3950
-	.word byte_396a
-	.word byte_3978
-	.word byte_3994
-	.word byte_39a8
-	.word byte_39e0
+;	.word byte_391a                           ; ...
+;	.word byte_3932
+;	.word byte_3950
+;	.word byte_396a
+;	.word byte_3978
+;	.word byte_3994
+;	.word byte_39a8
+;	.word byte_39e0
 
 ; =============== S U B R O U T I N E =======================================
 
@@ -9176,6 +9188,8 @@ loc_47d3:                                                       ; ...
 ; End of function write_next_snd_cmd_47be
 
 ; [00000001 BYTES: COLLAPSED FUNCTION nullsub_3. PRESS CTRL-NUMPAD+ TO EXPAND]
+nullsub_47db:
+47DB: C9          ret
 
 ; =============== S U B R O U T I N E =======================================
 
@@ -9424,30 +9438,30 @@ loc_497d:                                                       ; ...
 ; 4/5 - ptr code data
 ; 6/7 - ptr colour data
 ;   8 - palette bank
-	.word 0x1F8                             ; ...
-	.word planet_1_meta_data_8000
-	.word planet_1_code_data_8200
-	.word planet_1_colour_data_8790
-	.word 0xB8
-	.word space_1_meta_data_586c
-	.word space_1_code_data_592c
-	.word space_1_colour_data_5b6c
-	.word 0x1F8
-	.word planet_2_meta_data_8d20
-	.word planet_2_code_data_8f20
-	.word planet_2_colour_data_95a0
-	.word 0xB8
-	.word space_2_meta_data_57ac
-	.word space_1_code_data_592c
-	.word space_1_colour_data_5b6c
-	.word 0x1F8
-	.word planet_3_meta_data_4aac
-	.word planet_3_code_data_4cac
-	.word planet_3_colour_data_51cc
-	.word 0xB8
-	.word space_3_meta_data_56ec
-	.word space_1_code_data_592c
-	.word space_1_colour_data_5b6c
+;	.word 0x1F8                             ; ...
+;	.word planet_1_meta_data_8000
+;	.word planet_1_code_data_8200
+;	.word planet_1_colour_data_8790
+;	.word 0xB8
+;	.word space_1_meta_data_586c
+;	.word space_1_code_data_592c
+;	.word space_1_colour_data_5b6c
+;	.word 0x1F8
+;	.word planet_2_meta_data_8d20
+;	.word planet_2_code_data_8f20
+;	.word planet_2_colour_data_95a0
+;	.word 0xB8
+;	.word space_2_meta_data_57ac
+;	.word space_1_code_data_592c
+;	.word space_1_colour_data_5b6c
+;	.word 0x1F8
+;	.word planet_3_meta_data_4aac
+;	.word planet_3_code_data_4cac
+;	.word planet_3_colour_data_51cc
+;	.word 0xB8
+;	.word space_3_meta_data_56ec
+;	.word space_1_code_data_592c
+;	.word space_1_colour_data_5b6c
 
 ; =============== S U B R O U T I N E =======================================
 
@@ -9558,15 +9572,15 @@ loc_4a9a:                                                       ; ...
 
 ; ---------------------------------------------------------------------------
 ; variables for each planet 1-3,4-6,7-9
-	.word planet_1_area_data_tbl_5dbe              ; ...
-	.word planet_2_area_data_tbl_5f1e
-	.word planet_3_area_data_tbl_607e
-	.word planet_4_area_data_tbl_61de
-	.word planet_5_area_data_tbl_633e
-	.word planet_6_area_data_tbl_649e
-	.word planet_7_area_data_tbl_65fe
-	.word planet_8_area_data_tbl_675e
-	.word planet_9_area_data_tbl_68be
+;	.word planet_1_area_data_tbl_5dbe              ; ...
+;	.word planet_2_area_data_tbl_5f1e
+;	.word planet_3_area_data_tbl_607e
+;	.word planet_4_area_data_tbl_61de
+;	.word planet_5_area_data_tbl_633e
+;	.word planet_6_area_data_tbl_649e
+;	.word planet_7_area_data_tbl_65fe
+;	.word planet_8_area_data_tbl_675e
+;	.word planet_9_area_data_tbl_68be
 ; Each planet has 22 blocks of 16-byte data
 ; - interesting because there are only 16 areas/planet?!?
 ; $0: max_alien_bullets
@@ -9885,8 +9899,8 @@ loc_6b2e:                                                       ; ...
 ; 11: (s0.y,s0.x-32)
 ; 12: (s0.y,s0.x-48)
 ; $E500 - curr player status
-; $E520 p1_c001 status
-; $E540 p2_c002 status
+; $E520 port_1_c001 status
+; $E540 port_2_c002 status
 
 ; shadow copy of spriteram_cc00
 ; - sprite allocation:

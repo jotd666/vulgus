@@ -16,10 +16,10 @@ input_dict = {
 }
 
 single_line_to_cc_protect = set()
-remove_error_in_next_line = set()
+remove_error_in_next_line = {0x001a,0x0022,0x6AE,0X06b1,0x1255,0x091b,0x2392,0x428f,0x43c2,0x1282,0x233c}
 remove_error_in_prev_line = {0x1}
-line_to_push_cc_protect = set() | single_line_to_cc_protect
-line_to_pull_cc_protect = set() | single_line_to_cc_protect
+line_to_push_cc_protect = {0x6AA,0x6AF,0x06b4} | single_line_to_cc_protect
+line_to_pull_cc_protect = {0x6AE,0x6B0,0x06b8} | single_line_to_cc_protect
 
 store_to_video = re.compile("GET_ADDRESS\s+(0xd\w\w\w|video_ram_d)",flags=re.I)   # game_specific
 
@@ -252,9 +252,9 @@ with open(source_dir / "conv.s") as f:
             # no need to swap F with F', ever in this game
             lines[i-1] = "* just swap A/A'\n"+change_instruction("EXG_A_A_PRIME",lines,i-1)
             line = remove_error(line)
-##        elif "abcd/sbcd/subx/addx" in line:
-##            # those have been analyzed, no risk (worse case: score not working properly, easy to debug)
-##            line = remove_error(line)
+        elif "abcd/sbcd/subx/addx" in line:
+            # those have been analyzed, no risk (worse case: score not working properly, easy to debug)
+            line = remove_error(line)
         if address == 1:
             line = remove_instruction(lines,i)
 ##        if address == 0x0018:
@@ -265,8 +265,10 @@ with open(source_dir / "conv.s") as f:
 ##            # replace routine altogether
 ##            line = add_a_to_hl
 ##            kill_code(lines,i+1,0x24)
-
-        if address == 0x0030:
+        elif address in {0x0018,0x0020}:
+            line = change_instruction("add.b\td0,d6",lines,i)
+            lines[i+1] = remove_instruction(lines,i+1)
+        elif address == 0x0030:
             # jump table
             line = """\tmove.l\t(a7)+,a0   | get table address (just after rst instruction)
 \t.ifndef\tRELEASE
@@ -284,7 +286,14 @@ with open(source_dir / "conv.s") as f:
 \tjmp\t(a0)
 """
             kill_code(lines,i+1,0x33)
-
+        elif address in {0x0917,0x919}:
+            line = remove_instruction(lines,i)
+        elif address == 0x918:
+            line = change_instruction("sub.b\t#0x20,d6",lines,i)
+        elif address in {0x238e,0x2338}:
+            line = swap_lines(lines,i,i-1)
+        elif address == 0x127f:
+            line += "\ttst.b\td0\n"
         # end game_specific
         ###############################################
         if address in line_to_pull_cc_protect:
