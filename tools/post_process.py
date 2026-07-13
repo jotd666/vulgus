@@ -210,6 +210,7 @@ with open(source_dir / "conv.s") as f:
 
         line = process_jump_table(line)
 
+
         if "[push_function]" in line:
             toks = line.split()
             line = remove_instruction(lines,i)

@@ -463,8 +463,8 @@ get_address:
 	cmp.l 	#0xD000,a0
 	jcc		1f
 	* I/O: needs unchecked
-	jbsr	osd_get_last_known_pc
-	BREAKPOINT	"accessing I/O memory between 0xC800 and 0xCFFF"
+	*jbsr	osd_get_last_known_pc
+	*BREAKPOINT	"accessing I/O memory between 0xC800 and 0xCFFF"
 	jra 	0f
 1:
 	cmp.l	#0xE000,a0

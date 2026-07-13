@@ -2,3 +2,6 @@
 - cheat add 10000 to score 
 - highscore load/save
 - detect not game in play for insert coin
+
+find ld hl + push hl with notepad++: ld[^\n]*hl[^\n]*\n[^\n]*push
+17FF86 0000 0973

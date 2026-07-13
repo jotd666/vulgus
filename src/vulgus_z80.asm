@@ -231,15 +231,15 @@ init_004a:                                                           ; ...
 0055: ED B0       ldir
 0057: 21 00 D0    ld      hl,fgvideoram_code_d000
 005A: 11 01 D0    ld      de,fgvideoram_code_d000+1
-005D: 36 20       ld      (hl),$20 ; ' '               ; blank
+005D: 36 20       ld      (hl),$20 ; blank  ; [video_address]
 005F: 01 FF 03    ld      bc,$3FF
-0062: ED B0       ldir
+0062: ED B0       ldir  ; [video_address]
 0064: 21 00 D4    ld      hl,fgvideoram_color_d400
 0067: 11 01 D4    ld      de,fgvideoram_color_d400+1
-006A: 36 01       ld      (hl),1                        ; attrib
+006A: 36 01       ld      (hl),1        ; attrib  ; [video_address]
 006C: 01 FF 03    ld      bc,$3FF
-006F: ED B0       ldir
-0071: 21 6F 01    ld      hl,default_hi_score_tbl_016f
+006F: ED B0       ldir  ; [video_address]
+0071: 21 6F 01    ld      hl,default_hi_score_tbl_016f	; data
 0074: E5          push    hl
 0075: 11 47 EE    ld      de,hi_score_ee47
 0078: ED A0       ldi
@@ -274,7 +274,7 @@ init_004a:                                                           ; ...
 00C2: 32 42 E0    ld      (byte_e042),a
 00C5: 32 43 E0    ld      (byte_e043),a
 ; read dipswitches
-00C8: 3A 03 C0    ld      a,(dsw1_c003)
+00C8: 3A 03 C0    ld      a,(dsw1_c003)		; [unchecked_address]
 00CB: 2F          cpl
 00CC: 47          ld      b,a                            ; save
 00CD: 21 66 01    ld      hl,lives_tbl_0166
@@ -318,7 +318,7 @@ loc_00fa:
 0106: 32 10 E0    ld      (freeplay_e010),a                   ; flag freeplay_e010
 
 loc_0109:                                                        ; ...
-0109: 3A 04 C0    ld      a,(dsw2_c004)
+0109: 3A 04 C0    ld      a,(dsw2_c004)	; [unchecked_address]
 010C: 2F          cpl
 010D: 47          ld      b,a                            ; save
 010E: E6 03       and     3                              ; unknown
@@ -433,7 +433,7 @@ render_bg_line_01d6:                                                 ; ...
 loc_01df:
 01DF: 21 50 E0    ld      hl,bg_prerender_buffer_e050
 01E2: 01 20 00    ld      bc,$20 ; ' '                 ; 1 column
-01E5: ED B0       ldir
+01E5: ED B0       ldir		; [video_address]
 01E7: D9          exx
 01E8: D1          pop     de
 01E9: 21 00 04    ld      hl,$400
@@ -442,7 +442,7 @@ loc_01df:
 01EE: D9          exx
 01EF: D1          pop     de
 01F0: 01 20 00    ld      bc,$20 ; ' '                 ; 1 column
-01F3: ED B0       ldir
+01F3: ED B0       ldir		; [video_address]
 01F5: C9          ret
 ; End of function render_bg_line_01d6
 
@@ -469,13 +469,13 @@ vblank_sub_01f6:                                                     ; ...
 0216: 21 00 E0    ld      hl,vblank_tick_e000
 0219: 34          inc     (hl)                            ; tick!
 021A: CD 03 15    call    check_freeplay_1503
-021D: 3A 00 C0    ld      a,(system_c000)                     ; coin,start
+021D: 3A 00 C0    ld      a,(system_c000)                     ; coin,start [unchecked_address]
 0220: 2F          cpl
 0221: 32 01 E0    ld      (system_e001),a
-0224: 3A 01 C0    ld      a,(port_1_c001)                         ; port_1_c001 controls
+0224: 3A 01 C0    ld      a,(port_1_c001)                         ; port_1_c001 controls [unchecked_address]
 0227: 2F          cpl
 0228: 32 02 E0    ld      (p1_e002),a
-022B: 3A 02 C0    ld      a,(port_2_c002)                         ; port_2_c002 controls
+022B: 3A 02 C0    ld      a,(port_2_c002)                         ; port_2_c002 controls [unchecked_address]
 022E: 2F          cpl
 022F: 32 03 E0    ld      (p2_e003),a
 0232: 11 02 E0    ld      de,p1_e002                         ; port_1_c001 controls
@@ -1151,8 +1151,8 @@ vbl_0_fn_0__attract_text_0921:                                       ; ...
 ; ---------------------------------------------------------------------------
 
 vbl_0_fn_1__attract_mode_0935:                                       ; ...
-0935: 21 73 09    ld      hl,vbl_0_1_fn_23to26__check_freeplay_wait_credits_0973
-0938: E5          push    hl                              ; set return address
+0935: 21 73 09    ld      hl,vbl_0_1_fn_23to26__check_freeplay_wait_credits_0973 ; [push_function]
+0938: E5          push    hl                              ; set return address 
 0939: 3A 06 E0    ld      a,(vbl_lvl_1_fn_e006)
 093C: F7          rst    $30		  ; [jump_to_jump_table] [nb_entries=27]
 ; ---------------------------------------------------------------------------
@@ -1205,7 +1205,7 @@ check_freeplay_start_0981:                                           ; ...
 ; ---------------------------------------------------------------------------
 
 vbl_0_fn_2__check_start_098f:                                        ; ...
-098F: 21 A1 09    ld      hl,check_and_handle_start_09a1
+098F: 21 A1 09    ld      hl,check_and_handle_start_09a1	; [push_function]
 0992: E5          push    hl                              ; set return address
 0993: 3A 06 E0    ld      a,(vbl_lvl_1_fn_e006)
 0996: F7          rst    $30		  ; [jump_to_jump_table] [nb_entries=5]
@@ -2101,7 +2101,7 @@ vbl_inc_lvl_0_reset_lvl_1_fns_0fcc:                                  ; ...
 
 next_vbl_lvl_1_fn_0fd6:                                              ; ...
 0FD6: 21 06 E0    ld      hl,vbl_lvl_1_fn_e006
-0FD9: 34          inc     (hl)                            ; next fn
+0FD9: 34          inc     (hl)                            ; next fn [breakpoint]
 0FDA: C9          ret
 ; End of function init_combo_bonus_sequence_0cf5
 
@@ -3653,8 +3653,8 @@ loc_1caf:                                                       ; ...
 1CB0: DD 7E 00    ld      a,(ix+$00)
 1CB3: A7          and     a                               ; inactive?
 1CB4: 28 0A       jr      Z,loc_1cc0                     ; yes,skip
-1CB6: 21 C0 1C    ld      hl,loc_1cc0
-1CB9: E5          push    hl                              ; set return addr
+1CB6: 21 C0 1C    ld      hl,loc_1cc0					; [push_function]
+1CB9: E5          push    hl                              ; set return addr 
 1CBA: 3C          inc     a                               ; active?
 1CBB: 28 11       jr      Z,move_player_sprite_bullet_1cce    ; yes,go
 1CBD: C3 90 29    jp      deactivate_obj_2990
@@ -3809,7 +3809,7 @@ loc_1d9a:                                                       ; ...
 1D9B: DD 7E 00    ld      a,(ix+$00)                        ; status
 1D9E: A7          and     a                               ; inactive?
 1D9F: 28 0C       jr      Z,loc_1dad                     ; yes,skip
-1DA1: 21 AD 1D    ld      hl,loc_1dad
+1DA1: 21 AD 1D    ld      hl,loc_1dad					; [push_function]
 1DA4: E5          push    hl                              ; save return address
 1DA5: 3C          inc     a                               ; active?
 1DA6: 28 13       jr      Z,move_player_fg_bullet_1dbb        ; yes,go
@@ -4083,7 +4083,7 @@ loc_20cd:                                                       ; ...
 20D2: A7          and     a                               ; inactive?
 20D3: 28 0F       jr      Z,loc_20e4                     ; yes,skip
 20D5: 34          inc     (hl)                            ; inc formation free slot threshold
-20D6: 21 E4 20    ld      hl,loc_20e4                   ; save return address
+20D6: 21 E4 20    ld      hl,loc_20e4                   ; save return address [push_function]
 20D9: E5          push    hl
 20DA: 3C          inc     a                               ; active?
 20DB: 28 16       jr      Z,update_e200_obj_20f3              ; yes,go
@@ -5399,7 +5399,7 @@ loc_29a7:                                                       ; ...
 29A8: DD 7E 00    ld      a,(ix+$00)                        ; state
 29AB: A7          and     a                               ; inactive?
 29AC: 28 0B       jr      Z,loc_29b9                     ; yes,skip
-29AE: 21 B9 29    ld      hl,loc_29b9
+29AE: 21 B9 29    ld      hl,loc_29b9			; [push_function]
 29B1: E5          push    hl                              ; save return address
 29B2: 3C          inc     a                               ; active?
 29B3: CA C7 29    jp      Z,update_alien_bullet_29c7          ; yes,go
@@ -6623,7 +6623,7 @@ loc_37ae:                                                       ; ...
 37AF: DD 7E 00    ld      a,(ix+$00)                        ; obj state
 37B2: A7          and     a                               ; inactive?
 37B3: 28 0A       jr      Z,loc_37bf                     ; yes,skip
-37B5: 21 BF 37    ld      hl,loc_37bf
+37B5: 21 BF 37    ld      hl,loc_37bf			; [push_function]
 37B8: E5          push    hl                              ; save return address
 37B9: 3C          inc     a                               ; active?
 37BA: 28 10       jr      Z,loc_37cc                     ; yes,go
@@ -7328,7 +7328,7 @@ loc_3dcc:                                                       ; ...
 3DCD: DD 7E 00    ld      a,(ix+$00)                        ; obj state
 3DD0: A7          and     a                               ; inactive?
 3DD1: 28 0B       jr      Z,loc_3dde                     ; yes,skip
-3DD3: 21 DE 3D    ld      hl,loc_3dde
+3DD3: 21 DE 3D    ld      hl,loc_3dde			; [push_function]
 3DD6: E5          push    hl                              ; save return address
 3DD7: 3C          inc     a                               ; active?
 3DD8: CA 39 3E    jp      Z,animate_active_e300_obj_3e39      ; yes,go
@@ -7952,9 +7952,9 @@ loc_4196:                                                       ; ...
 4196: 1A          ld      a,(de)                         ; get character
 4197: FE 40       cp      $40 ; '@'                     ; end of string?
 4199: C8          ret     Z                               ; yes,return
-419A: 77          ld      (hl),a                         ; code=character
+419A: 77          ld      (hl),a                         ; code=character [unchecked_address]
 419B: CB D4       set     2,h                            ; ptr colour
-419D: 71          ld      (hl),c                         ; set colour
+419D: 71          ld      (hl),c                         ; set colour [video_address]
 419E: CB 94       res     2,h                            ; ptr code
 41A0: 3E 20       ld      a,$20 ; ' '
 41A2: DF          rst     hl_plus_equals_a_0018                ; next column
@@ -7979,9 +7979,9 @@ loc_41ad:                                                       ; ...
 41AD: 1A          ld      a,(de)                         ; get character
 41AE: FE 40       cp      $40 ; '@'                     ; end of string?
 41B0: C8          ret     Z                               ; yes,return
-41B1: 36 20       ld      (hl),$20 ; ' '               ; code=blank
+41B1: 36 20       ld      (hl),$20 ; ' '               ; code=blank  [unchecked_address]
 41B3: CB D4       set     2,h                            ; ptr colour
-41B5: 36 00       ld      (hl),0                        ; colour=0
+41B5: 36 00       ld      (hl),0                        ; colour=0   [video_address]
 41B7: CB 94       res     2,h                            ; ptr code
 41B9: 3E 20       ld      a,$20 ; ' '
 41BB: DF          rst     hl_plus_equals_a_0018                ; next column
@@ -8014,9 +8014,9 @@ print_hex_digit_41cc:                                                ; ...
 41CD: 21 DC 41    ld      hl,ascii_hex_tbl_41dc
 41D0: E7          rst     content_hl_plus_a_0020               ; get hex char
 41D1: EB          ex      de,hl
-41D2: 77          ld      (hl),a                         ; set code
+41D2: 77          ld      (hl),a                         ; set code   [unchecked_address]
 41D3: CB D4       set     2,h                            ; ptr colour
-41D5: 71          ld      (hl),c                         ; set colour
+41D5: 71          ld      (hl),c                         ; set colour [video_address]
 41D6: CB 94       res     2,h                            ; ptr code
 41D8: 3E 20       ld      a,$20 ; ' '
 41DA: DF          rst     hl_plus_equals_a_0018                ; next column
@@ -8030,9 +8030,9 @@ print_p1_score_0_41ec:                                               ; ...
 41EC: 3E 09       ld      a,9                           ; colour
 41EE: 4F          ld      c,a                            ; save
 41EF: 21 1E D1    ld      hl,fgvideoram_code_d000+0x11E
-41F2: 36 30       ld      (hl),$30 ; '0'
+41F2: 36 30       ld      (hl),$30 ; '0'			[unchecked_address]
 41F4: CB D4       set     2,h                            ; ptr colour
-41F6: 71          ld      (hl),c                         ; colour
+41F6: 71          ld      (hl),c                         ; colour  [video_address]
 41F7: 21 5E D0    ld      hl,fgvideoram_code_d000+0x5E
 41FA: 11 41 EE    ld      de,p1_score_ee41
 41FD: C3 97 43    jp      print_score_digits_4397
@@ -8044,9 +8044,9 @@ print_p2_score_0_4201:                                               ; ...
 4201: 3E 09       ld      a,9
 4203: 4F          ld      c,a
 4204: 21 BE D3    ld      hl,fgvideoram_code_d000+0x3BE
-4207: 36 30       ld      (hl),$30 ; '0'
+4207: 36 30       ld      (hl),$30 ; '0'    [unchecked_address]
 4209: CB D4       set     2,h                            ; ptr colour
-420B: 71          ld      (hl),c                         ; colour
+420B: 71          ld      (hl),c                         ; colour  [video_address]
 420C: 21 FE D2    ld      hl,fgvideoram_code_d000+0x2FE
 420F: 11 44 EE    ld      de,p2_score_ee44
 4212: C3 97 43    jp      print_score_digits_4397
@@ -8058,9 +8058,9 @@ print_hi_score_0_4215:                                               ; ...
 4215: 3E 01       ld      a,1                           ; colour
 4217: 4F          ld      c,a                            ; save
 4218: 21 7E D2    ld      hl,fgvideoram_code_d000+0x27E
-421B: 36 30       ld      (hl),$30 ; '0'               ; '0'
+421B: 36 30       ld      (hl),$30 ; '0'               ; '0'   [unchecked_address]
 421D: CB D4       set     2,h                            ; ptr to colour
-421F: 71          ld      (hl),c
+421F: 71          ld      (hl),c     ; [video_address]
 4220: CB 94       res     2,h                            ; ptr to code
 4222: 21 BE D1    ld      hl,fgvideoram_code_d000+0x1BE
 4225: 11 47 EE    ld      de,hi_score_ee47
@@ -8365,9 +8365,9 @@ loc_43a7:                                                       ; ...
 loc_43af:                                                       ; ...
 43AF: F1          pop     af
 43B0: C6 30       add     a,$30 ; '0'                  ; convert to ascii
-43B2: 77          ld      (hl),a                         ; code
+43B2: 77          ld      (hl),a                         ; code    [unchecked_address]
 43B3: CB D4       set     2,h                            ; ptr colour
-43B5: 71          ld      (hl),c                         ; colour
+43B5: 71          ld      (hl),c                         ; colour  [video_address]
 43B6: CB 94       res     2,h                            ; ptr code
 
 loc_43b8:                                                       ; ...
