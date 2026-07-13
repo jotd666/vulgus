@@ -167,12 +167,10 @@ with open(source_dir / "conv.s") as f:
             radix,offset = m.groups()
             eqd[f"{radix}_{offset}"] = f"0x{offset}"
 
-    for k,v in sorted(eqd.items()):
-        equates.append(f"{k} = {v}\n")
     for i,line in enumerate(lines):
         m = equates_re.match(line)
         if m:
-            equates.append(line)
+            eqd[m.group(1)] = m.group(2)
             line = ""
 
 
@@ -215,6 +213,8 @@ with open(source_dir / "conv.s") as f:
             toks = line.split()
             line = remove_instruction(lines,i)
             pa = toks[1].strip("#")
+            # remove from equates else equates overrides label in push!
+            eqd.pop(pa,None)
             lines[i+1] = change_instruction(f"pea\t{pa}",lines,i+1)
 
         # pre-add video_address tag if we find a store instruction to an explicit 3000-3FFF address
@@ -335,8 +335,10 @@ with open(source_dir / "conv.s") as f:
             new_lines.append(line)
         prev_line = line
 
+
 with open(source_dir / "data.inc","w") as fw:
-    fw.writelines(equates)
+    for k,v in sorted(eqd.items()):
+        fw.write(f"{k} = {v}\n")
 
 with open(source_dir / f"{gamename}.68k","w") as fw:
 

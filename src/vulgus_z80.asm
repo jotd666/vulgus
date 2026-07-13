@@ -652,9 +652,9 @@ loc_0317:                                                        ; ...
 0317: 1A          ld      a,(de)                         ; get char
 0318: 13          inc     de                              ; next char
 0319: C6 E0       add     a,$E0 ; '�'
-031B: 77          ld      (hl),a                         ; code
+031B: 77          ld      (hl),a                         ; code  [unchecked_address]
 031C: CB D4       set     2,h                            ; ptr colour
-031E: 71          ld      (hl),c                         ; colour
+031E: 71          ld      (hl),c                         ; colour  [video_address]
 031F: CB 94       res     2,h                            ; ptr code
 0321: 23          inc     hl                              ; next video address
 0322: 10 F3       djnz    loc_0317                         ; loop
@@ -779,9 +779,9 @@ loc_03dc:                                                        ; ...
 loc_03de:                                                        ; ...
 03DE: 1A          ld      a,(de)                         ; char
 03DF: 13          inc     de                              ; next char
-03E0: 77          ld      (hl),a                         ; code
+03E0: 77          ld      (hl),a                         ; code  [unchecked_address]
 03E1: CB D4       set     2,h                            ; ptr colour
-03E3: 36 08       ld      (hl),8                        ; colour
+03E3: 36 08       ld      (hl),8                        ; colour  [video_address]
 03E5: CB 94       res     2,h                            ; ptr code
 03E7: 3E 20       ld      a,$20 ; ' '
 03E9: DF          rst     hl_plus_equals_a_0018                ; next column
@@ -800,9 +800,9 @@ loc_03fd:                                                        ; ...
 03FD: DD E5       push    ix
 03FF: D1          pop     de
 0400: CD 97 43    call    print_score_digits_4397              ; print hi score
-0403: 36 30       ld      (hl),$30 ; '0'               ; add trailing '0'
+0403: 36 30       ld      (hl),$30 ; '0'               ; add trailing '0'  [unchecked_address]
 0405: CB D4       set     2,h                            ; ptr colour
-0407: 71          ld      (hl),c                         ; colour
+0407: 71          ld      (hl),c                         ; colour  [video_address]
 0408: CB 94       res     2,h                            ; ptr code
 040A: 3E 60       ld      a,$60 ; '`'
 040C: DF          rst     hl_plus_equals_a_0018
@@ -813,9 +813,9 @@ loc_03fd:                                                        ; ...
 loc_0412:                                                        ; ...
 0412: DD 7E 00    ld      a,(ix+$00)
 0415: DD 23       inc     ix
-0417: 77          ld      (hl),a                         ; code
+0417: 77          ld      (hl),a                         ; code   [unchecked_address]
 0418: CB D4       set     2,h                            ; ptr colour
-041A: 36 05       ld      (hl),5                        ; colour
+041A: 36 05       ld      (hl),5                        ; colour  [video_address]
 041C: CB 94       res     2,h                            ; ptr code
 041E: 3E 20       ld      a,$20 ; ' '
 0420: DF          rst     hl_plus_equals_a_0018                ; next column
@@ -1063,13 +1063,13 @@ loc_079c:                                                        ; ...
 079C: 1A          ld      a,(de)                         ; get char
 079D: 13          inc     de                              ; next char
 079E: C6 80       add     a,$80 ;                  ; calc code
-07A0: 77          ld      (hl),a                         ; code
+07A0: 77          ld      (hl),a                         ; code	 [unchecked_address]
 07A1: D9          exx
-07A2: 1A          ld      a,(de)                         ; get colour
+07A2: 1A          ld      a,(de)                         ; get colour  [unchecked_address]
 07A3: 13          inc     de                              ; next colour
 07A4: D9          exx
 07A5: CB D4       set     2,h                            ; ptr colour
-07A7: 77          ld      (hl),a                         ; colour
+07A7: 77          ld      (hl),a                         ; colour  [video_address]
 07A8: CB 94       res     2,h                            ; ptr code
 07AA: 3E 20       ld      a,$20 ; ' '
 07AC: DF          rst     hl_plus_equals_a_0018                ; next column
@@ -1090,9 +1090,9 @@ loc_07ba:                                                        ; ...
 07BC: E5          push    hl
 
 loc_07bd:                                                        ; ...
-07BD: 36 20       ld      (hl),$20 ; ' '               ; blank
+07BD: 36 20       ld      (hl),$20 ; ' '               ; blank  [unchecked_address]
 07BF: CB D4       set     2,h                            ; ptr colour
-07C1: 36 00       ld      (hl),0                        ; colour
+07C1: 36 00       ld      (hl),0                        ; colour  [video_address]
 07C3: CB 94       res     2,h                            ; ptr code
 07C5: 3E 20       ld      a,$20 ; ' '
 07C7: DF          rst     hl_plus_equals_a_0018                ; next column
@@ -1120,9 +1120,9 @@ loc_090b:                                                        ; ...
 090E: 47          ld      b,a
 
 loc_090f:                                                        ; ...
-090F: 36 02       ld      (hl),2                        ; code ($102=bomb)
+090F: 36 02       ld      (hl),2                        ; code ($102=bomb)  [unchecked_address]
 0911: CB D4       set     2,h                            ; ptr colour
-0913: 36 96       ld      (hl),$96 ; '�'               ; colour
+0913: 36 96       ld      (hl),$96 ; '�'               ; colour			[video_address]
 0915: CB 94       res     2,h                            ; ptr code
 0917: 7D          ld      a,l
 0918: D6 20       sub     $20 ; ' '                     ; previous column
@@ -1429,13 +1429,13 @@ handle_scroll_l_test_0ab1:                                           ; ...
 
 loc_0ab7:                                                        ; ...
 0AB7: 21 7D D0    ld      hl,fgvideoram_code_d000+0x7D
-0ABA: 36 56       ld      (hl),$56 ; 'V'               ; code
+0ABA: 36 56       ld      (hl),$56 ; 'V'               ; code  [unchecked_address]
 0ABC: CB D4       set     2,h                            ; ptr colour
-0ABE: 36 08       ld      (hl),8                        ; colour
+0ABE: 36 08       ld      (hl),8                        ; colour  [video_address]
 0AC0: 21 7B D0    ld      hl,fgvideoram_code_d000+0x7B
-0AC3: 36 48       ld      (hl),$48 ; 'H'               ; code
+0AC3: 36 48       ld      (hl),$48 ; 'H'               ; code  [unchecked_address]
 0AC5: CB D4       set     2,h                            ; ptr colour
-0AC7: 36 08       ld      (hl),8                        ; colour
+0AC7: 36 08       ld      (hl),8                        ; colour  [video_address]
 0AC9: 3E 08       ld      a,8
 0ACB: 4F          ld      c,a
 0ACC: 3A 45 E0    ld      a,(scroll_shadow_e044+1)
@@ -2101,7 +2101,7 @@ vbl_inc_lvl_0_reset_lvl_1_fns_0fcc:                                  ; ...
 
 next_vbl_lvl_1_fn_0fd6:                                              ; ...
 0FD6: 21 06 E0    ld      hl,vbl_lvl_1_fn_e006
-0FD9: 34          inc     (hl)                            ; next fn [breakpoint]
+0FD9: 34          inc     (hl)                            ; next fn
 0FDA: C9          ret
 ; End of function init_combo_bonus_sequence_0cf5
 
@@ -8129,7 +8129,7 @@ loc_4267:                                                       ; ...
 426C: 3E 20       ld      a,$20 ; ' '
 426E: DF          rst     hl_plus_equals_a_0018                ; next column
 426F: 01 12 00    ld      bc,18                         ; bytes (rows) to copy
-4272: ED B0       ldir
+4272: ED B0       ldir			; [video_address]
 4274: 2A 26 E0    ld      hl,(tmp_scroll_addr_e026)
 4277: 54          ld      d,h
 4278: 5D          ld      e,l
@@ -8139,7 +8139,7 @@ loc_4267:                                                       ; ...
 427F: CB D4       set     2,h                            ; colour RAM (src)
 4281: CB D2       set     2,d                            ; colour RAM (dst)
 4283: 01 12 00    ld      bc,18                         ; bytes (rows) to copy
-4286: ED B0       ldir
+4286: ED B0       ldir			; [video_address]
 4288: 3A 28 E0    ld      a,(tmp_scroll_cols_e028)
 428B: 3D          dec     a
 428C: 32 28 E0    ld      (tmp_scroll_cols_e028),a            ; update
