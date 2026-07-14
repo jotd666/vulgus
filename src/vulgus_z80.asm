@@ -708,28 +708,28 @@ loc_0373:                                                        ; ...
 
 loc_0377:                                                        ; ...
 0377: E5          push    hl
-0378: 36 00       ld      (hl),0                        ; code
+0378: 36 00       ld      (hl),0                        ; code  [unchecked_address]
 037A: CB D4       set     2,h                            ; ptr colour
-037C: 36 97       ld      (hl),$97 ; '�'               ; colour
+037C: 36 97       ld      (hl),$97 ; '�'               ; colour  [video_address]
 037E: CB 94       res     2,h                            ; ptr code
-0380: 3E 20       ld      a,$20 ; ' '
+0380: 3E 20       ld      a,$20 ; ' '			[unchecked_address]
 0382: DF          rst     hl_plus_equals_a_0018                ; next column
-0383: 36 01       ld      (hl),1                        ; code
+0383: 36 01       ld      (hl),1                        ; code   [unchecked_address]
 0385: CB D4       set     2,h                            ; ptr colour
-0387: 36 98       ld      (hl),$98 ; '�'               ; colour
+0387: 36 98       ld      (hl),$98 ; '�'               ; colour   [video_address]
 0389: E1          pop     hl                              ; restore addr
 038A: 2B          dec     hl                              ; next column
-038B: 36 10       ld      (hl),$10                     ; code
+038B: 36 10       ld      (hl),$10                     ; code   [unchecked_address]
 038D: CB D4       set     2,h                            ; ptr colour
-038F: 36 98       ld      (hl),$98 ; '�'               ; colour
+038F: 36 98       ld      (hl),$98 ; '�'               ; colour   [video_address]
 0391: CB 94       res     2,h                            ; ptr code
 0393: 3E 20       ld      a,$20 ; ' '
 0395: DF          rst     hl_plus_equals_a_0018                ; next column
-0396: 36 11       ld      (hl),$11                     ; code
+0396: 36 11       ld      (hl),$11                     ; code  [unchecked_address]
 
 loc_0398:                                                        ; ptr colour
 0398: CB D4       set     2,h
-039A: 36 98       ld      (hl),$98 ; '�'               ; colour
+039A: 36 98       ld      (hl),$98 ; '�'               ; colour  [video_address]
 039C: CB 94       res     2,h                            ; ptr code
 039E: 3E 21       ld      a,$21 ; '!'
 03A0: DF          rst     hl_plus_equals_a_0018                ; next column,row
@@ -856,9 +856,9 @@ loc_0454:                                                        ; ...
 0459: 22 23 E0    ld      (tmp_e023),hl
 
 loc_045c:                                                        ; ...
-045C: 36 20       ld      (hl),$20 ; ' '               ; code=blank
+045C: 36 20       ld      (hl),$20 ; ' '               ; code=blank			[unchecked_address]
 045E: CB D4       set     2,h                            ; ptr color
-0460: 36 00       ld      (hl),0                        ; colour
+0460: 36 00       ld      (hl),0                        ; colour		[video_address]
 0462: CB 94       res     2,h                            ; ptr code
 0464: 19          add     hl,de                          ; next column
 0465: 10 F5       djnz    loc_045c                         ; 32 chars
@@ -2223,14 +2223,14 @@ init_p1_p2_data_109a:                                                ; ...
 10A6: 11 20 00    ld      de,$20 ; ' '                 ; column offset
 
 loc_10a9:                                                       ; ...
-10A9: 36 20       ld      (hl),$20 ; ' '
+10A9: 36 20       ld      (hl),$20 ; ' '	; [video_address]
 10AB: 19          add     hl,de                          ; next column
 10AC: 10 FB       djnz    loc_10a9
 10AE: 21 DE D2    ld      hl,fgvideoram_code_d000+0x2DE
 10B1: 06 08       ld      b,8                           ; 8 chars to clear
 
 loc_10b3:                                                       ; ...
-10B3: 36 20       ld      (hl),$20 ; ' '               ; column offset
+10B3: 36 20       ld      (hl),$20 ; ' '         	; [video_address]      ; column offset
 10B5: 19          add     hl,de                          ; next column
 10B6: 10 FB       djnz    loc_10b3
 10B8: 21 20 E5    ld      hl,p1_lives_left_e520
@@ -3949,19 +3949,19 @@ deactivate_bomb_1e8b:                                                ; ...
 
 wipe_player_bullet_on_fg_1e91:                                       ; ...
 1E91: 67          ld      h,a                            ; fg videoram address msb
-1E92: 36 20       ld      (hl),$20 ; ' '               ; blank tile
+1E92: 36 20       ld      (hl),$20 ; ' '               ; blank tile    [video_address]
 1E94: 2C          inc     l                               ; prev row
-1E95: 36 20       ld      (hl),$20 ; ' '               ; blank tile
+1E95: 36 20       ld      (hl),$20 ; ' '               ; blank tile    [video_address]
 1E97: 3E 20       ld      a,$20 ; ' '
 1E99: DF          rst     hl_plus_equals_a_0018                ; next column
-1E9A: 36 20       ld      (hl),$20 ; ' '               ; blank tile
+1E9A: 36 20       ld      (hl),$20 ; ' '               ; blank tile    [video_address]
 1E9C: 2D          dec     l                               ; prev row
-1E9D: 36 20       ld      (hl),$20 ; ' '               ; blank tile
+1E9D: 36 20       ld      (hl),$20 ; ' '               ; blank tile    [video_address]
 1E9F: 3E 20       ld      a,$20 ; ' '
 1EA1: DF          rst     hl_plus_equals_a_0018                ; next column
-1EA2: 36 20       ld      (hl),$20 ; ' '               ; blank tile
+1EA2: 36 20       ld      (hl),$20 ; ' '               ; blank tile    [video_address]
 1EA4: 2C          inc     l                               ; prev row
-1EA5: 36 20       ld      (hl),$20 ; ' '               ; blank tile
+1EA5: 36 20       ld      (hl),$20 ; ' '               ; blank tile    [video_address]
 1EA7: C9          ret
 ; End of function wipe_player_bullet_on_fg_1e91
 
@@ -4015,51 +4015,51 @@ render_player_bullet_on_fg_1eb7:                                     ; ...
 1EFA: C6 14       add     a,$14                        ; calc colour
 1EFC: 4F          ld      c,a                            ; save
 1EFD: 1A          ld      a,(de)
-1EFE: 77          ld      (hl),a                         ; tile
+1EFE: 77          ld      (hl),a                         ; tile   [unchecked_address]
 1EFF: CB D4       set     2,h
-1F01: 71          ld      (hl),c                         ; colour
+1F01: 71          ld      (hl),c                         ; colour  [video_address]
 1F02: CB 94       res     2,h
 1F04: E5          push    hl
 1F05: 13          inc     de
 1F06: 3E 20       ld      a,$20 ; ' '
 1F08: DF          rst     hl_plus_equals_a_0018                ; next column
 1F09: 1A          ld      a,(de)
-1F0A: 77          ld      (hl),a                         ; tile
+1F0A: 77          ld      (hl),a                         ; tile   [unchecked_address]
 1F0B: CB D4       set     2,h
-1F0D: 71          ld      (hl),c                         ; colour
+1F0D: 71          ld      (hl),c                         ; colour  [video_address]
 1F0E: CB 94       res     2,h
 1F10: 3E 20       ld      a,$20 ; ' '
 1F12: DF          rst     hl_plus_equals_a_0018                ; next column
 1F13: 13          inc     de
 1F14: 1A          ld      a,(de)
-1F15: 77          ld      (hl),a                         ; tile
+1F15: 77          ld      (hl),a                         ; tile   [unchecked_address]
 1F16: CB D4       set     2,h
-1F18: 71          ld      (hl),c                         ; colour
+1F18: 71          ld      (hl),c                         ; colour   [video_address]
 1F19: E1          pop     hl
 1F1A: 2B          dec     hl                              ; next row
 1F1B: DD 74 05    ld      (ix+$05),h
 1F1E: DD 75 06    ld      (ix+$06),l                        ; save next row address
 1F21: 13          inc     de
 1F22: 1A          ld      a,(de)
-1F23: 77          ld      (hl),a                         ; tile
+1F23: 77          ld      (hl),a                         ; tile[unchecked_address]
 1F24: CB D4       set     2,h
-1F26: 71          ld      (hl),c                         ; colour
+1F26: 71          ld      (hl),c                         ; colour  [video_address]
 1F27: CB 94       res     2,h
 1F29: 13          inc     de
 1F2A: 3E 20       ld      a,$20 ; ' '
 1F2C: DF          rst     hl_plus_equals_a_0018                ; next column
 1F2D: 1A          ld      a,(de)
-1F2E: 77          ld      (hl),a                         ; tile
+1F2E: 77          ld      (hl),a                         ; tile[unchecked_address]
 1F2F: CB D4       set     2,h
-1F31: 71          ld      (hl),c                         ; colour
+1F31: 71          ld      (hl),c                         ; colour  [video_address]
 1F32: CB 94       res     2,h
 1F34: 13          inc     de
 1F35: 3E 20       ld      a,$20 ; ' '
 1F37: DF          rst     hl_plus_equals_a_0018                ; next column
 1F38: 1A          ld      a,(de)
-1F39: 77          ld      (hl),a                         ; tile
+1F39: 77          ld      (hl),a                         ; tile[unchecked_address]
 1F3A: CB D4       set     2,h
-1F3C: 71          ld      (hl),c                         ; colour
+1F3C: 71          ld      (hl),c                         ; colour    [video_address]
 1F3D: C9          ret
 ; End of function render_player_bullet_on_fg_1eb7
 
@@ -4654,7 +4654,7 @@ loc_24ce:                                                       ; ...
 ; ---------------------------------------------------------------------------
 
 loc_24e8:                                                       ; ...
-24E8: E1          pop     hl
+24E8: E1          pop     hl			; [address_pop]
 24E9: DD CB 05 BE res     7,(ix+$05)
 24ED: DD 7E 05    ld      a,(ix+$05)                        ; obj type
 24F0: 0F          rrca
