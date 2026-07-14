@@ -181,13 +181,7 @@ with open(source_dir / "conv.s") as f:
 ##"""
         address = get_line_address(line)
 
-        if "[address_pop]" in line:
-            if "MAKE_" in line:
-                line = ""
-            else:
-                line = change_instruction("addq.w\t#4,sp",lines,i)
-
-        elif "[return]" in line:
+        if "[return]" in line:
             if "MAKE_" in line:
                 line = ""
             else:
@@ -211,10 +205,10 @@ with open(source_dir / "conv.s") as f:
 
         if "[push_function]" in line:
             toks = line.split()
-            line = remove_instruction(lines,i)
             pa = toks[1].strip("#")
             # remove from equates else equates overrides label in push!
             eqd.pop(pa,None)
+            line = remove_instruction(lines,i)
             lines[i+1] = change_instruction(f"pea\t{pa}",lines,i+1)
 
         # pre-add video_address tag if we find a store instruction to an explicit 3000-3FFF address

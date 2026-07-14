@@ -4654,7 +4654,7 @@ loc_24ce:                                                       ; ...
 ; ---------------------------------------------------------------------------
 
 loc_24e8:                                                       ; ...
-24E8: E1          pop     hl			; [address_pop]
+24E8: E1          pop     hl			; [pop_address]
 24E9: DD CB 05 BE res     7,(ix+$05)
 24ED: DD 7E 05    ld      a,(ix+$05)                        ; obj type
 24F0: 0F          rrca

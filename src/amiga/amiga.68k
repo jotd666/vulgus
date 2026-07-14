@@ -1178,20 +1178,19 @@ level1_interrupt:
 	* m_bg_tilemap->set_scrolly(0, m_scroll_low[0] + 256 * m_scroll_high[0]);
 
 	moveq	#0,d0
-	move.b	(scroll_high_c902+1,a6),d0   | high
-	ror.w	#8,d0		| hardware is in little endian
-	move.b	(scroll_low_c802+1,a6),d0   | low
-	move.w	D0,game_scroll_x
 	move.b	(scroll_high_c902,a6),d0   | high
 	ror.w	#8,d0		| hardware is in little endian
 	move.b	(scroll_low_c802,a6),d0   | low
+	move.w	D0,game_scroll_x
+	move.b	(scroll_high_c902+1,a6),d0   | high
+	ror.w	#8,d0		| hardware is in little endian
+	move.b	(scroll_low_c802+1,a6),d0   | low
 	add.w	#0x100,d0	| 0: bottom part
 	and.w	#0x1FF,d0
 	neg.w	d0
 	add.w	#0x1FF,d0
 	move.w	D0,game_scroll_y
 	
-	* ok now D5 can be used freely
 
 	tst.b	frameskip
 	jeq		0f
