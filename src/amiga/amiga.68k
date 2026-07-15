@@ -55,7 +55,7 @@ BORDERBLANK = 1
 PREVIOUS_SPRITE_SIZE = 10
 CURRENT_SPRITE_SIZE = 4
 COLUMN_SIZE = 0x20
-ROW_SIZE = 0x10
+ROW_SIZE = 0x20
 GAME_MAX_SCROLL_X = 0x200
 GAME_MAX_SCROLL_Y = 0x200
 BG_TILE_WIDTH = 16
@@ -72,14 +72,14 @@ SCORE_FILE_SIZE = 80
 
 LOG_BUFFER_SIZE = 0x1000
 
-FG_TILE_NB_CLUTS_POW = 4
+FG_TILE_NB_CLUTS_POW = 6
 FG_TILE_NB_CLUTS = 1<<FG_TILE_NB_CLUTS_POW
-FG_TILE_COUNT = 0x400
+FG_TILE_COUNT = 0x200
 
-BG_TILE_NB_CLUTS_POW = 4
+BG_TILE_NB_CLUTS_POW = 7
 BG_TILE_NB_CLUTS = 1<<BG_TILE_NB_CLUTS_POW
-BG_TILE_COUNT = 0x400
-SPRITE_COUNT = 0x300
+BG_TILE_COUNT = 0x200
+SPRITE_COUNT = 0x100
 
 SPRITE_NB_CLUTS_POW = 2
 SPRITE_NB_CLUTS = 1<<SPRITE_NB_CLUTS_POW
@@ -1243,7 +1243,7 @@ level1_interrupt:
 	COMMIT_BLITLIST
 
 	.if		OPT_BLIT_CHAIN_MODE==0
-	jbsr		really_update_sprites
+	*jbsr		really_update_sprites
 
 	.ifne	OPT_ENABLE_DOUBLE_BUFFERING
 	jbsr		switch_screen_buffers
@@ -1662,7 +1662,6 @@ really_update_sprites:
 	
 	move.l	bob_previous_drawn_sprites(pc),a4
 	move.l	(a4)+,d6		| value of scroll X/Y at the time of the draw
-	moveq	#0,d6			| game scrolls all the time, no erase optim
 
 	lea		_custom,a5
 
@@ -1670,7 +1669,6 @@ really_update_sprites:
 	* clear previous positions
 	lea	background_restore_buffer,a0
 	move.l	playfield_drawn_screen_ptr(pc),a1
-	lea		object_type_table,a2
 	move.w	#NB_TARGET_SPRITES-1,d7
 
 	WAIT_BLIT
@@ -1687,16 +1685,12 @@ really_update_sprites:
 	move.w	(a4)+,d4			| height
 	move.w	(a4)+,d2		| width
 	move.w	(a4)+,d3		| object code
-	tst.b	d6
-	jeq		10f				| scrolling active, don't try anything stupid
 	* same scroll values now and when the object was drawn. If the object is static
 	* we can safely skip the background restore, which is super nice to do specially
 	* for palm trees
-	tst.b	(a2,d3.w)
-	jne		101f			| static object in a static screen: don't erase
-10:
+
 	jbsr		blit_background
-101:
+
 	dbf		d7,1b	
 	bra.b	12f
 11:
@@ -2975,8 +2969,7 @@ update_bg_tile:
 	move.b	d1,d3			| CLUT & tile code & flags
 
 	move.w	d3,d4
-	and.b	#0xC0,d4
-	add.w	d4,d4
+	and.b	#0x80,d4
 	add.w	d4,d4
 	add.w	d4,d2			| full tile code
 
@@ -2991,11 +2984,7 @@ update_bg_tile:
 	moveq	#0,d1
 	move.b	d0,d1
 	lsr.w	#8,d0
-	cmp.w	#0x10,d0
-	jcs		0f
-	* don't display right part ATM (used in level "well done" screen)
-	rts
-0:
+
 	add.w	d0,d0		| 16 pixels per tile
 	* D0.B: X, D1.B: Y (0-1F)
 	cmp.w	#0x10,d1
@@ -3064,7 +3053,9 @@ update_bg_tile:
 	lsr.w	#4,d1
 	and.w	#3,d1		| mirror/flip
 	
-	and.w	#BG_TILE_NB_CLUTS-1,d3
+	and.w	#(BG_TILE_NB_CLUTS/4)-1,d3
+	* TODO: add color bank
+	
 	.ifdef	NO68020
 	add.w	d3,d3
 	add.w	d3,d3
@@ -3308,8 +3299,8 @@ update_fg_tile:
 	moveq	#0,d3
 	move.b	d0,d2	| code
 	move.b	d1,d3	| attribute + tile msbits (flip/mirror not used!)
-	and.w	#0xC0,d3
-	lsl.w	#2,d3
+	and.w	#0x80,d3
+	add.w	d3,d3
 	add.w	d3,d2	| extended tile code
 	move.b	d1,d3	| attribute + tile msbits
 	and.w	#FG_TILE_NB_CLUTS-1,d3	| clut
@@ -3563,8 +3554,6 @@ scroll_table:
 	.include	"scroll_table_16.68k"
 	.endif
 	
-object_type_table:
-	.include	"object_type_table.68k"
 	
 	.include	"palette.68k"
 osd_debug_hook:
@@ -3739,13 +3728,13 @@ log_used_bg_tiles:
 	lea		(BG_SCREEN_TILE_ADDRESS,a6),a5
 	lea		(BG_SCREEN_COLOR_ADDRESS,a6),a4
 	lea		bg_tile_log_table,a0
-	move	#BG_TILE_NB_CLUTS-1,d4		| clut mask
-	move	#BG_TILE_NB_CLUTS_POW,d5		| nb clut pow
-
+	move	#(BG_TILE_NB_CLUTS/4)-1,d4		| clut mask (banks)
+	move	#BG_TILE_NB_CLUTS_POW,d5		| nb clut pow times 4
+	
 * both layers are of the same logical size
 * fg layer is 256x256 with 8x8 tiles
 * bg layer is 512x512 with 16x16 tiles
-
+	move.b	#0,0x111
 log_any_tiles:
 	move.w	#0x400-1,d7
 0:
@@ -3760,8 +3749,8 @@ log_any_tiles:
 	moveq	#0,d3
 	move.b	d0,d2	| code
 	move.b	d1,d3	| attribute + tile msbits
-	and.w	#0xC0,d3
-	lsl.w	#2,d3
+	and.w	#0x80,d3
+	lsl.w	#1,d3
 	add.w	d3,d2	| extended tile code
 	move.b	d1,d3	| attribute + tile msbits
 	and.w	d4,d3	| clut masked
