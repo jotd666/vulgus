@@ -1,6 +1,5 @@
-- rip fg tiles (figure out color system as there are a lot of cluts)
-- rip bg tiles same
-- rip sprites  same
+- bg palette only 16 colors!
+- rip sprites
 - after a while: 253D crash on return
 
 - set DSW difficulty lives, etc.

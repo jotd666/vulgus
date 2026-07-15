@@ -264,6 +264,7 @@ LONG_FIRE_TIMER_VALUE = 30
 
 	*.global osd_read_high_scores
 	.global osd_write_high_scores
+	.global osd_set_palette_bank
 	.global	load_highscores
 	.global	save_highscores
 	.global osd_sound_start
@@ -272,7 +273,6 @@ LONG_FIRE_TIMER_VALUE = 30
 	.global music_tick
 	.global	music_track_start_number
 	
-	.global	osd_set_x_page
 	.global	osd_display_value
 	.global	osd_get_last_known_pc
 	.global	osd_dump_logs
@@ -953,6 +953,17 @@ dump_and_quit:
 	illegal
 	.endif
 
+osd_set_palette_bank:
+	move.w	d0,-(a7)
+	and.b	#3,d0
+	cmp.b	current_palette_bank,d0
+	jeq		0f
+	move.b	d0,current_palette_bank
+	* TODO: refresh bg tiles completel
+0:
+	move.w	(a7)+,d0
+	rts
+	
 * hardware can scroll horizontally but game doesn't use it
 * well it uses it just for end level screen, not the fine adjust
 * but just MSB (page change)
@@ -1312,7 +1323,13 @@ level1_interrupt:
 	move.b	#1,flip_flop
 23:
 	.ifne	OPT_ENABLE_LOGGING
+	move.b	current_palette_bank,d0
+	move.w	d0,-(a7)
+	clr.b	current_palette_bank
 	jbsr	log_used_fg_tiles
+	move.w	(a7)+,d0
+	move.b	d0,current_palette_bank
+	
 	jbsr	log_used_bg_tiles
 	jbsr	log_used_sprites
 	.endif
@@ -2159,7 +2176,12 @@ mirror_function_table:
 nope:
 	rts
 	
-	
+bank_table:
+	.word	0
+	.word	0x20
+	.word	0x40
+	.word	0x60
+
 * < D0,D1: x,y
 * < A1: foreground plane pointer (often first plane!)
 * < D2: width in bytes (inc. 2 extra for shifting)
@@ -2968,6 +2990,7 @@ update_bg_tile:
 	moveq	#0,d3
 	move.b	d1,d3			| CLUT & tile code & flags
 
+	
 	move.w	d3,d4
 	and.b	#0x80,d4
 	add.w	d4,d4
@@ -3054,7 +3077,18 @@ update_bg_tile:
 	and.w	#3,d1		| mirror/flip
 	
 	and.w	#(BG_TILE_NB_CLUTS/4)-1,d3
-	* TODO: add color bank
+	* add color bank
+	lea		bank_table,a0
+	moveq	#0,d0
+	move.b	current_palette_bank,d0
+
+	.ifdef	NO68020
+	add.b	d0,d0
+	add.w	(a0,d0.w),d3
+	.else
+	add.w	(a0,d0.w*2),d3
+	.endif
+
 	
 	.ifdef	NO68020
 	add.w	d3,d3
@@ -3737,6 +3771,10 @@ log_used_bg_tiles:
 	move.b	#0,0x111
 log_any_tiles:
 	move.w	#0x400-1,d7
+	lea		bank_table,a1
+	moveq	#0,d6
+	move.b	current_palette_bank,d6
+	add.b	d6,d6
 0:
 
 	moveq	#0,d1
@@ -3755,6 +3793,8 @@ log_any_tiles:
 	move.b	d1,d3	| attribute + tile msbits
 	and.w	d4,d3	| clut masked
 
+	add.w	(a1,d6.w),d3	| add bank offset
+	
 	| remove flip/mirror
 	lsl.l	d5,d2			| tile code * NB_CLUTS (long!)
 	add.l	d3,d2			| add clut
@@ -3841,12 +3881,6 @@ skip_level:
 	movem.l	(a7)+,d0-a6
 	rts
 	
-warp_on_top_of_screen:
-	movem.l	d0-a6,-(a7)
-	GET_MEMORY_START_IN_A6
-
-	movem.l	(a7)+,d0-a6
-	rts
 	
 handle_keyboard:
 	movem.l	D0/A0/A5,-(a7)
@@ -4570,8 +4604,6 @@ sprite_mem_name:
 looped_sound_enabled:
 	.long	0
 
-return_address:
-	.long	0
 	
 current_music_name:
 	.long	0
@@ -4584,6 +4616,8 @@ current_color:
 credits_displayed:
 	.byte	0
 
+current_palette_bank:
+	.byte	0
 	
 difficulty_dsw:
 	.byte	0
