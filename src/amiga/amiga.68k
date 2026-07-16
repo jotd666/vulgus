@@ -1622,15 +1622,9 @@ compute_sprite_xy_code:
 	move.b	(TARGET_SPRITE_Y,a0),d0	| aka X
 
 	
-	* tile_code = buffered_spriteram[offs]
-	moveq	#0,d2
-	move.b	(TARGET_SPRITE_ATTRIBUTES,a0),d2
-	and.b	#0xF,d2
 	
 	neg.w	d1
 	add.w	#0x100,d1
-
-
 
 	rts
 	
@@ -1668,32 +1662,25 @@ update_one_bob:
 	* tries to display sprite 0x2C3 mirrored
 	* 
 	*
-	move.b	(TARGET_SPRITE_ATTRIBUTES,a0),d3
-	.ifndef	RELEASE
-	move.w	d2,0x130
-	move.w	d3,0x134
-	.endif
 	
-
-	
-	lea		sprite_group_table(pc),a3
-	move.w	d2,d6				| save code
-	add.w	d2,d2				| code times 2
-	move.w	(a3,d2.w),d4
-	jeq		10f			| nothing to do, normal tile
-	* double/triple/quadruple, whatever
-	btst	#14,d4
-	jne		2f		| bit 14 set: center tile, never draw
-	bclr	#0,d4	| remove bit 0 now
-	asr.w	#1,d4	| divide by 2, signed
-	*btst	#MIRROR_BIT,d3
-	jra		101f
-	* mirror: "negate" the code by flipping bit 10
-	bchg	#10,d4
-101:
-	btst	#10,d4
-	jne		2f		| no need to draw this part, the other part will do it
-	move.w	d4,d2	| get the real sprite code to draw
+*	lea		sprite_group_table(pc),a3
+*	move.w	d2,d6				| save code
+*	add.w	d2,d2				| code times 2
+*	move.w	(a3,d2.w),d4
+*	jeq		10f			| nothing to do, normal tile
+*	* double/triple/quadruple, whatever
+*	btst	#14,d4
+*	jne		2f		| bit 14 set: center tile, never draw
+*	bclr	#0,d4	| remove bit 0 now
+*	asr.w	#1,d4	| divide by 2, signed
+*	*btst	#MIRROR_BIT,d3
+*	jra		101f
+*	* mirror: "negate" the code by flipping bit 10
+*	bchg	#10,d4
+*101:
+*	btst	#10,d4
+*	jne		2f		| no need to draw this part, the other part will do it
+*	move.w	d4,d2	| get the real sprite code to draw
 	add.w	d2,d2	| code times 2
 10:
 	add.w	d2,d2				| code times 4 now
@@ -1711,11 +1698,11 @@ update_one_bob:
 
 200:
 	* now select proper clut
-	move.l	d4,a0
 	moveq	#0,d2
-	move.b	d3,d2
-	lsr.b	#4,d2
-	and.b	#0x3,d2
+	move.b	(TARGET_SPRITE_ATTRIBUTES,a0),d2
+	and.b	#0xF,d2
+	move.l	d4,a0
+
 	.ifdef MC68020
 	move.l	(a0,d2.w*4),d4
 	.else
@@ -1734,20 +1721,7 @@ update_one_bob:
 
 * now we have to check if mirror must be performed, either by doing this in-place
 * or by selecting already mirrored data
-	lea		((NB_PLAYFIELD_PLANES+1)*4,a0),a1		| load mirrored data pointers
-	tst.w	(a1)
-	jmi		101f		| invalid pointers: we must do in-place
-	*btst	#MIRROR_BIT,d3
-	jra		102f
-	* to mirror, just change pointer list
-	move.l	a1,a0
-	* and skip mirroring bit
-	jra		103f
-101:
-	*btst	#MIRROR_BIT,d3
-102:
-*	sne		d3		| convert attribute to boolean 0/ff for mirror_sprite_planes
-*	jbsr	mirror_sprite_planes
+
 103:	
 	* BOBs must follow screen scroll
 	add.w	bobs_game_scroll_y,d1

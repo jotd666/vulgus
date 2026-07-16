@@ -1,6 +1,7 @@
-- rip sprites: logging seems incorrect (code) display too
+- rip sprites: ok, but display is not (crashes)
 - bombs not aligned
 - after a while: 253D crash on return
+- black color mixes with background: use mappy fill algorithm
 
 - set DSW difficulty lives, etc.
 - cheat add 10000 to score 
