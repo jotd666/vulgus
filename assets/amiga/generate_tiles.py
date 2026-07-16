@@ -60,5 +60,5 @@ def doit_16x16(dump_it=False):
     return doit(8,512//8,128,"16x16",ref_clut_index=0,dump_it=dump_it)
 
 if __name__ == "__main__":
-    doit_8x8(False)
-    doit_16x16(False)
+    #doit_8x8(False)
+    doit_16x16(True)

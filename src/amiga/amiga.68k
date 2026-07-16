@@ -959,7 +959,14 @@ osd_set_palette_bank:
 	cmp.b	current_palette_bank,d0
 	jeq		0f
 	move.b	d0,current_palette_bank
-	* TODO: refresh bg tiles completel
+	* refresh bg tiles completely
+	move.l 	a6,a0
+	add.l	#bg_tiles_address_d800,a0
+	move.w	#0x3FF,d7
+1:
+	jbsr	osd_video_byte_dirty
+	addq	#1,a0
+	dbf		d7,1b
 0:
 	move.w	(a7)+,d0
 	rts
