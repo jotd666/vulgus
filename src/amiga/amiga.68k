@@ -81,7 +81,7 @@ BG_TILE_NB_CLUTS = 1<<BG_TILE_NB_CLUTS_POW
 BG_TILE_COUNT = 0x200
 SPRITE_COUNT = 0x100
 
-SPRITE_NB_CLUTS_POW = 2
+SPRITE_NB_CLUTS_POW = 4
 SPRITE_NB_CLUTS = 1<<SPRITE_NB_CLUTS_POW
 
 HW_SPRITE_BUFFER_SIZE = (2*8*256+16*2)
@@ -109,8 +109,8 @@ FG_SCREEN_COLOR_ADDRESS = fg_tiles_color_address_d400
 BG_SCREEN_TILE_ADDRESS = bg_tiles_address_d800
 BG_SCREEN_COLOR_ADDRESS = bg_tiles_color_address_dc00
 
-SPRITE_ADDRESS = 0xFE00  | to 0xFF7F
-SPRITE_BUFFER_SIZE = 0x180
+SPRITE_ADDRESS = 0xCC00  | to 0xCC7F
+SPRITE_BUFFER_SIZE = 0x80
 
 * if the alloc_sprite & update_sprite routines
 * are reused, changing those offsets can make
@@ -124,8 +124,6 @@ TARGET_SPRITE_ATTRIBUTES = 1
 TARGET_SPRITE_CODE = 0
 TARGET_SPRITE_SIZEOF = 4
 
-MIRROR_BIT = 3
-FLIP_BIT = 2
 
 
 
@@ -790,13 +788,6 @@ demo_game:
 	jbsr	cache_fg_tiles_address
 	jbsr	cache_bg_tiles_address
 
-
-	* create mirror parts for common sprites
-	* first initialize buffer address
-	.ifne		OPT_SPRITE_MIRRORING
-	move.l	#mirror_buffer,mirror_buffer_ptr
-	*jbsr	mirror_common_sprites
-	.endif
 	
 
 	* install game irq handler
@@ -837,113 +828,6 @@ cpu_init:
 	move.l	a2,a3
 	rts
 	
-	.ifne	OPT_SPRITE_MIRRORING
-mirror_common_sprites:
-	lea		shared_bob_table,a0
-	move.w	#0x3FF,d7
-0:
-	move.l	(a0)+,d0
-	jeq		100f
-	* sprite here, get clut table
-	move.l	d0,a1
-	move.w	#SPRITE_NB_CLUTS-1,d6
-1:
-	move.l	(a1)+,d1
-	jeq		2f
-	* clut exists
-	move.l	d1,a3
-	lea		((NB_PLAYFIELD_PLANES+1)*4+8,a3),a2
-	cmp.w	#-2,(a2)
-	jeq		2f
-	* we must generate mirrored data
-	jbsr	compute_mirror_bitplanes
-2:
-	dbf		d6,1b
-100:
-	dbf		d7,0b
-	* set top address as base for contextual mirror data
-	move.l	mirror_buffer_ptr,mirror_buffer_context_ptr
-	rts
-	
-* < A2: bitplane pointer list to fill
-* < A3: original bitplane pointers (with headers)
-	
-compute_mirror_bitplanes:
-	movem.l	d0-a6,-(a7)
-	* mirror exists: must first copy the bitplane data above
-	* a3 points on dimensions
-	* compute memory needed to clone the bitmap
-	move.l	mirror_buffer_ptr,a0
-	move.w	(a3)+,d4		| height
-	move.w	d4,d6 			| save height in d6
-	move.w	(a3)+,d5		| width in bytes + 2
-	addq	#4,a3			| skip rest to point on source bitplanes
-	subq	#2,d5			| adjust to real data width
-	mulu	d5,d4			| size of bitplane data
-	addq	#2,d5		    | make up
-	move.w	#NB_PLAYFIELD_PLANES-1+1,d3  | mask!!
-	mulu	d4,d3			| size of data to allocate
-
-	* first copy data so we can use in-place mirror routines (a bit wasteful but
-	* not a big issue as this happens at level start)
-	
-	move.w	#NB_PLAYFIELD_PLANES-1+1,d3  | mask!!
-100:
-	move.l	(a3)+,d1
-	jne		101f
-	* null source bitmap
-	clr.l	(a2)+
-	jra		2f		| next bitplane
-101:
-	move.l	d1,a1		| get bitplane data
-	move.l	a0,(a2)+		| store it
-	move.w	d4,d0
-	lsr.w	#1,d0
-	subq	#1,d0
-	* copy data
-1:
-	move.w	(a1)+,(a0)+
-	dbf		d0,1b
-	* check (too late) if the buffer overflowed. It will overflow on restore buffer so no risk of crashing
-	* just detect it and stop
-	.ifndef	RELEASE
-	cmp.l	#mirror_buffer_end,a0
-	jcs		0f
-	BREAKPOINT	"mirror buffer too small"
-	illegal
-0:
-	.endif
-2:
-	dbf		d3,100b
-	move.l	a0,mirror_buffer_ptr	| update for next time
-	* reset pointer, start mirroring
-	lea		((-NB_PLAYFIELD_PLANES-1)*4,a2),a0
-	move.w	#NB_PLAYFIELD_PLANES-1+1,d3  | mask!!
-	lea		mirror_table,a1
-	lea		mirror_function_table,a3
-	.ifndef	MC68020
-	move.w	d5,d0       | number of byte values (4: 16 bits + shifting)
-	add.w	d0,d0
-	move.l	(a3,d0.w),a3
-	.else
-	move.l	(a3,d5.w*2),a3		| compute mirror function once and for all
-	.endif
-0:
-	move.w	d6,d1		| height
-	subq	#1,d1		| minus one for dbf
-	move.l	(a0)+,d0	| bitplane data
-	jeq		1f
-	move.l	d0,a2
-	jsr		(a3)		| perform in-place mirror
-1:
-	dbf		d3,0b
-
-	movem.l	(a7)+,d0-a6
-	rts
-	.else
-compute_mirror_bitplanes:
-	rts
-	.endif
 
 
 
@@ -971,49 +855,6 @@ osd_set_palette_bank:
 	move.w	(a7)+,d0
 	rts
 	
-* hardware can scroll horizontally but game doesn't use it
-* well it uses it just for end level screen, not the fine adjust
-* but just MSB (page change)
-* in order to save memory and avoid handling horizontal scrolling,
-* I chose to just clear the screen when that happens
-* < D0: 0 or 1
-osd_set_x_page:
-	tst.b	D0 
-	jeq		1f
-	* page 1: we need to clear current tiles
-	movem.l	d0/a0/a1/a2/a5,-(a7)
-
-
-	
-	move.l	playfield_drawn_screen_ptr,a0
-	move.l	playfield_displayed_screen_ptr,a1
-	lea		background_restore_buffer,a2
-	move.w	#(BG_SCREEN_PLANE_SIZE*NB_PLAYFIELD_PLANES)/16-1,d0
-	* avoid conflict with sprite background restore that may be still running
-	
-	* make sure blitter has restored the backgrounds
-	lea	_custom,a5
-	WAIT_BLIT
-0:
-	.rept	4
-	clr.l	(a0)+
-	clr.l	(a1)+
-	clr.l	(a2)+
-	.endr
-	dbf		d0,0b
-	movem.l	(a7)+,d0/a0/a1/a2/a5
-1:
-	rts
-
-	
-force_fg_tiles_redraw:
-	lea		(fg_tiles_address_d000,a6),a0
-	move.w	#0x3FF,d1	
-0:
-	jbsr	osd_video_byte_dirty
-	addq	#2,a0
-	dbf		d1,0b
-	rts
 
 	
 
@@ -1261,7 +1102,7 @@ level1_interrupt:
 	COMMIT_BLITLIST
 
 	.if		OPT_BLIT_CHAIN_MODE==0
-	*jbsr		really_update_sprites
+	jbsr		really_update_sprites
 
 	.ifne	OPT_ENABLE_DOUBLE_BUFFERING
 	jbsr		switch_screen_buffers
@@ -1685,7 +1526,6 @@ really_update_sprites:
 
 	
 	move.l	bob_previous_drawn_sprites(pc),a4
-	move.l	(a4)+,d6		| value of scroll X/Y at the time of the draw
 
 	lea		_custom,a5
 
@@ -1734,7 +1574,6 @@ really_update_sprites:
 
     lea _custom,A5
 	move.l	bob_previous_drawn_sprites(pc),a6
-	move.l	game_scroll_x,(a6)+	| note down scrolling values at the current time
 	
 	lea		shared_bob_table,a4
 	
@@ -1748,7 +1587,33 @@ really_update_sprites:
 	
 mockup:
 
-
+*	for (int offs = m_spriteram.bytes() - 4; offs >= 0; offs -= 4)
+*	{
+*		int const code = m_spriteram[offs];
+*		int const color = m_spriteram[offs + 1] & 0x0f;
+*		int sy = m_spriteram[offs + 2];
+*		int sx = m_spriteram[offs + 3];
+*		bool const flip = flip_screen() ? true : false;
+*		int dir = 1;
+*
+*		if (sy == 0)
+*			continue;
+*
+*		if (flip)
+*		{
+*			sx = 240 - sx;
+*			sy = 240 - sy;
+*			dir = -1;
+*		}
+*
+*		// draw sprite rows (16*16, 16*32, or 16*64)
+*		int row = (m_spriteram[offs + 1] & 0xc0) >> 6;
+*		if (row == 2) row = 3;
+*
+*		for (; row >= 0; row--)
+*			gfx->transpen(bitmap, cliprect, code + row, color, flip, flip, sx + 128, sy + 6 + 16 * row * dir, 15);
+*	}
+	
 compute_sprite_xy_code:
 	moveq	#0,d0
 	moveq	#0,d1
@@ -1757,19 +1622,15 @@ compute_sprite_xy_code:
 	move.b	(TARGET_SPRITE_Y,a0),d0	| aka X
 
 	
-	* tile_code = buffered_spriteram[offs] + ((attributes << 2) & 0x300)
+	* tile_code = buffered_spriteram[offs]
 	moveq	#0,d2
 	move.b	(TARGET_SPRITE_ATTRIBUTES,a0),d2
-	btst	#0,d2
-	jeq		0f
-	sub.w	#0x100,d1
-0:
-	and.b	#0xC0,d2
-	lsl.w	#2,d2
-	move.b	(TARGET_SPRITE_CODE,a0),d2
+	and.b	#0xF,d2
 	
 	neg.w	d1
 	add.w	#0x100,d1
+
+
 
 	rts
 	
@@ -1782,8 +1643,7 @@ update_one_bob:
 	move.l	a0,a2		| save for later
 	jbsr	compute_sprite_xy_code
 	
-	cmp.w	#0x300,d2
-	jcc		2f			| bank 3: illegal: skip
+
 	cmp.w	#256-SPRITE_Y_CORRECTION,d1
 	jcc		2f			| too low: skip
 	
@@ -1814,10 +1674,7 @@ update_one_bob:
 	move.w	d3,0x134
 	.endif
 	
-	.if		OPT_MIRROR_TEST==1
-	bset	#MIRROR_BIT,d3
-	move.b	d3,(TARGET_SPRITE_ATTRIBUTES,a0)
-	.endif
+
 	
 	lea		sprite_group_table(pc),a3
 	move.w	d2,d6				| save code
@@ -1829,8 +1686,8 @@ update_one_bob:
 	jne		2f		| bit 14 set: center tile, never draw
 	bclr	#0,d4	| remove bit 0 now
 	asr.w	#1,d4	| divide by 2, signed
-	btst	#MIRROR_BIT,d3
-	jeq		101f
+	*btst	#MIRROR_BIT,d3
+	jra		101f
 	* mirror: "negate" the code by flipping bit 10
 	bchg	#10,d4
 101:
@@ -1846,10 +1703,6 @@ update_one_bob:
 
 	* in dev mode, break if we try to display a non-existing bob
 
-	moveq	#0,d2
-	move.b	(TARGET_SPRITE_ATTRIBUTES,a0),d2
-	and.b	#0XC0,d2
-	lsl.w	#2,d2
 	move.b	(TARGET_SPRITE_CODE,a0),d2
 	move.b	(TARGET_SPRITE_ATTRIBUTES,a0),d3
 	COLOR0_FLASH	0xF00
@@ -1884,17 +1737,17 @@ update_one_bob:
 	lea		((NB_PLAYFIELD_PLANES+1)*4,a0),a1		| load mirrored data pointers
 	tst.w	(a1)
 	jmi		101f		| invalid pointers: we must do in-place
-	btst	#MIRROR_BIT,d3
-	jeq		102f
+	*btst	#MIRROR_BIT,d3
+	jra		102f
 	* to mirror, just change pointer list
 	move.l	a1,a0
 	* and skip mirroring bit
 	jra		103f
 101:
-	btst	#MIRROR_BIT,d3
+	*btst	#MIRROR_BIT,d3
 102:
-	sne		d3		| convert attribute to boolean 0/ff for mirror_sprite_planes
-	jbsr	mirror_sprite_planes
+*	sne		d3		| convert attribute to boolean 0/ff for mirror_sprite_planes
+*	jbsr	mirror_sprite_planes
 103:	
 	* BOBs must follow screen scroll
 	add.w	bobs_game_scroll_y,d1
@@ -1963,12 +1816,6 @@ update_one_bob:
 	moveq	#0,d5			| Y-offset
 
 9:
-	move.b	(TARGET_SPRITE_ATTRIBUTES,a2),d3
-	btst	#FLIP_BIT,d3  | X but portrait
-	jeq		101f
-	* flip
-	neg.w	d4
-101:
 
 	moveq	#NB_PLAYFIELD_PLANES,d3
 
@@ -1978,210 +1825,6 @@ update_one_bob:
 	rts
 
 
-* < A0: plane list
-* < D3: required orientation
-* < D4: height
-* < D5: width (bytes) including 16 bit shift
-* trashes: only unused registers :) A3
-
-mirror_sprite_planes:
-	movem.l	d0-d2/d6/a0/a2,-(a7)
-	.ifndef	RELEASE
-	move.l	a0,0x138
-	.endif
-	
-	* bitplanes aren't pre-computed: check bitplanes current orientation and swap
-	* if required. This is slow but saves memory
-	.if		OPT_BLIT_CHAIN_MODE==0
-	lea		mirror_table,a1
-	.endif
-	moveq	#NB_PLAYFIELD_PLANES+1-1,d6
-	lea		mirror_function_table(pc),a3
-	.ifndef	MC68020
-	move.w	d5,d0       | number of byte values (ex: 4: 16 bits + shifting)
-	add.w	d0,d0
-	move.l	(a3,d0.w),a3
-	.else
-	move.l	(a3,d5.w*2),a3		| compute mirror function once and for all
-	.endif
-	* here a bitplane & its mirror can be blit just one after another
-	* adding a wait blit ensures that there's no gfx glitch
-	WAIT_BLIT
-0:
-	move.l	(a0)+,d1		| current plane data
-	jeq		1f				| no data: skip
-	.ifndef	RELEASE
-	jpl		2f
-	BREAKPOINT	"negative plane data pointer, code in 0x130, clut in 0x134, entered list in 0x138"
-	jra		3f				| exit to be able to debug more
-2:
-	.endif
-	move.l	d1,a2
-	cmp.b	(-2,a2),d3		| 2 bytes before: mirror flag
-	jeq		1f
-	* not the proper orientation: change it
-	move.b	d3,(-2,a2)
-	* perform or queue the mirroring
-	WRITE_BLITTER_VIRTUAL_MIRROR	d4,a3,a2
-
-	* next bitplane
-1:
-	dbf		d6,0b
-3:
-	movem.l	(a7)+,d0-d2/d6/a0/a2
-	rts
-	
-
-* < A1: mirror table
-* < A2: bitmap
-* < D1+1: height
-* destroys d0-d2, a2
-
-mirror_16_bit_wide:
-	.ifdef	MC68020
-	moveq	#0,d2
-	.endif
-10:
-	.ifndef	MC68020
-	* we have to do that each time as we must add offsets as long (table is 128k long)
-	moveq	#0,d2
-	.endif
-	move.w	(a2)+,d2
-	jeq		14f					| zero: optim
-	.ifndef	MC68020
-	add.l	d2,d2
-	move.w	(a1,d2.l),(-2,a2)   | use .l as d2.w may be > 0x7FFF
-	.else
-	move.w	(a1,d2.l*2),(-2,a2)
-	.endif
-14:
-	dbf		d1,10b		| next
-	rts
-
-mirror_32_bit_wide:
-	.ifdef	MC68020
-	moveq	#0,d0
-	.endif
-10:
-	.ifndef	MC68020
-	* we have to do that each time as we must add offsets as long (table is 128k long)
-	moveq	#0,d0
-	.endif
-	move.l	(a2)+,d2
-	jeq		14f		| if line is blank, no need to mirror
-	move.w	d2,d0
-	clr.w	d2
-	swap	d2
-	.ifndef	MC68020
-	add.l	d2,d2
-	add.l	d0,d0
-	move.w	(a1,d2.l),-(a2)		| get mirror value
-	move.w	(a1,d0.l),-(a2)		| get mirror value
-	.else
-	move.w	(a1,d2.l*2),-(a2)		| get mirror value
-	move.w	(a1,d0.l*2),-(a2)		| get mirror value
-	.endif
-	addq	#4,a2					| skip row
-14:
-	dbf		d1,10b
-	rts
-
-
-mirror_48_bit_wide:
-	.ifdef	MC68020
-	moveq	#0,d0
-	moveq	#0,d2
-	.endif
-10:
-	.ifndef	MC68020
-	* we have to do that each time as we must add offsets as long (table is 128k long)
-	moveq	#0,d0
-	moveq	#0,d2
-	.endif
-	move.w	(a2),d2
-	move.w	(4,a2),d0
-	* edges
-	.ifndef	MC68020
-	add.l	d2,d2
-	add.l	d0,d0
-	move.w	(a1,d2.l),(4,a2)		| get mirror value
-	move.w	(a1,d0.l),(a2)+		| get mirror value
-	.else
-	move.w	(a1,d2.l*2),(4,a2)		| get mirror value
-	move.w	(a1,d0.l*2),(a2)+		| get mirror value
-	.endif
-	* center
-	.ifndef	MC68020
-	* we have to do that each time as we must add offsets as long (table is 128k long)
-	moveq	#0,d2
-	.endif
-	move.w	(a2),d2
-	.ifndef	MC68020
-	add.l	d2,d2
-	move.w	(a1,d2.l),(a2)
-	.else
-	move.w	(a1,d2.l*2),(a2)
-	.endif
-	addq	#4,a2					| skip row
-	dbf		d1,10b
-	rts
-
-
-mirror_64_bit_wide:
-	.ifdef	MC68020
-	moveq	#0,d0
-	moveq	#0,d2
-	.endif
-10:
-	.ifndef	MC68020
-	moveq	#0,d0
-	moveq	#0,d2
-	.endif
-	
-	move.w	(a2),d2
-	move.w	(6,a2),d0
-	* swap edges
-	.ifndef	MC68020
-	add.l	d2,d2
-	add.l	d0,d0
-	move.w	(a1,d2.l),(6,a2)		| get mirror value
-	move.w	(a1,d0.l),(a2)+		| get mirror value
-	* swap center words
-	moveq	#0,d0
-	moveq	#0,d2
-	move.w	(a2)+,d2
-	move.w	(a2),d0
-	add.l	d2,d2
-	add.l	d0,d0
-	move.w	(a1,d2.l),(a2)
-	move.w	(a1,d0.l),-(a2)
-	.else
-	* 68020+ is handy here as scaling doesn't corrupt MSW
-	move.w	(a1,d2.l*2),(6,a2)		| get mirror value
-	move.w	(a1,d0.l*2),(a2)+		| get mirror value
-	* swap center words
-	move.w	(a2)+,d2
-	move.w	(a2),d0
-	move.w	(a1,d2.l*2),(a2)
-	move.w	(a1,d0.l*2),-(a2)
-	.endif
-	addq	#6,a2					| skip row
-	dbf		d1,10b
-	rts
-
-	
-mirror_function_table:
-	.long	nope
-	.long	nope
-	.long	mirror_16_bit_wide
-	.long	mirror_32_bit_wide
-	.long	mirror_48_bit_wide
-	.long	mirror_64_bit_wide
-	.long	nope		| just in case, but there are no such objects
-	.long	nope
-
-nope:
-	rts
 	
 bank_table:
 	.word	0
@@ -3852,14 +3495,6 @@ log_used_sprites:
 	moveq	#0,d0
 	move.b	(TARGET_SPRITE_CODE,a5,d7.w),d0
 	move.b	(TARGET_SPRITE_ATTRIBUTES,a5,d7.w),d1
-	move.b	d1,d2
-	* extended tile code
-	lsl.w	#2,d2
-	and.w	#0x300,d2
-	cmp.w	#0x300,d2
-	jeq		1f				| bank 3: discard
-	add.w	d2,d0
-	lsr.b	#4,d1
 	and.w	#SPRITE_NB_CLUTS-1,d1	| color
 	
 	lsl.l	#SPRITE_NB_CLUTS_POW,d0			| sprite code * NB_CLUTS (long!)

@@ -1,5 +1,5 @@
-- bg palette only 16 colors!
-- rip sprites
+- rip sprites: logging seems incorrect (code) display too
+- bombs not aligned
 - after a while: 253D crash on return
 
 - set DSW difficulty lives, etc.

@@ -18,7 +18,7 @@ import gen_cluts
 def doit(nb_colors,offset,nb_cluts,kind,ref_clut_index,dump_it=False):
     cluts = gen_cluts.doit(nb_colors)
     tilegen = dump_dir / "tilegen" / kind
-    pal4_file = sheets_path / f"tiles_{kind}_color_{ref_clut_index:02x}.png"  # reference sheet with all colors represented
+    pal4_file = sheets_path / f"{kind}_color_{ref_clut_index:02x}.png"  # reference sheet with all colors represented
 
     cluts = cluts[offset:]
 
@@ -31,7 +31,6 @@ def doit(nb_colors,offset,nb_cluts,kind,ref_clut_index,dump_it=False):
     # this reference clut has all 4 colors different. We can use that to generate
     # the other cluts (mame gfx save only saves up to 32 cluts, we need 64)
     ref_clut = cluts[ref_clut_index]
-
     for i in range(0,nb_cluts):
         this_clut = cluts[i]
         dest = Image.new("RGB",source.size)
@@ -54,11 +53,14 @@ def doit(nb_colors,offset,nb_cluts,kind,ref_clut_index,dump_it=False):
         rval.append(dest)
     return rval
 
-def doit_8x8(dump_it=False):
-    return doit(4,0,64,"8x8",ref_clut_index=1,dump_it=dump_it)
-def doit_16x16(dump_it=False):
-    return doit(8,512//8,128,"16x16",ref_clut_index=0,dump_it=dump_it)
+def doit_tiles_8x8(dump_it=False):
+    return doit(4,0,64,"tiles_8x8",ref_clut_index=1,dump_it=dump_it)
+def doit_tiles_16x16(dump_it=False):
+    return doit(8,512//8,128,"tiles_16x16",ref_clut_index=0,dump_it=dump_it)
+def doit_sprites_16x16(dump_it=False):
+    return doit(16,256//16,16,"sprites_16x16",ref_clut_index=0,dump_it=dump_it)
 
 if __name__ == "__main__":
-    #doit_8x8(False)
-    doit_16x16(True)
+    doit_tiles_8x8(False)
+    doit_tiles_16x16(False)
+    doit_sprites_16x16(False)
