@@ -76,7 +76,7 @@ _name	dc.b	"Vulgus"
 _copy	dc.b	'2026 JOTD',0
 _info
     dc.b    "Z80 RE by tcdev",10
-    dc.b    "Music by ???",10
+    dc.b    "Music by no9",10
     dc.b    "Original 1984 Capcom",0
 	dc.b	0
 _kickname   dc.b    0

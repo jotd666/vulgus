@@ -1,4 +1,4 @@
-- rip sprites: ok, but display is not (crashes)
+- double width (big monsters, explosion): to implement
 - bombs not aligned
 - after a while: 253D crash on return
 - black color mixes with background: use mappy fill algorithm

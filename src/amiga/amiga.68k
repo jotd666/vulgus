@@ -1129,7 +1129,6 @@ level1_interrupt:
 	move.b	#3,current_color
 	WRITE_HEX	game_scroll_x
 	WRITE_HEX	game_scroll_y
-	WRITE_HEX	host_scroll_x
 	lea		display_slots,a2
 	tst.b	(a2)
 	jeq		10f
@@ -1617,10 +1616,11 @@ mockup:
 compute_sprite_xy_code:
 	moveq	#0,d0
 	moveq	#0,d1
-
+	moveq	#0,d2
+	
 	move.b	(TARGET_SPRITE_X,a0),d1	| aka Y
 	move.b	(TARGET_SPRITE_Y,a0),d0	| aka X
-
+	move.b	(TARGET_SPRITE_CODE,a0),d2
 	
 	
 	neg.w	d1
@@ -1725,6 +1725,7 @@ update_one_bob:
 103:	
 	* BOBs must follow screen scroll
 	add.w	bobs_game_scroll_y,d1
+	add.w	bobs_game_scroll_x,d0
 	
 	* D0 and D1 are already set
 	move.l	(NB_PLAYFIELD_PLANES*4,a0),d2
@@ -3160,7 +3161,7 @@ set_bobs_bitplanes:
 	move.w	(a2,d0.w),d0		| compute Y offset
 	.endif
 1:	
-	move.w	host_scroll_x,d2
+	move.w	game_scroll_x,d2
 	and.w	#0x0FF,d2			| wraps at 0x100!
 
 	lea		scroll_table,a2
@@ -3173,7 +3174,7 @@ set_bobs_bitplanes:
 	.endif
 	
 	move.w	(a2)+,fine_x_scroll_value
-	move.w	host_scroll_x,d2
+	move.w	game_scroll_x,d2
 	lsr.w	#6,d2
 	lsl.w	#3,d2
 	add.w	d2,d0
@@ -4415,12 +4416,7 @@ system_vbr:
 target_ssp_value:
 	.word	0
 
-host_scroll_x:
-	.word	0
-min_scroll_x:
-	.word	0
-max_scroll_x:
-	.word	0
+
 previous_scroll_y:
 	.word	0
 previous_scroll_x:
@@ -4432,7 +4428,7 @@ game_scroll_y:
 	.word	0
 
 bobs_game_scroll_y = game_scroll_y
-bobs_host_scroll_x = host_scroll_x
+bobs_game_scroll_x = game_scroll_x
 	
 
 

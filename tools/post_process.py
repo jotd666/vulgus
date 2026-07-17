@@ -281,7 +281,7 @@ with open(source_dir / "conv.s") as f:
 \tjmp\t(a0)
 """
             kill_code(lines,i+1,0x33)
-        elif address in {0x0917,0x919}:
+        elif address in {0x0917,0x91a}:
             line = remove_instruction(lines,i)
         elif address == 0x918:
             line = change_instruction("sub.b\t#0x20,d6",lines,i)
