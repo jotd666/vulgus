@@ -3815,15 +3815,7 @@ osd_sound_start:
 
 	and.w	#0xFF,d0
 
-*	cmp.b	#LEVEL_TUNE_SND,d0
-*	jne		0f
-*	move.w	tune_index_times_8,d1
-*	cmp.w	#LEVEL_RESUME_TUNE_SND*8,d1
-*	jeq		10f
-*	cmp.w	#LEVEL_START_TUNE_SND*8,d1
-*	jeq		10f
-*
-*0:	
+
 	moveq	#0,d2
 	lsl.w	#3,d0
 	lea		sound_table,a0
@@ -3884,13 +3876,9 @@ osd_sound_start:
 
 
 	* don't play if already playing
-	* (music_tick value is not important for looped tunes
-	* as long as it's not zero)
-
-
-	* here we allow music to override another looping music
-	*tst.w	music_tick
-	*bne.b	10b
+	tst.b	music_playing
+	jne		10b
+	
 	* play the proper module pattern
 	* load up the countdown if loop
 		
@@ -3904,7 +3892,7 @@ osd_sound_start:
 	move.w	d0,tune_index_times_8		| note down current tune index
 	
 	move.w	(2,a0,d0.w),d1	| pattern number in .mod file
-	lea		commando_tunes,a0
+	lea		vulgus_tunes,a0
 	
 	moveq	#0,d0
 	move.w	d1,d0

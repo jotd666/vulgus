@@ -281,6 +281,8 @@ with open(source_dir / "conv.s") as f:
 \tjmp\t(a0)
 """
             kill_code(lines,i+1,0x33)
+        elif address == 0x0282:
+            line += "\tmove.b\t(a0),d0\n\tjbsr\tosd_sound_start\n"+line
         elif address in {0x0917,0x91a}:
             line = remove_instruction(lines,i)
         elif address == 0x918:
