@@ -1663,24 +1663,20 @@ update_one_bob:
 	* 
 	*
 	
-*	lea		sprite_group_table(pc),a3
-*	move.w	d2,d6				| save code
-*	add.w	d2,d2				| code times 2
-*	move.w	(a3,d2.w),d4
-*	jeq		10f			| nothing to do, normal tile
-*	* double/triple/quadruple, whatever
+	lea		sprite_group_table(pc),a3
+	move.w	d2,d6				| save code
+	add.w	d2,d2				| code times 2
+	move.w	(a3,d2.w),d4
+	jeq		10f			| nothing to do, normal tile
+	* double/triple/quadruple, whatever
 *	btst	#14,d4
 *	jne		2f		| bit 14 set: center tile, never draw
-*	bclr	#0,d4	| remove bit 0 now
-*	asr.w	#1,d4	| divide by 2, signed
-*	*btst	#MIRROR_BIT,d3
-*	jra		101f
-*	* mirror: "negate" the code by flipping bit 10
-*	bchg	#10,d4
-*101:
-*	btst	#10,d4
-*	jne		2f		| no need to draw this part, the other part will do it
-*	move.w	d4,d2	| get the real sprite code to draw
+	bclr	#0,d4	| remove bit 0 now
+	asr.w	#1,d4	| divide by 2, signed
+
+	bclr	#10,d4
+	jne		2f		| no need to draw this part, the other part will do it
+	move.w	d4,d2	| get the real sprite code to draw
 	add.w	d2,d2	| code times 2
 10:
 	add.w	d2,d2				| code times 4 now
@@ -2897,8 +2893,8 @@ mirror_flipped_tile16:
 
 bg_mirror_jump_table:
 	.long	standard_tile16
-	.long	flipped_tile16
 	.long	mirror_tile16
+	.long	flipped_tile16
 	.long	mirror_flipped_tile16
 	
 	

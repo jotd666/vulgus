@@ -6,7 +6,7 @@ gamename = "vulgus"
 # if not done it will write in ROM here!!
 input_dict = {
 
-"sound_c800":"sound_start",
+"soundlatch_c800":"sound_start",
 "palette_bank_w_c805":"set_palette_bank",
 "background_scroll_y_msb_c902":"",
 "background_scroll_y_lsb_c802":"",

@@ -10,3 +10,4 @@
 
 find ld hl + push hl with notepad++: ld[^\n]*hl[^\n]*\n[^\n]*push
 
+rip sounds: bpset 47ae  then A=xxx
