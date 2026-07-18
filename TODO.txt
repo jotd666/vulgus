@@ -1,6 +1,8 @@
 - 0x30: stop bomb/laser sound (loop at 0x20)
 - X scroll tiles seem not correct at times (discontinuity)
-
+  map doesn't seem to be correct: wrong offset added that shifts the whole pic?
+  => create mockup
+  
 - invincibility
 - set DSW difficulty lives, etc.
 - cheat add 10000 to score 
@@ -10,3 +12,5 @@
 find ld hl + push hl with notepad++: ld[^\n]*hl[^\n]*\n[^\n]*push
 
 rip sounds: bpset 47ae  then A=xxx
+
+MAME see full map: softreset with F4 set! cannot start game but demo shows with full bg screen in real time
