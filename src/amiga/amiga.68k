@@ -2601,10 +2601,6 @@ cache_bg_tiles_address:
 * uses x_offset computed from scrolling current params
 
 update_bg_tile:
-	.ifndef	RELEASE
-	move.b	d0,0x120
-	move.b	d1,0x121
-	.endif
 	
 	moveq	#0,d2			| mask up to 255
 	move.b	d0,d2			| tile code
