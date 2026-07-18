@@ -2784,17 +2784,17 @@ flash_curr_high_score_entry_char_1416:                               ; ...
 1420: CB 50       bit     2,b                            ; grey-blue?
 1422: 20 09       jr      NZ,display_char_grey_blue_142d      ; yes,go
 1424: 3A 37 E0    ld      a,(curr_hi_score_entry_char_e037)
-1427: 77          ld      (hl),a                         ; update code
+1427: 77          ld      (hl),a                         ; update code  [unchecked_address]
 1428: CB D4       set     2,h                            ; ptr colour
-142A: 36 08       ld      (hl),8                        ; red
+142A: 36 08       ld      (hl),8                        ; red   [video_address]
 142C: C9          ret
 ; ---------------------------------------------------------------------------
 
 display_char_grey_blue_142d:                                         ; ...
 142D: 3A 37 E0    ld      a,(curr_hi_score_entry_char_e037)   ; curr hi score entry char
-1430: 77          ld      (hl),a                         ; update code
+1430: 77          ld      (hl),a                         ; update code  [unchecked_address]
 1431: CB D4       set     2,h                            ; ptr colour
-1433: 36 03       ld      (hl),3                        ; grey-blue
+1433: 36 03       ld      (hl),3                        ; grey-blue  [video_address]
 1435: C9          ret
 ; End of function flash_curr_high_score_entry_char_1416
 

@@ -843,7 +843,16 @@ osd_set_palette_bank:
 	cmp.b	current_palette_bank,d0
 	jeq		0f
 	move.b	d0,current_palette_bank
+	* we can't refresh immediately, sometimes (shining stars) the game
+	* changes bank at each frame, requiring screen full redraw
+	move.b	#50,refresh_countdown
+0:
+	move.w	(a7)+,d0
+	rts
+
+refresh_bg_tiles:
 	* refresh bg tiles completely
+	GET_MEMORY_START_IN_A6
 	move.l 	a6,a0
 	add.l	#bg_tiles_address_d800,a0
 	move.w	#0x3FF,d7
@@ -852,7 +861,6 @@ osd_set_palette_bank:
 	addq	#1,a0
 	dbf		d7,1b
 0:
-	move.w	(a7)+,d0
 	rts
 	
 
@@ -1005,6 +1013,7 @@ level1_interrupt:
 	move.w	#0x14,(intreq,a5)
 	.endr
 
+
 	tst.b	pause_flag
 	jne	23f
 
@@ -1050,6 +1059,13 @@ level1_interrupt:
 	add.w	#0x1FF,d0
 	move.w	D0,game_scroll_y
 	
+	move.b	refresh_countdown,d0
+	jeq		0f
+	subq.b	#1,d0
+	move.b	d0,refresh_countdown
+	jne		0f
+	jbsr	refresh_bg_tiles
+0:
 
 	tst.b	frameskip
 	jeq		0f
@@ -2941,6 +2957,9 @@ compute_fg_tile_xy:
 
 update_fg_tile:
 	* if < 0x40 bail out as not visible (same as in Ghosts'n'Goblins)
+	cmp.w	#0X3A0,d7
+	jcs		0f
+0:
 	cmp.w	#0x40,d7
 	jcc		0f
 	rts
@@ -4222,6 +4241,8 @@ difficulty_dsw:
 detect_controllers:
 	.byte	0
 long_fire_timer:
+	.byte	0
+refresh_countdown:
 	.byte	0
 coin1_requested:
 	.byte	0

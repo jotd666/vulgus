@@ -291,6 +291,11 @@ with open(source_dir / "conv.s") as f:
             line = swap_lines(lines,i,i-1)
         elif address == 0x127f:
             line += "\ttst.b\td0\n"
+        elif address in [0x0f18,0x447f,0x4597,0x45f8,0x4703]:
+            line = "\ttst.b\tinvincible_flag\n\tjne\t0f\n"+line
+        elif address in [0x0f1b,0x4482,0x459a,0x45fb,0x4706]:
+            line = "0:\n"+line
+
         # end game_specific
         ###############################################
         if address in line_to_pull_cc_protect:

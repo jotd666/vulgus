@@ -1,10 +1,7 @@
 - 0x30: stop bomb/laser sound (loop at 0x20)
-- black color mixes with background: use mappy fill algorithm: create
-  a cli tool for this
-- title outlined with black?? how to reproduce (maybe just rip the pic on neutral
-  bg background and rebuild
 - X scroll tiles seem not correct at times (discontinuity)
 
+- invincibility
 - set DSW difficulty lives, etc.
 - cheat add 10000 to score 
 - highscore load/save
