@@ -24,7 +24,7 @@ def doit(nb_colors,offset,nb_cluts,kind,ref_clut_index,dump_it=False):
 
     rval = []
     if dump_it:
-        tilegen.mkdir(exist_ok=True)
+        tilegen.mkdir(exist_ok=True,parents=True)
 
     source = Image.open(pal4_file)
 
@@ -42,15 +42,19 @@ def doit(nb_colors,offset,nb_cluts,kind,ref_clut_index,dump_it=False):
             if i==ref_clut_index:
                 dest.paste(source)
             else:
-                for x in range(source.size[0]):
-                    for y in range(source.size[1]):
-                        pix = source.getpixel((x,y))
+                src = source.load()
+                dst = dest.load()
+
+                width, height = source.size
+
+                for y in range(height):
+                    for x in range(width):
+                        pix = src[x, y]
                         newpix = rep_dict.get(pix)
                         if not newpix:
                             print(f"{pal4_file}:{i} color {pix} not found at {x},{y}")
                             newpix = pix
-
-                        dest.putpixel((x,y),newpix)
+                        dst[x, y] = newpix
             if dump_it:
                 dest.save(dest_file)
 
