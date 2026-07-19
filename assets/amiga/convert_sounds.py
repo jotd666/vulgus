@@ -11,8 +11,8 @@ sound_dir = this_dir / ".." / "sounds"
 # default channel = 3, default priority = 40
 # put below some exceptions
 sound_settings_dict = {
-#0x15 : {"channel":3,"priority":50},   # siren
-
+0x20 : {"channel":3,"priority":50,"loops":True},   # bomb
+6: {"channel":2,"priority":50}  # power
 }
 
 def convert():
@@ -36,8 +36,7 @@ def convert():
     EMPTY_SND = "EMPTY_SND"
 
     dummy_sounds = {
-0,0x81,0x80
-
+    0
     }
 
 
@@ -60,8 +59,11 @@ def convert():
                     extra_info = sound_settings_dict.get(index) or dict()
 
                     sfx_sample_rate = extra_info.get("sample_rate",lq_sample_rate)
+
+
                     sound_dict[entry] = {"channel":extra_info.get("channel",snd_chan+2),  # default: not auto!
-                    "priority":extra_info.get("priority",40),"index":index,"sample_rate":sfx_sample_rate}
+                    "priority":extra_info.get("priority",40),"index":index,"sample_rate":sfx_sample_rate,
+                    "loops":extra_info.get("loops",False)}
                     snd_chan  = (snd_chan + 1) % 2
             except ValueError:
                 pass
@@ -71,7 +73,7 @@ def convert():
 
 
     music_dict = {
-    "MAIN_TUNE_SND"      :{"index":0xF0,"pattern":0,"volume":32},
+    "MAIN_TUNE_SND"      :{"index":0x80,"pattern":0,"volume":32},
     }
 
     sound_dict.update(music_dict)

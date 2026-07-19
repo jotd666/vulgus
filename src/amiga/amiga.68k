@@ -1049,6 +1049,7 @@ level1_interrupt:
 	move.b	(scroll_high_c902,a6),d0   | high
 	ror.w	#8,d0		| hardware is in little endian
 	move.b	(scroll_low_c802,a6),d0   | low
+	and.w	#0x1FF,d0
 	move.w	D0,game_scroll_x
 	move.b	(scroll_high_c902+1,a6),d0   | high
 	ror.w	#8,d0		| hardware is in little endian
@@ -2492,10 +2493,12 @@ osd_video_byte_dirty:
 	jcc		bg_tile
 	
 	and.w	#0x3FF,d7
-
-	lea		(FG_SCREEN_TILE_ADDRESS,a6),a0
+	move.l	a6,a1
+	* avoid 68020+ instructions because offsets are > 0x7FFF
+	add.l	#0xD000,a1
+	lea		(FG_SCREEN_TILE_ADDRESS-0xD000,a1),a0
 	move.b	(a0,d7.w),d0
-	lea		(FG_SCREEN_COLOR_ADDRESS,a6),a0
+	lea		(FG_SCREEN_COLOR_ADDRESS-0xD000,a1),a0
 	move.b	(a0,d7.w),d1
 
 	jbsr	update_fg_tile
@@ -2510,15 +2513,17 @@ osd_w_videoram_out:
 	
 bg_tile:
 	and.w	#0x3FF,d7
+	move.l	a6,a1
+	add.l	#0xD000,a1
 	
 
 	
 	* tile is in screen considered the current scrolling: update it
 	* (don't check Y we need update no matter when in that case)
 	
-	lea		(BG_SCREEN_TILE_ADDRESS,a6),a0
+	lea		(BG_SCREEN_TILE_ADDRESS-0xD000,a1),a0
 	move.b	(a0,d7.w),d0
-	lea		(BG_SCREEN_COLOR_ADDRESS,a6),a0
+	lea		(BG_SCREEN_COLOR_ADDRESS-0xD000,a1),a0
 	move.b	(a0,d7.w),d1
 
 
@@ -2904,8 +2909,8 @@ mirror_flipped_tile16:
 
 bg_mirror_jump_table:
 	.long	standard_tile16
-	.long	mirror_tile16
 	.long	flipped_tile16
+	.long	mirror_tile16
 	.long	mirror_flipped_tile16
 	
 	
@@ -3829,8 +3834,21 @@ osd_sound_start:
 
 
 	and.w	#0xFF,d0
+	jeq		10f				| filter out null sound
 
-
+	cmp.b	#8,d0
+	jne		0f
+	jbsr	osd_music_stop
+	jra		10f
+0:
+	cmp.b	#0x30,d0
+	jne		0f
+	* stop laser loop
+	lea		_custom,a6
+	move.w	#3,d0
+	jbsr	_mt_stopfx
+	jra		10f
+0:
 	moveq	#0,d2
 	lsl.w	#3,d0
 	lea		sound_table,a0

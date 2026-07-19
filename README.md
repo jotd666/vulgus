@@ -1,15 +1,16 @@
-"# Your Game" 
-remake of Jail Break for Amiga
+"# Commando" 
+port of Vulgus for Amiga AGA
 
-Requires a 2-button joystick, or the keyboard
+Requires a 1 or 2-button joystick, or the keyboard
 
 Credits:
 
-- jotd: reverse-engineering, 68000 transcode, graphics conversion
+- jotd: 68000 transcode, graphics conversion
   sound conversion for the Amiga.
-- no9 (soon): music
+- tcdev: full Z80 reverse-engineering
+- no9: music
 - PascalDe73: icons
-- Konami: original game
+- Capcom: original game
 
 Instructions:
 
@@ -17,10 +18,12 @@ Instructions:
 1/2: start game
 arrows/joystick: move
 red/ctrl: shoot
-blue/alt: change weapon
+long press on red: laser
+blue/alt: launch grenade
 
 Cheat keys:
 
-F1: skip level
+F1: toggle invincibility
+F2: skip level
 F3: add 10000 points
-F4: toggle invincibility
+ 

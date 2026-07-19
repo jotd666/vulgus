@@ -1,15 +1,19 @@
-- 0x30: stop bomb/laser sound (loop at 0x20)
 - x tile placement issue vs scroll
   max scroll = 0x5A
   min scroll = 0x197 (-$69)
   start scroll = 0
   maybe +8 X offset to add too (but corrupts the display???)
   
-- invincibility
 - set DSW difficulty lives, etc.
 - cheat add 10000 to score 
 - highscore load/save
 - detect not game in play for insert coin
+
+original game bugs:
+
+- game over with credits: score ranking table displays between push start button
+  and "one/two players"
+- music doesn't stop properly during attract
 
 find ld hl + push hl with notepad++: ld[^\n]*hl[^\n]*\n[^\n]*push
 
