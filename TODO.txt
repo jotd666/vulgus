@@ -2,6 +2,7 @@
 - highscore: copies wrong
 - highscore load/save: save not working
 - optimize manually
+- inspect strange wave scatter at some point (discontinuity of aligned enemies)
 
 original game bugs:
 
