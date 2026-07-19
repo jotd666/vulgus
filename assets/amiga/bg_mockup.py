@@ -5,7 +5,7 @@ import generate_tiles
 this_dir = os.path.dirname(os.path.abspath(__file__))
 
 
-with open(os.path.join(this_dir,"bg_tiles"),"rb") as f:
+with open(os.path.join(this_dir,"bg_tiles_amiga"),"rb") as f:
     contents = f.read()
 
 
@@ -40,7 +40,7 @@ m_bgvideoram = contents
 # we should know which bank it is
 for address in range(0x400):
 
-    x = ((address+8) & 0x1F)
+    x = ((address+5) & 0x1F)
     x *= 16
 
     y = (0x1F - (address // 0x20))*16
@@ -60,7 +60,11 @@ for address in range(0x400):
 
     layer.paste(img,box=(x,y))
 
-layer.save("bg.png")
+for i in range(0,layer.size[1]):
+    layer.putpixel((96,i),(255,255,255))
+    #layer.putpixel((197,i),(255,0,255))
+
+layer.save("bg2.png")
 
 
 

@@ -124,6 +124,30 @@ TARGET_SPRITE_ATTRIBUTES = 1
 TARGET_SPRITE_CODE = 0
 TARGET_SPRITE_SIZEOF = 4
 
+	* macros to safely add word > 0x7FFF
+	.macro	BG_OFFSET_ADD	src,dest
+	.if BG_SCREEN_PLANE_SIZE<0x8000
+	add.w	\src,\dest
+	.else
+	.ifndef	RELEASE
+	swap	\src
+	tst.w	\src
+	jeq		okay\@
+	BREAKPOINT	"MSW of long add is not zero!"
+okay\@:
+	swap	\src
+	.endif
+	add.l	\src,\dest
+	.endif
+	.endm
+
+	.macro	BG_LOAD	src,dest
+	.if	BG_SCREEN_PLANE_SIZE>0x7FFF
+	move.l	#\src,\dest
+	.else
+	move.w	#\src,\dest
+	.endif
+	.endm
 
 
 
@@ -161,7 +185,7 @@ NB_BG_PLANES = NB_PLAYFIELD_PLANES
 
 TOTAL_NB_COLORS = 1<<NB_PLAYFIELD_PLANES
 FG_NB_BYTES_PER_ROW = 0x20
-BG_NB_BYTES_PER_ROW = 0x20
+BG_NB_BYTES_PER_ROW = 0x40
 
 Y_START = 0x20
 
@@ -1355,18 +1379,20 @@ blit_background:
 	lea		_custom,a5
 	* adjust offset X: X//8
 	lsr.w	#3,d0
+	swap	d0
+	clr.w	d0
+	swap	d0
 	lea		mulBG_NB_BYTES_PER_ROW_table(pc),a4
 	.ifndef	MC68020
 	add.w	d1,d1
 	* add Y offset: Y*NB_BYTES_PER_ROW
 	add.w	(a4,d1.w),d0
-	add.w	(a4,d1.w),d0
 	.else
 	add.w	(a4,d1.w*2),d0
 	.endif
 	* same offset for source and destination
-	add.w	d0,a1
-	add.w	d0,a0
+	BG_OFFSET_ADD	d0,a1
+	BG_OFFSET_ADD	d0,a0
 
     move.l  #0x09f00000,d3    | A->D copy, ascending mode	
 	move.w	#BG_NB_BYTES_PER_ROW,d1		| blit modulo
@@ -1400,13 +1426,8 @@ blit_background:
 	* all bitplanes [but not the last one that we'll clear, not here, commented out!]
 	
 	.rept	NB_PLAYFIELD_PLANES-1
-	.if	BG_SCREEN_PLANE_SIZE>0x7FFF
-	add.l	d0,a0
-	add.l	d0,a1
-	.else
-	add.w	d0,a0
-	add.w	d0,a1
-	.endif
+	BG_OFFSET_ADD	d0,a0
+	BG_OFFSET_ADD	d0,a1
 	.ifeq	OPT_BLIT_CHAIN_MODE
 	btst	#6,(dmaconr,a5)
 	jeq		0f
@@ -1853,8 +1874,11 @@ clear_planes_any_blitter_internal:
     beq.b   2f				| zero X optimization
     lsr.w   #3,d0
     add.w   d0,d1
-2:   
-    add.w   d1,a1       | plane position (always even)
+2:
+	swap	d1
+	clr.w	d1
+	swap	d1
+    BG_OFFSET_ADD   d1,a1       | plane position (always even)
 
 	* reuse d1 for bltcon0
 	moveq	#1,d1
@@ -1950,7 +1974,10 @@ blit_planes_any_internal_cookie_cut:
     * make offset even. Blitter will ignore odd address
     * but a 68000 CPU doesn't and since we RETURN A1...
     *bclr    #0,d1
-    add.w   d1,a1       | plane position (D1 < 0x7FFF, 288*40=0x2D00)
+	swap	d1
+	clr.w	d1
+	swap	d1
+    BG_OFFSET_ADD   d1,a1       | plane position
 	move.w	#BG_NB_BYTES_PER_ROW,d0
 	tst.w	d4
 	bpl.b	5f
@@ -2561,7 +2588,7 @@ cache_bg_tiles_address:
 	move.w	#0,d7
 0:
 	move.w	d7,d0
-	*add.w	#0x8,d0			| "center" the tilemap
+	add.w	#0x5,d0			| "center" the tilemap
 	and.w	#0x1F,d0
 	lsl.w	#8,d0
 	move.w	d7,d1
@@ -2601,19 +2628,10 @@ cache_bg_tiles_address:
 
 	
 	.macro	TILE16_NEXT_PLANE
-	.if	BG_SCREEN_PLANE_SIZE>0x7FFF
-	add.l	d5,a1
-	add.l	d5,a3
+	BG_OFFSET_ADD	d5,a1
+	BG_OFFSET_ADD	d5,a3
 	.ifne	OPT_ENABLE_DOUBLE_BUFFERING
-	add.l	d5,a4
-	.endif
-	.else
-	add.w	d5,a1
-	add.w	d5,a3
-	.ifne	OPT_ENABLE_DOUBLE_BUFFERING
-	add.w	d5,a4
-	.endif
-	
+	BG_OFFSET_ADD	d5,a4
 	.endif
 	.endm
 	
@@ -2653,11 +2671,8 @@ update_bg_tile:
 	scs		d6			| repeat tile draw if Y tile  < 0x10
 	
 	* updating bitplanes
-	.if	BG_SCREEN_PLANE_SIZE>0x7FFF
-	move.l	#BG_SCREEN_PLANE_SIZE,d5
-	.else
-	move.w	#BG_SCREEN_PLANE_SIZE,d5
-	.endif
+	BG_LOAD	BG_SCREEN_PLANE_SIZE,d5
+	
 	
 	move.l		playfield_drawn_screen_ptr,a1
 	.ifeq	OPT_ENABLE_DOUBLE_BUFFERING
@@ -2676,15 +2691,18 @@ update_bg_tile:
 	.endif
 	lsl.w	#4,d1	| 16 pixels
 	add.w	d1,d0
-	add.w	d0,a1
+	swap	d0
+	clr.w	d0
+	swap	d0
+	BG_OFFSET_ADD	d0,a1
 	.ifeq	OPT_ENABLE_DOUBLE_BUFFERING
 	.else 
 	* double buffering
-	add.w	d0,a4
+	BG_OFFSET_ADD	d0,a4
 	.endif
 
 	lea		background_restore_buffer,a3
-	add.w	d0,a3
+	BG_OFFSET_ADD	d0,a3
 
 	
 	lea		bg_character_table,a0
@@ -2767,11 +2785,11 @@ update_bg_tile:
 	jsr		(a0)
 	* lower part too
 	movem.l	(a7)+,d0-D3/a0-a6
-	move.w	#2*BG_SCREEN_PLANE_SIZE/3,d6
-	add.w	d6,a1
-	add.w	d6,a3
+	BG_LOAD	2*BG_SCREEN_PLANE_SIZE/3,d6
+	BG_OFFSET_ADD	d6,a1
+	BG_OFFSET_ADD	d6,a3
 	.ifne	OPT_ENABLE_DOUBLE_BUFFERING
-	add.w	d6,a4
+	BG_OFFSET_ADD	d6,a4
 	.endif
 	move.w	#NB_BG_PLANES-1,d4
 0:
@@ -3197,13 +3215,8 @@ set_bobs_bitplanes:
 	
 	
     moveq #NB_PLAYFIELD_PLANES-1,d1
- 	move.l	#BG_SCREEN_PLANE_SIZE,d2
-	.ifndef	RELEASE
-	* quick check just in case someone uses that with plane size > 0x7FFF
-	jpl		10f
-	BREAKPOINT	"negative plane size!"
-10:
-	.endif
+ 	BG_LOAD	BG_SCREEN_PLANE_SIZE,d2
+
 2:
     move.l	playfield_displayed_screen_ptr(pc),a0
 	
