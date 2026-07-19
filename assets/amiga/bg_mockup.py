@@ -40,7 +40,9 @@ m_bgvideoram = contents
 # we should know which bank it is
 for address in range(0x400):
 
-    x = (address & 0x1F)*16
+    x = ((address+8) & 0x1F)
+    x *= 16
+
     y = (0x1F - (address // 0x20))*16
 
     attr = m_bgvideoram[address + 0x400]

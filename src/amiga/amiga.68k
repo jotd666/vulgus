@@ -2556,6 +2556,7 @@ cache_bg_tiles_address:
 	move.w	#0,d7
 0:
 	move.w	d7,d0
+	*add.w	#0x8,d0			| "center" the tilemap
 	and.w	#0x1F,d0
 	lsl.w	#8,d0
 	move.w	d7,d1
@@ -3171,6 +3172,7 @@ set_bobs_bitplanes:
 	.endif
 1:	
 	move.w	game_scroll_x,d2
+	move.w	d2,0x110
 	and.w	#0x0FF,d2			| wraps at 0x100!
 
 	lea		scroll_table,a2

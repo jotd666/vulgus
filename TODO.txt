@@ -1,7 +1,9 @@
 - 0x30: stop bomb/laser sound (loop at 0x20)
-- X scroll tiles seem not correct at times (discontinuity)
-  map doesn't seem to be correct: wrong offset added that shifts the whole pic?
-  => create mockup
+- x tile placement issue vs scroll
+  max scroll = 0x5A
+  min scroll = 0x197 (-$69)
+  start scroll = 0
+  maybe +8 X offset to add too (but corrupts the display???)
   
 - invincibility
 - set DSW difficulty lives, etc.
