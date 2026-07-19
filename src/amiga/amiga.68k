@@ -68,7 +68,7 @@ OPT_SPRITE_MIRRORING = 1
 MIRROR_BUFFER_SIZE = 0x15000
 	.endif
 	
-SCORE_FILE_SIZE = 80
+SCORE_FILE_SIZE = 0x40
 
 LOG_BUFFER_SIZE = 0x1000
 
@@ -780,8 +780,8 @@ demo_game:
 	
 	GET_MEMORY_START_IN_A6
 	
-	*lea 	(vulgus_hi_score_018f,a6),a0
-	*jbsr	osd_read_high_scores
+	lea 	(default_hi_score_tbl_016f,a6),a0
+	jbsr	osd_read_high_scores
 	
 	.ifndef	RELEASE
 	* install dump and quit handler
@@ -869,7 +869,11 @@ osd_set_palette_bank:
 	move.b	d0,current_palette_bank
 	* we can't refresh immediately, sometimes (shining stars) the game
 	* changes bank at each frame, requiring screen full redraw
-	move.b	#50,refresh_countdown
+	tst.b	refresh_countdown
+	jne		1f
+	jbsr	refresh_bg_tiles
+1:
+	move.b	#20,refresh_countdown
 0:
 	move.w	(a7)+,d0
 	rts
@@ -1321,10 +1325,7 @@ add_to_score:
 	movem.l	a6/d0-d3,-(a7)
 	GET_MEMORY_START_IN_A6
 	move.l	a6,a0
-	*add.l	#player_score_address_e0a6,a0
-	move.w	(a0),d0
-	rol.w	#8,d0
-	lea		(a6,d0.w),a0	| current player score address
+	add.l	#p1_score_ee41,a0
 	
 	moveq	#0,d0
 	abcd 	d0,d0		| clear X
@@ -1347,8 +1348,8 @@ lose_all_lives:
 	movem.l	a6/d0-d3,-(a7)
 	GET_MEMORY_START_IN_A6
 	add.l	#0xE000,a6
-*	move.b	#1,(nb_lives_eda0-0xE000,a6)
-*	move.b	#0x3F,(player_state_e100-0xE000,a6)
+	move.b	#1,(curr_lives_left_e500-0xE000,a6)
+	move.b	#0x3F,(ship_obj_e100-0xE000,a6)
 	movem.l	(a7)+,a6/d0-d3
 	rts
 
@@ -1357,7 +1358,8 @@ lose_all_lives:
 is_game_playing:
 	movem.l	d0/a6,-(a7)
 	GET_MEMORY_START_IN_A6
-	moveq	#0,d0
+	add.l	#vbl_lvl_0_fn_e005,a6
+	cmp.b	#3,(a6)				| 3: game in play
 1:
 	movem.l	(a7)+,d0/a6
 	rts
@@ -2588,7 +2590,7 @@ cache_bg_tiles_address:
 	move.w	#0,d7
 0:
 	move.w	d7,d0
-	add.w	#0x5,d0			| "center" the tilemap
+	*add.w	#0x5,d0			| "center" the tilemap
 	and.w	#0x1F,d0
 	lsl.w	#8,d0
 	move.w	d7,d1
@@ -4312,7 +4314,7 @@ highscore_loaded:
 last_sound_played:
 	.byte	0
 normal_hiscorename:
-	.asciz	"commando.high"
+	.asciz	"vulgus.high"
 	
 
 lives_table:

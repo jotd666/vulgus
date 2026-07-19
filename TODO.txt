@@ -1,13 +1,7 @@
-- x tile placement issue vs scroll
-  max scroll = 0x5A
-  min scroll = 0x197 (-$69)
-  start scroll = 0
-  maybe +8 X offset to add too (but corrupts the display???)
-  
 - set DSW difficulty lives, etc.
-- cheat add 10000 to score 
-- highscore load/save
-- detect not game in play for insert coin
+- highscore: copies wrong
+- highscore load/save: save not working
+- optimize manually
 
 original game bugs:
 

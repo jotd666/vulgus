@@ -295,6 +295,10 @@ with open(source_dir / "conv.s") as f:
             line = "\ttst.b\tinvincible_flag\n\tjne\t0f\n"+line
         elif address in [0x0f1b,0x4482,0x459a,0x45fb,0x4706]:
             line = "0:\n"+line
+##        elif address == 0X132F:
+##            line = "\tBREAKPOINT    \"kfkfk\"\n\tGET_ADDRESS\thiscore_tbl_ee00,a0\n\tjbsr\tosd_write_high_scores\n"+line
+        elif address == 0X1245:
+            line = "\ttst.b\tinfinite_lives_flag\n\tjne\tloc_1271\n"+line
 
         # end game_specific
         ###############################################

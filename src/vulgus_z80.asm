@@ -2668,9 +2668,9 @@ hi_score_entry_b1_1363:                                              ; ...
 1366: 3A 37 E0    ld      a,(curr_hi_score_entry_char_e037)
 1369: FE 3F       cp      $3F ; '?'                     ; END?
 136B: CA D6 0F    jp      Z,next_vbl_lvl_1_fn_0fd6            ; yes,go
-136E: 77          ld      (hl),a                         ; update code
+136E: 77          ld      (hl),a                         ; update code [unchecked_address]
 136F: CB D4       set     2,h                            ; ptr colour
-1371: 36 05       ld      (hl),5                        ; update colour (steel blue)
+1371: 36 05       ld      (hl),5                        ; update colour (steel blue) [video_address]
 1373: CB 94       res     2,h                            ; ptr code
 1375: ED 5B 3B E0 ld      de,(ptr_hi_score_entry_name_e03b)
 1379: 12          ld      (de),a                         ; insert char

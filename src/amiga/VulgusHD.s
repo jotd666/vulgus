@@ -44,11 +44,10 @@ _config
 	dc.b	"C1:X:infinite lives:1;"
 	dc.b	"C1:X:cheat keys:4;"
 	dc.b	"C2:X:50 Hz update:0;"
-	dc.b	"C2:X:disable long fire press for grenade:1;"
+	dc.b	"C2:X:disable long fire press for laser:1;"
 
 	dc.b	"C3:L:difficulty level:normal,difficult;"
 	dc.b	"C4:L:lives:3,4,5;"
-	dc.b	"C5:L:starting area:forest 1,desert 1,forest 2,desert 2;"
 	dc.b	0
 
 	IFD BARFLY
