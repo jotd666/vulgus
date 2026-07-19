@@ -2570,7 +2570,6 @@ cache_bg_tiles_address:
 	jne		0b
 	
 	lea		bg_tile_address_table,a0
-		BREAKPOINT	"kffkk"
 	rts
 	
 	.macro	COPY_TILE16_PLANE_ROW
@@ -2682,8 +2681,6 @@ update_bg_tile:
 	add.w	d0,a3
 
 	
-	cmp.w	#0xF8,d2
-	jeq		11f				| optim: blank tile
 	lea		bg_character_table,a0
 	.ifdef	NO68020
 	add.w	d2,d2
@@ -2707,7 +2704,7 @@ update_bg_tile:
 	.endif
 	move.l	d0,a2
 	move.w	d3,d1		| save attributes
-	lsr.w	#4,d1
+	lsr.w	#5,d1
 	and.w	#3,d1		| mirror/flip
 	
 	and.w	#(BG_TILE_NB_CLUTS/4)-1,d3
