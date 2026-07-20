@@ -295,8 +295,13 @@ with open(source_dir / "conv.s") as f:
             line = "\ttst.b\tinvincible_flag\n\tjne\t0f\n"+line
         elif address in [0x0f1b,0x4482,0x459a,0x45fb,0x4706]:
             line = "0:\n"+line
-##        elif address == 0X132F:
-##            line = "\tBREAKPOINT    \"kfkfk\"\n\tGET_ADDRESS\thiscore_tbl_ee00,a0\n\tjbsr\tosd_write_high_scores\n"+line
+        elif address == 0x0fd6:
+            lines[i+2] += """\tcmp.b\t#9+1,(a0)
+\tjne\t0f
+\tGET_ADDRESS\thiscore_tbl_ee00,a0
+\tjbsr\tosd_write_high_scores
+0:
+"""
         elif address == 0X1245:
             line = "\ttst.b\tinfinite_lives_flag\n\tjne\tloc_1271\n"+line
 
