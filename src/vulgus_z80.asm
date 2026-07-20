@@ -5794,7 +5794,7 @@ loc_2c21:                                                       ; ...
 2C26: 28 07       jr      Z,loc_2c2f                     ; no,skip
 2C28: 35          dec     (hl)                            ; tick
 2C29: 20 04       jr      NZ,loc_2c2f                    ; not expired,skip
-2C2B: AF          xor     a                               ; flag formation spawn
+2C2B: AF          xor     a                               ; flag formation spawn (formations appearing)
 2C2C: 32 B2 E0    ld      (wait_formation_spawn_tmr_e0b2),a
 
 loc_2c2f:                                                       ; ...
@@ -9855,7 +9855,7 @@ loc_6b2e:                                                       ; ...
 ; $02    - timer_e025???
 ; $03    - y lsb
 ; $04    - x lsb
-; $05    - type (0=tumble_ship,1=plane,2=ray,3=butterfly,;                4=moth,5=bug,6=turtle,7=pincer_bug,;                8=star,9=spinning_disc,10-13=rock,RAM:E200                              15=jap_symbol->spinning_disc)
+; $05    - type (0=tumble_ship,1=plane,2=ray,3=butterfly,4=moth,5=bug,6=turtle,7=pincer_bug,;                8=star,9=spinning_disc,10-13=rock,RAM:E200                              15=jap_symbol->spinning_disc)
 ; $06/07 - dy
 ; $08/09 - dx
 ; $0A    - dy_dx lookup table index

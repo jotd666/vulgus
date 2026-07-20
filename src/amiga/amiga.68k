@@ -368,6 +368,18 @@ _user:
 	* cheat isn't used as long as no cheat key is used
 	or.l	#0x10,cheat_flags
 2:
+	move.l	(A0)+,D0	| 50HZ/S
+	beq.b	2f
+	or.l	#1,misc_options	
+2:
+	move.l	(A0)+,D0	| NOLONGPRESS/S
+	beq.b	2f
+	or.l	#2,misc_options	
+2:
+	move.l	(A0)+,D0	| NOMUSIC/S
+	beq.b	2f
+	or.l	#4,misc_options	
+2:
 
 
 
@@ -3281,7 +3293,6 @@ scroll_table:
 osd_debug_hook:
 	rts
 	
-	
 
 
 
@@ -3722,9 +3733,10 @@ program_args_end:
 	.align	4
 read_args_string:
 	.byte	read_args_string_end-read_args_string
-	.ascii	"CHEATKEYS/S,FIVELIVES/S,FAST/S"
+	.ascii	"INVINCIBLE/S,INFLIVES/S,CHEATKEYS/S,50HZ/S,NOLONGPRESS/S,NOMUSIC/S"
 read_args_string_end:
 	.align	2
+
 
 
 osd_read_high_scores:
@@ -4619,7 +4631,7 @@ sprite_group_table:
 	.include	"sound_entries.68k"
 
 _keyexit:
-	.byte	0x45	| ESC by default unless whdload overwrites it
+	.byte	0x59	| F10 by default unless whdload overwrites it
 
 frameskip:
 	.byte	0

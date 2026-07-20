@@ -1,4 +1,7 @@
-.macro  BITDEF   prefix,name,bitnum
+	.ifndef	READJOYPAD_H
+READJOYPAD_H = 1
+
+	.macro  BITDEF   prefix,name,bitnum
 	    BITDEF0 \prefix,\name,B_,\bitnum
   
 	    BITDEF0 \prefix,\name,F_,1<<\bitnum
@@ -26,3 +29,4 @@
 	.global	_read_joystick
 	.global	controller_joypad_0
 	.global	controller_joypad_1
+	.endif

@@ -21,6 +21,7 @@ red/ctrl: shoot
 long press on red: laser
 blue/alt: launch grenade
 ESC: game over
+F10: quit (from normal floppy/hd run)
 
 Cheat keys:
 

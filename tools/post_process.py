@@ -16,10 +16,11 @@ input_dict = {
 }
 
 single_line_to_cc_protect = set()
-remove_error_in_next_line = {0x001a,0x0022,0x6AE,0X06b1,0x1255,0x091b,0x2392,0x428f,0x43c2,0x1282,0x233c}
+remove_error_in_next_line = {0x001a,0x0022,0x6AE,0X06b1,0x1255,0x091b,0x2392,0x428f,0x43c2,0x1282,0x233c,0X3827,0x384d,
+0x6aad,0x6abd,0x6ac9}
 remove_error_in_prev_line = {0x1}
-line_to_push_cc_protect = {0x6AA,0x6AF,0x06b4} | single_line_to_cc_protect
-line_to_pull_cc_protect = {0x6AE,0x6B0,0x06b8} | single_line_to_cc_protect
+line_to_push_cc_protect = {0x6AA,0x6AF,0x06b4,0x384a,0x3824} | single_line_to_cc_protect
+line_to_pull_cc_protect = {0x6AE,0x6B0,0x06b8,0x384b,0x3825} | single_line_to_cc_protect
 
 store_to_video = re.compile("GET_ADDRESS\s+(0xd\w\w\w|video_ram_d)",flags=re.I)   # game_specific
 
@@ -304,7 +305,8 @@ with open(source_dir / "conv.s") as f:
 """
         elif address == 0X1245:
             line = "\ttst.b\tinfinite_lives_flag\n\tjne\tloc_1271\n"+line
-
+        elif address == 0x6aea:
+            line = swap_lines(lines,i,i-1)  # protect X flag against the addq
         # end game_specific
         ###############################################
         if address in line_to_pull_cc_protect:

@@ -1,10 +1,10 @@
 - set DSW difficulty lives, etc.
-- highscore: copies wrong
-- highscore load/save: save not working
 - profile & optimize manually
 - inspect strange wave scatter at some point (discontinuity of aligned enemies)
+
+converter:since we SET_X_FROM_C we have to check for carry generation instructions
+  before roxl/roxr
 - at start shots remain unerased when letters "scroll" left (real time issue)
-- turn off music option + auto channels
 
 original game bugs:
 
