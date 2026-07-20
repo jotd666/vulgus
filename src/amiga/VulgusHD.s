@@ -11,10 +11,10 @@ CHIP_BASE = $200
 
 	IFD	CD32_SLAVE
 EXPMEM = 0
-CHIPSIZE = $180000
+CHIPSIZE = $1E0000
 	ELSE
-EXPMEM = $1E0000
-CHIPSIZE = $180000
+EXPMEM = $F0000
+CHIPSIZE = $120000
 	ENDC
 
 _base	SLAVE_HEADER					; ws_security + ws_id
@@ -76,7 +76,7 @@ _name	dc.b	"Vulgus"
 _copy	dc.b	'2026 JOTD',0
 _info
     dc.b    "Z80 RE by tcdev",10
-    dc.b    "Music by no9",10
+    dc.b    "Music by no9",10,10
     dc.b    "Original 1984 Capcom",0
 	dc.b	0
 _kickname   dc.b    0
