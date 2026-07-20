@@ -12,7 +12,8 @@ sound_dir = this_dir / ".." / "sounds"
 # put below some exceptions
 sound_settings_dict = {
 0x20 : {"channel":3,"priority":50,"loops":True},   # bomb
-6: {"channel":2,"priority":50}  # power
+6: {"channel":2,"priority":50},  # power
+2: {"channel":3,"priority":100}  # explosion
 }
 
 def convert():

@@ -1,8 +1,10 @@
 - set DSW difficulty lives, etc.
 - highscore: copies wrong
 - highscore load/save: save not working
-- optimize manually
+- profile & optimize manually
 - inspect strange wave scatter at some point (discontinuity of aligned enemies)
+- at start shots remain unerased when letters "scroll" left (real time issue)
+- turn off music option + auto channels
 
 original game bugs:
 

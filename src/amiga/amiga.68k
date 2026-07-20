@@ -471,8 +471,11 @@ apply_settings:
 	seq		frameskip
 	btst	#1,d1
 	sne		disable_long_fire_press_flag
-
-
+	btst	#2,d1
+	jeq		444f
+	st		disable_music_flag
+	jbsr	make_automatic_sound_channels
+444:
 
 
 	move.l	cheat_flags,d0
@@ -3034,11 +3037,12 @@ update_fg_tile:
 	add.w	d1,a2
 	add.w	d1,a1
 	
+	cmp.b	#0x20,d2
+	jeq		clear_tile8
+	
 	* now get source data
 	lea		fg_character_table,a0
 	
-
-20:
 
 	* updating bitplanes
 
@@ -3119,6 +3123,34 @@ standard_tile8:
 
 11:
 	rts
+
+clear_tile8:
+	* first plane: first sprite
+	.set	offset,0
+	.rept	8
+	clr.b	(offset,a1)
+	.set	offset,offset+16
+	.endr
+	* second plane: first sprite, with a 8 offset
+	.set	offset,8
+	.rept	8
+	clr.b	(offset,a1)
+	.set	offset,offset+16
+	.endr
+	* third plane: second sprite
+	.set	offset,0
+	.rept	8
+	clr.b	(offset,a2)
+	.set	offset,offset+16
+	.endr
+	* second plane: second sprite, with a 8 offset
+	.set	offset,8
+	.rept	8
+	clr.b	(offset,a2)
+	.set	offset,offset+16
+	.endr
+	rts
+	
 
 empty_row:
 	.skip	8
@@ -3811,6 +3843,29 @@ save_highscores:
 1:	
     rts
     
+make_automatic_sound_channels:
+	* if music is off, set most sounds in automatic channel
+	lea		sound_table,a0
+	moveq	#0,d1
+1:
+	st	d2
+	* skip those, leave in fixed channel else they saturate the channels
+	cmp.w	#PLAYER_SHOT_05_SND,d1
+	jeq		0f
+
+	move.w	(a0),d0
+	cmp.w	#1,d0
+	jne		0f
+	move.l	(4,a0),a1	| pointer on sound
+	
+	move.b	d2,(10,a1)	| change sound channel
+0:
+	add.w	#8,a0		| sound entry size
+	addq	#1,d1
+	cmp.w	#0x3F,d1
+	jne		1b
+	rts
+	
 	
 osd_music_stop:
 *	movem.l	d0/a0/a6,-(a7)
@@ -3922,7 +3977,8 @@ osd_sound_start:
 4:
 	* if map music, set flag
 
-
+	tst.b	disable_music_flag
+	jne		10b
 	* don't play if already playing
 	tst.b	music_playing
 	jne		10b
@@ -4567,6 +4623,8 @@ frameskip:
 	.byte	0
 
 disable_long_fire_press_flag:
+	.byte	0
+disable_music_flag:
 	.byte	0
 	
 cheat_used:

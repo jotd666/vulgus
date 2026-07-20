@@ -45,6 +45,7 @@ _config
 	dc.b	"C1:X:cheat keys:4;"
 	dc.b	"C2:X:50 Hz update:0;"
 	dc.b	"C2:X:disable long fire press for laser:1;"
+	dc.b	"C2:X:disable music:2;"
 
 	dc.b	"C3:L:difficulty level:normal,difficult;"
 	dc.b	"C4:L:lives:3,4,5;"
