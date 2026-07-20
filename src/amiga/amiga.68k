@@ -3852,6 +3852,8 @@ make_automatic_sound_channels:
 	* skip those, leave in fixed channel else they saturate the channels
 	cmp.w	#PLAYER_SHOT_05_SND,d1
 	jeq		0f
+	cmp.w	#LASER_LOOP_20_SND,d1
+	jeq		0f
 
 	move.w	(a0),d0
 	cmp.w	#1,d0
