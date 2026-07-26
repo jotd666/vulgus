@@ -1,5 +1,5 @@
 *
-*	Amiga-specific portions of Commando
+*	Amiga-specific portions of Vulgus
 *
 * (c) JOTD 2026
 *
@@ -1622,6 +1622,18 @@ really_update_sprites:
 	*********************
 	
 	GET_MEMORY_START_IN_A6
+	****
+	lea		(SPRITE_ADDRESS,a6),a0
+	lea		prev_sprites,a1
+	
+	**** TEMP TEMP
+	lea		(SPRITE_ADDRESS,a6),a0
+	lea		prev_sprites,a1
+	move.w	#SPRITE_BUFFER_SIZE,d0
+0:
+	move.b	(a0)+,(a1)+
+	dbf		d0,0b
+	
 	lea		(SPRITE_ADDRESS+SPRITE_BUFFER_SIZE-CURRENT_SPRITE_SIZE,a6),a0
 	*lea		mockup+SPRITE_BUFFER_SIZE-CURRENT_SPRITE_SIZE,a0
 
@@ -3557,13 +3569,6 @@ log_used_sprites:
 	rts
 	.endif
 	
-	.macro	SATURATE_Y	val
-	cmp.w	#\val+1,d0
-	jcc		0f
-	move.w	#\val,d0
-	jra		1f
-0:
-	.endm
 	
 skip_level:
 	movem.l	d0-a6,-(a7)

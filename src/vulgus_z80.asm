@@ -121,6 +121,8 @@ fg_tiles_address_d000 = $d000
 fg_tiles_color_address_d400 = $d400
 bg_tiles_color_address_dc00 = $dc00
 
+
+
 ; Segment type: Pure code
 
 reset_0000:		; [global]
@@ -4610,10 +4612,10 @@ loc_2495:                                                       ; ...
 ; ---------------------------------------------------------------------------
 
 loc_249d:                                                       ; ...
-249D: DD 7E 0D    ld      a,(ix+$0D)
+249D: DD 7E 0D    ld      a,(ix+$0D)	; read timer for enemy aligned in formation
 24A0: A7          and     a
-24A1: CC AE 24    call    Z,sub_24ae
-24A4: DD 35 0D    dec     (ix+$0D)
+24A1: CC AE 24    call    Z,break_formation_24ae	; timeout: enemy must break formation
+24A4: DD 35 0D    dec     (ix+$0D)		; decrease timer for enemy aligned in formation
 24A7: CD 3B 24    call    move_object_self_243b
 24AA: CD 13 27    call    animate_e200_object_sprite_2713
 24AD: C9          ret
@@ -4621,7 +4623,7 @@ loc_249d:                                                       ; ...
 ; =============== S U B R O U T I N E =======================================
 
 
-sub_24ae:                                                       ; ...
+break_formation_24ae:                                                       ; ...
 24AE: 21 2C 34    ld      hl,off_342c
 24B1: DD 7E 0B    ld      a,(ix+$0B)
 24B4: EF          rst     de_eq_contents_hl_plus_2a_0028
@@ -4655,7 +4657,7 @@ loc_24ce:                                                       ; ...
 
 loc_24e8:                                                       ; ...
 24E8: E1          pop     hl			; [pop_address]
-24E9: DD CB 05 BE res     7,(ix+$05)
+24E9: DD CB 05 BE res     7,(ix+$05)		; make object move again
 24ED: DD 7E 05    ld      a,(ix+$05)                        ; obj type
 24F0: 0F          rrca
 24F1: 0F          rrca
@@ -4663,7 +4665,7 @@ loc_24e8:                                                       ; ...
 24F3: 0F          rrca
 24F4: E6 03       and     3
 24F6: F7          rst    $30	  ; [jump_to_jump_table] [nb_entries=4]
-; End of function sub_24ae
+; End of function break_formation_24ae
 
 ; ---------------------------------------------------------------------------
 	.word loc_2505
@@ -5227,6 +5229,7 @@ move_object_lookup_28a8:                                             ; ...
 
 ; =============== S U B R O U T I N E =======================================
 
+; returns b,c,d,e
 
 lookup_dy_dx_28cb:                                                   ; ...
 28CB: DD 7E 0A    ld      a,(ix+$0a)                      ; lookup table entry
@@ -5266,7 +5269,7 @@ loc_28ed:                                                       ; ...
 28F9: 28 08       jr      Z,loc_2903
 28FB: 21 00 00    ld      hl,0
 28FE: A7          and     a
-28FF: ED 42       sbc     hl,bc
+28FF: ED 42       sbc     hl,bc		; HL = -BC
 2901: 44          ld      b,h
 2902: 4D          ld      c,l
 
@@ -5277,7 +5280,7 @@ loc_2903:                                                       ; ...
 290A: C8          ret     Z
 290B: 21 00 00    ld      hl,0
 290E: A7          and     a
-290F: ED 52       sbc     hl,de
+290F: ED 52       sbc     hl,de		; HL = -DE
 2911: 54          ld      d,h
 2912: 5D          ld      e,l
 2913: C9          ret
@@ -9855,13 +9858,16 @@ loc_6b2e:                                                       ; ...
 ; $02    - timer_e025???
 ; $03    - y lsb
 ; $04    - x lsb
-; $05    - type (0=tumble_ship,1=plane,2=ray,3=butterfly,4=moth,5=bug,6=turtle,7=pincer_bug,;                8=star,9=spinning_disc,10-13=rock,RAM:E200                              15=jap_symbol->spinning_disc)
+; $05    - type (0=tumble_ship,1=plane,2=ray,3=butterfly,4=moth,5=bug,6=turtle,7=pincer_bug,
+;                8=star,9=spinning_disc,10-13=rock,15=jap_symbol->spinning_disc)
+; (bit 7 of type set: object not moving, in formation)
+; (bit 6 of type set: ?? facing opposite direction? I don't know)
 ; $06/07 - dy
 ; $08/09 - dx
 ; $0A    - dy_dx lookup table index
 ; $0B    - (related to y)
 ; $0C    - (related to x)
-; $0D    - ?
+; $0D    - formation stationary timeout: 0 => formation breaks
 ; $0E    - ?
 ; $0F    - aiming table entry
 

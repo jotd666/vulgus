@@ -57,22 +57,7 @@ def is_pre_mirrored(prefix,context):
     # pre-mirror only in some levels
     return context in pre_mirror
 
-def is_in_level(prefix,context):
-    return True
 
-    pc = sprites_per_level.get(prefix)
-    if not pc:
-        # not listed: in all levels & contextes
-        return True
-    levels = pc["levels"]
-    if not levels:
-        # also included in all levels
-        return True
-    if context is None:
-        # context none: global, pc not found or : include
-        return not levels
-    # included only if context defined and matches
-    return not levels or context in levels
 
 def dump_bob_layer(sprite_table,f,relative_root=None,context=None):
     if relative_root:

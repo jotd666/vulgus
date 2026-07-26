@@ -1,9 +1,9 @@
 - set DSW difficulty lives, etc.
 - profile & optimize manually
-- inspect strange wave scatter at some point (discontinuity of aligned enemies)
+- inspect strange wave scatter at some point (discontinuity of aligned enemies): 289B set dx/dy
+  move_object_lookup_28a8: set coords
+  watchpoint E280: w 1 rA6+$E284 1 W   et voir le X associé, quand il est discontinu voir qui le change
 
-converter:since we SET_X_FROM_C we have to check for carry generation instructions
-  before roxl/roxr
 - at start shots remain unerased when letters "scroll" left (real time issue)
 
 original game bugs:
