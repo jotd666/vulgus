@@ -4,6 +4,14 @@
   move_object_lookup_28a8: set coords
   watchpoint E280: w 1 rA6+$E284 1 W   et voir le X associé, quand il est discontinu voir qui le change
 
+formation breaks: normal until reaches 250C and code sets ix+$06 (E226, dy msb!!) to $60
+This value is then read at $246D (sub of update_e200_type_56789_25cb) in MAME, but in port it seems to be read in move_object_self_243b
+which should not be called for formation break ships as msb doesn't have the same meaning
+
+in sub_25d2, objects A5 go to correct path, when objects 85 don't (formation has 85 and A5 objects) 
+
+debug: if bit 5 is set, then dx msb can be $60, else it can't and that's the bug
+
 - at start shots remain unerased when letters "scroll" left (real time issue)
 
 original game bugs:

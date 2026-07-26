@@ -4111,7 +4111,7 @@ update_e200_obj_20f3:                                                ; ...
 20F9: CD DF 29    call    handle_e200_firing_29df
 20FC: DD 7E 05    ld      a,(ix+$05)                        ; obj type
 20FF: CB 7F       bit     7,a
-2101: C2 9D 24    jp      NZ,loc_249d
+2101: C2 9D 24    jp      NZ,check_if_break_formation_249d		; formation: not moving
 2104: E6 0F       and     $F
 2106: FE 0F       cp      $F                            ; spinning_disc?
 2108: 28 1D       jr      Z,update_spinning_disc_2127         ; yes,go
@@ -4611,7 +4611,7 @@ loc_2495:                                                       ; ...
 
 ; ---------------------------------------------------------------------------
 
-loc_249d:                                                       ; ...
+check_if_break_formation_249d:                                                       ; ...
 249D: DD 7E 0D    ld      a,(ix+$0D)	; read timer for enemy aligned in formation
 24A0: A7          and     a
 24A1: CC AE 24    call    Z,break_formation_24ae	; timeout: enemy must break formation
@@ -4662,8 +4662,8 @@ loc_24e8:                                                       ; ...
 24F0: 0F          rrca
 24F1: 0F          rrca
 24F2: 0F          rrca
-24F3: 0F          rrca
-24F4: E6 03       and     3
+24F3: 0F          rrca		; divide by 16
+24F4: E6 03       and     3	; 4 possible outcomes
 24F6: F7          rst    $30	  ; [jump_to_jump_table] [nb_entries=4]
 ; End of function break_formation_24ae
 
@@ -4817,7 +4817,7 @@ update_e200_type_56789_25cb:                                         ; ...
 
 
 sub_25d2:                                                       ; ...
-25D2: DD CB 05 6E bit     5,(ix+$05)                        ; type flag=?
+25D2: DD CB 05 6E bit     5,(ix+$05)                        ; type flag=special move pattern (dx/dy mean sth different)
 25D6: 20 03       jr      NZ,loc_25db
 25D8: C3 3B 24    jp      move_object_self_243b
 ; ---------------------------------------------------------------------------
