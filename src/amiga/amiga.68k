@@ -1570,8 +1570,7 @@ copy_80:
 *			m_gfxdecode->gfx(2)->transpen(bitmap, cliprect, code, color, flipx, flipy, sx + 128, sy + 6, 15);
 *	}
 
-prev_sprites:
-	.skip	SPRITE_BUFFER_SIZE
+
 	
 really_update_sprites:
 	
@@ -1625,46 +1624,7 @@ really_update_sprites:
 	*********************
 	
 	GET_MEMORY_START_IN_A6
-	****
-	**** TEMP TEMP
-	lea		(SPRITE_ADDRESS,a6),a0
-	lea		prev_sprites,a1
-	moveq	#NB_TARGET_SPRITES-1,d7
-ploop:
-	tst.b	(TARGET_SPRITE_Y,a0)
-	jeq		nn
-	tst.b	(TARGET_SPRITE_Y,a1)
-	jeq		nn
-	move.b	(TARGET_SPRITE_X,a0),d0
-	sub.b	(TARGET_SPRITE_X,a1),d0
-	jpl		0f
-	neg.b	d0
-0:
-	cmp.b	#10,d0
-	jcs		0f
-	COLOR0_FLASH	0xF0F
-0:
-	move.b	(TARGET_SPRITE_Y,a0),d0
-	sub.b	(TARGET_SPRITE_Y,a1),d0
-	jpl		0f
-	neg.b	d0
-0:
-	cmp.b	#10,d0
-	jcs		0f
-	COLOR0_FLASH	0xFF0
-0:
-nn:
-	add.w	#TARGET_SPRITE_SIZEOF,a0
-	add.w	#TARGET_SPRITE_SIZEOF,a1
-	dbf	d7,ploop
-	
-	lea		(SPRITE_ADDRESS,a6),a0
-	lea		prev_sprites,a1
-	move.w	#SPRITE_BUFFER_SIZE-1,d0
-0:
-	move.b	(a0)+,(a1)+
-	dbf		d0,0b
-	*** END TEMP
+
 	
 	lea		(SPRITE_ADDRESS+SPRITE_BUFFER_SIZE-CURRENT_SPRITE_SIZE,a6),a0
 	*lea		mockup+SPRITE_BUFFER_SIZE-CURRENT_SPRITE_SIZE,a0

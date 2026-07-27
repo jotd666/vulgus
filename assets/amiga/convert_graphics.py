@@ -66,12 +66,9 @@ def dump_bob_layer(sprite_table,f,relative_root=None,context=None):
         f.write("\t.long\t")
         if i not in possible_hw_sprites and any(tile_entry):
             prefix = sprite_names.get(i,"bob")
-            if is_in_level(prefix,context):
-                f.write(f"{prefix}_{i:02x}")
-                if relative_root:
-                    f.write(f"-{relative_root}")
-            else:
-                f.write("0")
+            f.write(f"{prefix}_{i:02x}")
+            if relative_root:
+                f.write(f"-{relative_root}")
         else:
             f.write("0")
         f.write("\n")
@@ -80,24 +77,23 @@ def dump_bob_layer(sprite_table,f,relative_root=None,context=None):
     for i,tile_entry in enumerate(sprite_table):
         if i not in possible_hw_sprites and any(tile_entry):
             prefix = sprite_names.get(i,"bob")
-            if is_in_level(prefix,context):
-                f.write(f"{prefix}_{i:02x}:\n")
-                for j,t in enumerate(tile_entry):
-                    f.write("\t.long\t")
-                    if t:
-                        f.write(f"{prefix}_{i:02x}_{j:02x}")
-                        if relative_root:
-                            f.write(f"-{relative_root}")
-                    else:
-                        f.write("0")
-                    f.write("\n")
+            f.write(f"{prefix}_{i:02x}:\n")
+            for j,t in enumerate(tile_entry):
+                f.write("\t.long\t")
+                if t:
+                    f.write(f"{prefix}_{i:02x}_{j:02x}")
+                    if relative_root:
+                        f.write(f"-{relative_root}")
+                else:
+                    f.write("0")
+                f.write("\n")
 
     needed_bob_bitplanes = set()
 
     for i,tile_entry in enumerate(sprite_table):
         if i not in possible_hw_sprites and any(tile_entry):
             prefix = sprite_names.get(i,"bob")
-            if is_in_level(prefix,context):
+            if True:
                 for j,t in enumerate(tile_entry):
                     if t:
                         name = f"{prefix}_{i:02x}_{j:02x}"
@@ -312,7 +308,8 @@ for g in group_sprite_pairs:
     sc = sprite_cluts.get(g)
     if sc:
         sprite_cluts[g+1] = sc
-
+# add sprite 0x67 with same cluts at 0x66
+sprite_cluts[0x67] = sprite_cluts[0x66]
 
 # now gather all cluts used by letter/digit tiles, logging probably
 # missed some
@@ -770,9 +767,9 @@ for i in group_sprite_quadruplets:
     gs_array[i+2] = BLOCK_DISPLAY_MASK    # never display alone!
 
 used_sprite_codes = set(sprite_cluts) | {i for i,g in enumerate(gs_array) if g}
-unused_sprite_codes = set(range(0,0x300))-used_sprite_codes
-# it's normal that some sprite codes aren't used at all, see https://tcrf.net/Commando_(Arcade,_Capcom)
-#print("Unused sprite codes: {}".format(",".join(sorted(f"0x{x:03x}" for x in unused_sprite_codes))))
+used_sprite_codes.update({0x3F,0xC6,0xC7})  # according to https://tcrf.net/Vulgus it's not used
+unused_sprite_codes = set(range(0,0x100))-used_sprite_codes
+print("Unused sprite codes: {}".format(",".join(sorted(f"0x{x:03x}" for x in unused_sprite_codes))))
 
 with open(src_dir / "sprite_groups.68k","w") as f:
     f.write(generated_message)
