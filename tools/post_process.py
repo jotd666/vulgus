@@ -238,8 +238,6 @@ with open(source_dir / "conv.s") as f:
                 elif (",(a0)" in lines[i+1] or ("(a0)" in  lines[i+1]  and "clr.b" in lines[i+1] )):
                     lines[i+1]  += "\tVIDEO_BYTE_DIRTY | [...]\n"
 
-        if "[pop_stack]" in line:
-            line = change_instruction("addq\t#4,sp",lines,i)
 
         ###############################################
         # game_specific

@@ -4163,7 +4163,7 @@ update_spinning_disc_2127:                                           ; ...
 update_e200_type_1113_rock_2151:                                     ; ...
 2151: CD E4 25    call    sub_25e4
 2154: CD 3E 25    call    sub_253e
-2157: CD 67 24    call    sub_2467
+2157: CD 67 24    call    do_special_move_2467
 215A: CD A8 28    call    move_object_lookup_28a8
 215D: CD 5D 22    call    set_rock_sprite_code_225d
 2160: C9          ret
@@ -4572,8 +4572,10 @@ move_object_self_243b:                                               ; ...
 
 ; =============== S U B R O U T I N E =======================================
 
+; here dx/dy msb is different from other parts
+; in "normal" parts msb can be +/- 5 max, here it's set to something like 0x60
 
-sub_2467:                                                       ; ...
+do_special_move_2467:                                                       ; ...
 2467: DD 56 01    ld      d,(ix+$01)                        ; obj counter
 246A: DD 5E 09    ld      e,(ix+$09)                        ; obj dx lsb
 246D: DD 6E 06    ld      l,(ix+$06)                        ; obj dy msb
@@ -4607,7 +4609,7 @@ loc_2495:                                                       ; ...
 2496: DD 74 01    ld      (ix+$01),h
 2499: DD 75 09    ld      (ix+$09),l                        ; update obj dx lsb
 249C: C9          ret
-; End of function sub_2467
+; End of function do_special_move_2467
 
 ; ---------------------------------------------------------------------------
 
@@ -4655,7 +4657,7 @@ loc_24ce:                                                       ; ...
 24E7: C9          ret
 ; ---------------------------------------------------------------------------
 
-loc_24e8:                                                       ; ...
+loc_24e8:
 24E8: E1          pop     hl			; [pop_address]
 24E9: DD CB 05 BE res     7,(ix+$05)		; make object move again
 24ED: DD 7E 05    ld      a,(ix+$05)                        ; obj type
@@ -4684,7 +4686,7 @@ loc_2505:                                                       ; ...
 ; ---------------------------------------------------------------------------
 
 loc_250c:                                                       ; ...
-250C: DD 36 06 60 ld      (ix+$06),$60 ; '`'
+250C: DD 36 06 60 ld      (ix+$06),$60 ; set dy to special value
 2510: DD 36 08 00 ld      (ix+$08),0
 2514: DD 36 0A 06 ld      (ix+$0a),6
 2518: DD 36 0E 18 ld      (ix+$0E),$18
@@ -4696,7 +4698,7 @@ loc_2521:                                                       ; ...
 2521: DD 7E 01    ld      a,(ix+$01)
 2524: C6 80       add     a,$80 ; '�'
 2526: DD 77 02    ld      (ix+$02),a
-2529: DD 36 06 50 ld      (ix+$06),$50 ; 'P'
+2529: DD 36 06 50 ld      (ix+$06),$50 ; set dy to special value
 252D: DD 36 08 FF ld      (ix+$08),$FF
 2531: DD 36 0A 03 ld      (ix+$0a),3
 2535: DD 36 0E FF ld      (ix+$0E),$FF
@@ -4730,7 +4732,7 @@ update_e200_type_0_tumble_ship_255a:                                 ; ...
 255A: CD E4 25    call    sub_25e4
 ; START OF FUNCTION CHUNK FOR sub_25a2
 255D: CD E0 26    call    sub_26e0
-2560: CD 67 24    call    sub_2467
+2560: CD 67 24    call    do_special_move_2467
 2563: CD A8 28    call    move_object_lookup_28a8
 2566: C3 13 27    jp      animate_e200_object_sprite_2713
 ; END OF FUNCTION CHUNK FOR sub_25a2
@@ -4739,7 +4741,7 @@ update_e200_type_0_tumble_ship_255a:                                 ; ...
 update_e200_type_1_plane_2569:                                       ; ...
 2569: CD E4 25    call    sub_25e4
 256C: CD 3E 25    call    sub_253e
-256F: CD 67 24    call    sub_2467
+256F: CD 67 24    call    do_special_move_2467
 2572: CD A8 28    call    move_object_lookup_28a8
 2575: C3 13 27    jp      animate_e200_object_sprite_2713
 ; ---------------------------------------------------------------------------
@@ -4747,7 +4749,7 @@ update_e200_type_1_plane_2569:                                       ; ...
 update_e200_type_2_ray_2578:                                         ; ...
 2578: CD E4 25    call    sub_25e4
 257B: CD 3E 25    call    sub_253e
-257E: CD 67 24    call    sub_2467
+257E: CD 67 24    call    do_special_move_2467
 2581: CD A8 28    call    move_object_lookup_28a8
 2584: C3 13 27    jp      animate_e200_object_sprite_2713
 ; ---------------------------------------------------------------------------
@@ -4755,7 +4757,7 @@ update_e200_type_2_ray_2578:                                         ; ...
 update_e200_type_3_butterfly_2587:                                   ; ...
 2587: CD E4 25    call    sub_25e4
 258A: CD 3E 25    call    sub_253e
-258D: CD 67 24    call    sub_2467
+258D: CD 67 24    call    do_special_move_2467
 2590: CD B0 26    call    sub_26b0
 2593: CD A8 28    call    move_object_lookup_28a8
 2596: C3 13 27    jp      animate_e200_object_sprite_2713
@@ -4789,12 +4791,12 @@ loc_25b0:                                                       ; ...
 25B0: 3A 00 E0    ld      a,(vblank_tick_e000)
 25B3: E6 07       and     7                              ; time to ???
 25B5: CC C4 25    call    Z,sub_25c4
-25B8: CD 67 24    call    sub_2467
+25B8: CD 67 24    call    do_special_move_2467
 25BB: C3 6F 29    jp      scroll_airborne_object_with_gnd_296f
 ; ---------------------------------------------------------------------------
 
 loc_25be:                                                       ; ...
-25BE: CD 67 24    call    sub_2467
+25BE: CD 67 24    call    do_special_move_2467
 25C1: C3 A8 28    jp      move_object_lookup_28a8
 
 ; =============== S U B R O U T I N E =======================================
@@ -4809,24 +4811,24 @@ sub_25c4:                                                       ; ...
 ; ---------------------------------------------------------------------------
 
 update_e200_type_56789_25cb:                                         ; ...
-25CB: CD D2 25    call    sub_25d2
+25CB: CD D2 25    call    move_object_maybe_special_25d2
 25CE: CD 13 27    call    animate_e200_object_sprite_2713
 25D1: C9          ret
 
 ; =============== S U B R O U T I N E =======================================
 
 
-sub_25d2:                                                       ; ...
+move_object_maybe_special_25d2:                                                       ; ...
 25D2: DD CB 05 6E bit     5,(ix+$05)                        ; type flag=special move pattern (dx/dy mean sth different)
-25D6: 20 03       jr      NZ,loc_25db
+25D6: 20 03       jr      NZ,special_move_25db
 25D8: C3 3B 24    jp      move_object_self_243b
 ; ---------------------------------------------------------------------------
 
-loc_25db:                                                       ; ...
+special_move_25db:                                                       ; ...
 25DB: CD 3E 25    call    sub_253e
-25DE: CD 67 24    call    sub_2467
+25DE: CD 67 24    call    do_special_move_2467
 25E1: C3 A8 28    jp      move_object_lookup_28a8
-; End of function sub_25d2
+; End of function move_object_maybe_special_25d2
 
 
 ; =============== S U B R O U T I N E =======================================

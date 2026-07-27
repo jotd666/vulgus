@@ -12,6 +12,13 @@ in sub_25d2, objects A5 go to correct path, when objects 85 don't (formation has
 
 debug: if bit 5 is set, then dx msb can be $60, else it can't and that's the bug
 
+do_special_move_2467: updates big dy ($60)
+move_object_self_243b: updates with small dy (object bit 5 NOT set)
+
+
+
+=> bug: pop address in 24e8 not transcoded!!!!
+
 - at start shots remain unerased when letters "scroll" left (real time issue)
 
 original game bugs:
