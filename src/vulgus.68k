@@ -9244,6 +9244,7 @@ spawn_e300_object_3bf9:                 	| ...
 
 spawn_spinning_disc_3c07:               	| ...
 	jbsr	rand_2a91                         	| [$3c07: call    rand_2a91]
+	PUSH_SR                                	| [$3c0a: push    af]
 	movem.w	d0,-(a7)                       	| [...]
 	move.b	d0,d1                           	| [$3c0b: ld      b,a] save
 	and.b	#0x3f,d0                         	| [$3c0c: and     $3f] '?'
@@ -9273,6 +9274,7 @@ spawn_spinning_disc_3c07:               	| ...
 loc_3c4b:                               	| ...
 	move.b	d0,(0x06,a2)                    	| [$3c4b: ld      (ix+$06),a] init obj dy msb
 	move.w	(a7)+,d0                        	| [$3c4e: pop     af] rnd
+	POP_SR                                 	| [...] rnd
 	move.b	d0,(0x07,a2)                    	| [$3c4f: ld      (ix+$07),a] init obj dy lsb
 	clr.b	(0x0a,a2)                        	| [$3c52: ld      (ix+$0a),0]
 	clr.b	(0x0b,a2)                        	| [$3c56: ld      (ix+$0b),0] zero obj ddy
