@@ -1,6 +1,5 @@
 - set DSW difficulty lives, etc.
-- profile & optimize manually
-- at start shots remain unerased when letters "scroll" left (real time issue)
+- at start shots remain unerased when letters "scroll" left (real time issue): change scroll to remove shots when found
 
 original game bugs:
 

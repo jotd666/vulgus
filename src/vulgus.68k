@@ -10387,7 +10387,7 @@ loc_4267:                               	| ...
 	move.b	#0x20,d0                        	| [$426c: ld      a,$20] ' '
 	jbsr	hl_plus_equals_a_0018             	| [$426e: rst     hl_plus_equals_a_0018] next column
 	LOAD_BC	18                             	| [$426f: ld      bc,18] bytes (rows) to copy
-	jbsr	ldir_video                              	| [$4272: ldir_video] [video_address]
+	jbsr	ldir_video_fg_scroll                              	| [$4272: ldir_video] [video_address]
 	GET_ADDRESS	tmp_scroll_addr_e026,a0    	| [$4274: ld      hl,(tmp_scroll_addr_e026)]
 	MOVE_W_TO_REG	a0,d6                         	| [...]
 	MAKE_H                                 	| [...]
@@ -10401,7 +10401,7 @@ loc_4267:                               	| ...
 	bset.b	#2,d5                           	| [$427f: set     2,h] colour RAM (src)
 	bset.b	#2,d3                           	| [$4281: set     2,d] colour RAM (dst)
 	LOAD_BC	18                             	| [$4283: ld      bc,18] bytes (rows) to copy
-	jbsr	ldir_video                              	| [$4286: ldir_video] [video_address]
+	jbsr	ldir_video_fg_scroll                              	| [$4286: ldir_video] [video_address]
 	GET_ADDRESS	tmp_scroll_cols_e028,a0    	| [$4288: ld      a,(tmp_scroll_cols_e028)]
 	move.b	(a0),d0                         	| [...]
 	subq.b	#1,d0                           	| [$428b: dec     a]

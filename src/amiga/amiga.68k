@@ -61,7 +61,7 @@ GAME_MAX_SCROLL_Y = 0x200
 BG_TILE_WIDTH = 16
 
 
-OPT_SPRITE_MIRRORING = 1
+OPT_SPRITE_MIRRORING = 0
 
 	
 	.ifne		OPT_SPRITE_MIRRORING
@@ -4394,6 +4394,7 @@ difficulty_table:
 	.byte	0	| normal
 	.byte	1	| difficult
 	
+	.align	2
 refresh_table_str:
 	.long	r25
 	.long	r50

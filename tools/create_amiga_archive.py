@@ -1,34 +1,42 @@
 import subprocess,os,glob,shutil,pathlib,zipfile
 
-progdir = pathlib.Path(__file__).parent.parent.absolute()
+this_dir = pathlib.Path(__file__).parent.absolute()
+progdir = this_dir.parent
 
+# packaging tools used:
+#
 # paraj lha from https://github.com/mras0/plha.git
-# gadf from https://github.com/sphair/gadf
+# exe2adf from https://www.exe2adf.com/
+# l-packer from https://www.pouet.net/prod.php?which=105264
 
 gamename = "vulgus"
 
+build_dist = True
+clean_dist = False
 create_dist = True
 create_floppy = True
 
 # JOTD path for cranker, adapt to whatever your path is :)
 os.environ["PATH"] += os.pathsep+r"K:\progs\cli"
+distdir = progdir / "dist"
+outdir = distdir / f"{gamename}_HD"
+flopdir = distdir / f"{gamename}_floppy"
 
-if create_dist:
+cmd_prefix = ["make","-f",os.path.join(progdir,"makefile.am")]
+
+if build_dist:
     for s in ["convert_sounds.py","convert_graphics.py"]:
         subprocess.check_call(["cmd","/c",s],cwd=os.path.join(progdir,"assets","amiga"))
 
-    cmd_prefix = ["make","-f",os.path.join(progdir,"makefile.am")]
 
     subprocess.check_call(cmd_prefix+["clean"],cwd=progdir /"src")
 
     subprocess.check_call(cmd_prefix+["RELEASE_BUILD=1"],cwd=progdir /"src")
     # create archive
 
-    outdir = progdir / "dist" / f"{gamename}_HD"
 
     if os.path.isdir(outdir):
         shutil.rmtree(outdir)
-
     outdir.mkdir(exist_ok=True,parents=True)
 
     for file in ["readme.md",f"{gamename}.slave"]:
@@ -38,16 +46,19 @@ if create_dist:
     shutil.copy(assets/f"{gamename.title()}.info",outdir)
 
 
-
-
+if create_dist:
+    if os.path.isdir(flopdir):
+        shutil.rmtree(flopdir)
+    flopdir.mkdir(exist_ok=True,parents=True)
 
     for ext in [""]:
         exename = f"{gamename}{ext}"
         shutil.copy(progdir/exename,outdir)
-        # ATM both packers generate incorrect exe. propack seems to do better
-        #subprocess.run(["cranker_windows.exe","-f",progdir/exename,"-o",progdir/f"{exename}.rnc"],check=True)
-        #subprocess.run(["shrinkler","-p","-c",progdir/exename,progdir/f"{exename}.rnc"],check=True)
-    subprocess.run(cmd_prefix+["clean"],cwd=progdir/"src",check=True)
+        print(f"packing {exename}...")
+        # cranker creates incorrect exe
+        #subprocess.run(["cranker_windows.exe","-m","-t","Vulgus port by JOTD, music by no9","-f",progdir/exename,"-o",progdir/f"{exename}.rnc"],check=True)
+        # l-packer creates proper exe, but needs slightly more memory, so add21k is needed
+        subprocess.run(["l-packer.exe","-lz4",progdir/exename,flopdir/exename],check=True)
 
     arcname = progdir / f"{gamename}_HD.lha"
     arcname.unlink(missing_ok=True)
@@ -55,22 +66,31 @@ if create_dist:
 
     subprocess.run(cmd,cwd=outdir.parent,check=True)
 
+
 # create floppy
 if create_floppy:
+
     for ext in [""]:
-        exename = f"{gamename}{ext}"
-        # real rnc file done using propack on amiga. Yes, it sucks but it's the only way to create a floppy version
-        shutil.copy(progdir/f"{exename}.rnc",progdir/exename)
+        exename = flopdir/f"{gamename}{ext}"
 
-    #shutil.copy(assets/"disk.info",progdir)
-    adf_name = gamename.title()+".adf"
-    with (progdir/"floppy").open("w"):
-        pass
-    cmd = ["gadf","-i",gamename,"-a",adf_name,"-l",gamename.title(),"readme.md","floppy"]
-    subprocess.run(cmd,cwd=progdir,check=True)
+        #shutil.copy(assets/"disk.info",flopdir)
+        adf_name = progdir/(gamename.title()+".adf")
 
-    # create a .zip for the floppy
+        xtra_dir = flopdir/"xtra"
+        xtra_dir.mkdir(exist_ok=True)
 
-    with zipfile.ZipFile(progdir / f"{gamename.title()}_adf.zip",mode="w",compression=zipfile.ZIP_DEFLATED) as zf:
-        zf.write(progdir/adf_name,arcname=adf_name)
-    os.remove(progdir/adf_name)
+        with (xtra_dir/"floppy").open("w"):
+            pass
+
+        shutil.copy(progdir / "readme.md",xtra_dir)
+
+        cmd = ["exe2adf","--add21k","-i",exename,"-a",adf_name,"-l",gamename.title(),"-d",xtra_dir]
+        subprocess.run(cmd,cwd=flopdir,check=True)
+
+        # create a .zip for the floppy
+
+        with zipfile.ZipFile(progdir / f"{gamename.title()}_adf.zip",mode="w",compression=zipfile.ZIP_DEFLATED) as zf:
+            zf.write(adf_name,arcname=adf_name)
+
+if clean_dist:
+    subprocess.run(cmd_prefix+["clean"],cwd=progdir/"src",check=True)
