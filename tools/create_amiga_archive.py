@@ -12,7 +12,7 @@ progdir = this_dir.parent
 gamename = "vulgus"
 
 build_dist = True
-clean_dist = False
+clean_dist = True
 create_dist = True
 create_floppy = True
 

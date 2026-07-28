@@ -19,12 +19,21 @@ Instructions:
 arrows/joystick: move
 red/ctrl: shoot
 long press on red: laser
-blue/alt: launch grenade
+blue/alt: laser
 ESC: game over
 F10: quit (from normal floppy/hd run)
+
+Command line options:
+
+NOLONGPRESS: disable laser with fire 1 long press
+INVINCIBLE: invincibility
+INFLIVES: infinite lives
+CHEATKEYS: enable cheat keys
+50HZ: force 50 fps
+NOMUSIC: disable music (all 4 channels for sfx)
 
 Cheat keys:
 
 F1: toggle invincibility
 F5: add 10000 points
- 
+

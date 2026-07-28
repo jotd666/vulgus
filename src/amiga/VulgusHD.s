@@ -13,7 +13,11 @@ CHIP_BASE = $200
 EXPMEM = 0
 CHIPSIZE = $1E0000
 	ELSE
-EXPMEM = $1F0000
+	IFD	TEST_SLAVE
+EXPMEM = $1F0000	
+	ELSE
+EXPMEM = $F0000
+	ENDC
 CHIPSIZE = $120000
 	ENDC
 
@@ -47,8 +51,7 @@ _config
 	dc.b	"C2:X:disable long fire press for laser:1;"
 	dc.b	"C2:X:disable music:2;"
 
-	dc.b	"C3:L:difficulty level:normal,difficult;"
-	dc.b	"C4:L:lives:3,4,5;"
+	dc.b	"C4:L:lives:3,5,1,2;"
 	dc.b	0
 
 	IFD BARFLY
@@ -57,7 +60,7 @@ _config
 
 
 DECL_VERSION:MACRO
-	dc.b	"1.0"
+	dc.b	"1.1"
 	IFD BARFLY
 		dc.b	" "
 		INCBIN	"T:date"
