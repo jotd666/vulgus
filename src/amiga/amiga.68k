@@ -2502,7 +2502,6 @@ osd_disable_interrupts:
 osd_video_byte_dirty:
 	OSD_ENTER
 	movem.l	d0-d7/a0-a3/a5,-(a7)
-	move.b	(a0),d0
 	move.l	a0,d7		| save address
 	sub.l	a6,d7
 	jmi		osd_w_videoram_out
@@ -3461,7 +3460,6 @@ log_used_bg_tiles:
 * both layers are of the same logical size
 * fg layer is 256x256 with 8x8 tiles
 * bg layer is 512x512 with 16x16 tiles
-	move.b	#0,0x111
 log_any_tiles:
 	move.w	#0x400-1,d7
 	lea		bank_table,a1
@@ -4025,19 +4023,7 @@ no_tune:
 	jra		5b
 	
 
-	
-* all level modules have the same structure but in fact not atm...
-* 0-9              stage music + boss
-* 10               empty block in loop      
-* 11               low time                 
-* 12               death                    
-* 13               MAP                     
-* 14-15          game over                
-* 16-17          Key         
-* 
-* (only last boss mod)             
-* 16                bad ending
-* 17-22           good ending
+
 	
 
 quit_to_os:
