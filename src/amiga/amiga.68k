@@ -413,7 +413,8 @@ _user:
 	jsr	_LVOWaitTOF(a6)
 	jsr	_LVOWaitTOF(a6)
 	
-	*jbsr		load_highscores
+	jbsr		load_highscores
+	
     * check if "floppy" file is here
     move.l  _dosbase(pc),a6
     move.l   #floppy_file,d1
@@ -423,10 +424,24 @@ _user:
     beq.b   .no_floppy
     * "floppy" file found
     jsr     _LVOClose(a6)
-    * wait 2 seconds for floppy drive to switch off
-    move.l  #100,d1
+0:
+    * wait for floppy drive to switch off
+    move.l  #25,d1
+    jsr     _LVODelay(a6)
+    move.b  0xBFD100,d0
+    not.b   d0               | invert: active-low -> 1 = asserted
+    btst    #7,d0            | motor on?
+    beq.s   .led_off         | motor off -> LED off
+    btst    #3,d0            | df0: selected?
+    beq.s   .led_off         | not selected -> LED off
+                             | df0:'s yellow drive LED is ON here
+    jra   0b	
+.led_off:
+	* waiting a bit more seems to do the trick
+    move.l  #25,d1
     jsr     _LVODelay(a6)
 .no_floppy:
+
 
 * no multitask
 	

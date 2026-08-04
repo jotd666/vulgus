@@ -27,7 +27,7 @@ cmd_prefix = ["make","-f",os.path.join(progdir,"makefile.am")]
 
 if build_dist:
     for s in ["convert_sounds.py","convert_graphics.py"]:
-        subprocess.check_call(["cmd","/c",s],cwd=os.path.join(progdir,"assets","amiga"))
+        subprocess.check_call(["cmd","/c",s],cwd=assets)
 
 
     subprocess.check_call(cmd_prefix+["clean"],cwd=progdir /"src")
