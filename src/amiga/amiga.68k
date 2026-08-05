@@ -426,19 +426,7 @@ _user:
     jsr     _LVOClose(a6)
 0:
     * wait for floppy drive to switch off
-    move.l  #25,d1
-    jsr     _LVODelay(a6)
-    move.b  0xBFD100,d0
-    not.b   d0               | invert: active-low -> 1 = asserted
-    btst    #7,d0            | motor on?
-    beq.s   .led_off         | motor off -> LED off
-    btst    #3,d0            | df0: selected?
-    beq.s   .led_off         | not selected -> LED off
-                             | df0:'s yellow drive LED is ON here
-    jra   0b	
-.led_off:
-	* waiting a bit more seems to do the trick
-    move.l  #25,d1
+    move.l  #100,d1
     jsr     _LVODelay(a6)
 .no_floppy:
 
