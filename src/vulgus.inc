@@ -421,6 +421,12 @@ ldir_video_fg_scroll:
     move.b  (a1)+,d7
 	cmp.b	#0x80,d7
 	jcc		1f			| do not copy shots & shit like that
+	* also avoid range 0x10-0x14
+	cmp.b	#0x10,d7
+	jcs		2f
+	cmp.b	#0x15,d7
+	jcs		1f
+2:
 	move.b	d7,(a0)
 	VIDEO_BYTE_DIRTY
 1:

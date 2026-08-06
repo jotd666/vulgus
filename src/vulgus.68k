@@ -1380,12 +1380,11 @@ loc_0799:                               	| ...
 
 loc_079c:                               	| ...
 	MAKE_DE	a0                             	| [$079c: ld      a,(de)] get char
-	move.b	(a0),d0                         	| [...] get char
-	MAKE_DE_NO_AR                          	| [$079d: inc     de] next char
-	addq.w	#1,d4                           	| [...] next char
+	move.b	(a0)+,d0                         	| [...] get char         	
+	addq.w	#1,d4                           | [$079d: inc     de] next char
 	MAKE_D                                 	| [...] next char
 	add.b	#0x80,d0                         	| [$079e: add     a,$80]                  ; calc code
-	MAKE_HL_UNCHECKED	a0                             	| [$07a0: ld      (hl),a] code	 [unchecked_address]
+											| [$07a0: ld      (hl),a] code	 [unchecked_address]
 	move.b	d0,(a0)                         	| [...] code	 [unchecked_address]
 	jbsr	exx                               	| [$07a1: exx]
 	MAKE_DE_UNCHECKED	a0                             	| [$07a2: ld      a,(de)] get colour  [unchecked_address]
